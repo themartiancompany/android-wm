@@ -116,7 +116,7 @@ _input_run() {
   # _tab="$(
   #   key2keyevent \
   #     "tab")"
-  _alt=61
+  _tab=61
   _alt_tab_cmd \
     "${_target_window}"
   if [[ "${_hover_only}" == "n" ]]; then

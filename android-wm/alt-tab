@@ -242,42 +242,56 @@ Usage:
 
   options:
 
-     -N <windows>         To which previously focused window
-                          from the current one to go back.
-                          Default: ${target_window}
+     -N <windows>
 
-     -p                   Hover only, as in do the Alt+Tab
-                          switch but do not release the Alt
-                          key.
-                          You may want to do this to initiate
-                          an window switch action for an
-                          interactive switch.
+       To which previously focused window
+       from the current one to go back.
+       Default: ${target_window}
 
-     -r                   Release Alt key. You may want to
-                          use this option after you've selected
-                          the window you want to select after
-                          running the program with the '-p' option.
+     -p
 
-     -m <method>          Method to perform the switch.
-                          All require administrative permissions.
-                          It can be:
-                          - input:
-                              It performs the action using
-                              the 'input' command,
-                          - activity-launch:
-                              It retrieves open windows list
-                              and runs the corresponding past
-                              activity. It avoids one to
-                              concretely press alt+tab but it
-                              may not work depending on the
-                              activity.
-                          Default: ${get_mode}
+       Hover only, as in do the Alt+Tab
+       switch but do not release the Alt
+       key.
+       You may want to do this to initiate
+       an window switch action for an
+       interactive switch.
+
+     -r
+
+       Release Alt key. You may want to
+       use this option after you've selected
+       the window you want to select after
+       running the program with the '-p' option.
+
+     -m <method>
+
+       Method to perform the switch.
+       All require administrative permissions.
+       It can be:
+       - input:
+           It performs the action using
+           the 'input' command,
+       - activity-launch:
+           It retrieves open windows list
+           and runs the corresponding past
+           activity. It avoids one to
+           concretely press alt+tab but it
+           may not work depending on the
+           activity.
+       Default: ${get_mode}
                               
-     -h                   This message.
+     -h
 
-     -c                   Enable color output.
+       This message.
 
-     -v                   Enable verbose output
+     -c
+
+       Enable color output.
+
+     -v
+
+       Enable verbose output
 
 ENDUSAGETEXT
   _printf \

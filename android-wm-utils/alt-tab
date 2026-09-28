@@ -173,7 +173,7 @@ _usage() {
       _usage_text << \
         ENDUSAGETEXT || true
 
-Get currently focused Android activity.
+Switches to a previously focused application.
 
 Usage:
 
@@ -182,12 +182,29 @@ Usage:
 
   options:
 
-     -m <method>          Method to obtain activity name.
-                          It can be 'root'.
+     -N <windows>         To which previously focused window
+                          from the current one to go back.
+                          Default: ${target_window}
+                        
+     -m <method>          Method to perform the switch.
+                          All require administrative permissions.
+                          It can be:
+                          - input:
+                              It performs the action using
+                              the 'input' command,
+                          - activity-launch:
+                              It retrieves open windows list
+                              and runs the corresponding past
+                              activity. It avoids one to
+                              concretely press alt+tab but it
+                              may not work depending on the
+                              activity.
                           Default: ${get_mode}
-
+                              
      -h                   This message.
+
      -c                   Enable color output.
+
      -v                   Enable verbose output
 
 ENDUSAGETEXT
@@ -204,14 +221,14 @@ _global_variables
 # shellcheck disable=SC2034
 while \
   getopts \
-    'm:a:cvh?' \
+    'm:N:a:cvh?' \
     arg; do
   case \
     "${arg}" in
     m)
       override_get_mode="${OPTARG}" ;;
-    a)
-      override_sdk_version="${OPTARG}" ;;
+    N)
+      override_target_window="${OPTARG}" ;;
     c)
       override_color="y" ;;
     v)
@@ -241,7 +258,7 @@ app_opts=(
   "${get_mode}"
 )
 _show_config
-_activity_focused \
+_alt_tab \
   "${app_opts[@]}"
 
 # vim:set sw=2 sts=-1 et:

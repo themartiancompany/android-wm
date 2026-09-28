@@ -24,13 +24,18 @@
 #    along with this program.
 #    If not, see <https://www.gnu.org/licenses/>.
 
-_PROJECT=android-activity-utils
+SHELL = bash
+_PROJECT=android-wm-utils
 PREFIX ?= /usr/local
-DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/android-activity-utils
+DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
 BIN_DIR=$(DESTDIR)$(PREFIX)/bin
 
-DOC_FILES=$(wildcard *.rst)
-SCRIPT_FILES=$(wildcard android-activity-utils/*)
+DOC_FILES=\
+  $(wildcard \
+      *.rst)
+SCRIPT_FILES=\
+  $(wildcard \
+      $(_PROJECT)/*)
 
 all: build-man
 
@@ -77,12 +82,12 @@ install-scripts:
 
 	install \
 	  -vDm755 \
-	  "$(_PROJECT)/activity-launch" \
-	  "$(BIN_DIR)/activity-launch"
+	  "$(_PROJECT)/alt-tab" \
+	  "$(BIN_DIR)/alt-tab"
 	install \
 	  -vDm755 \
-	  "$(_PROJECT)/activity-focused" \
-	  "$(BIN_DIR)/activity-focused"
+	  "$(_PROJECT)/windows-list" \
+	  "$(BIN_DIR)/windows-list"
 
 install-doc:
 
@@ -91,5 +96,13 @@ install-doc:
 	  $(DOC_FILES) \
 	  -t \
 	  $(DOC_DIR)
+
+uninstall-scripts:
+
+	rm \
+	  -vrf \
+	  "$(BIN_DIR)/alt-tab" \
+	  "$(BIN_DIR)/windows-list"
+
 
 .PHONY: check install install-doc install-man install-scripts shellcheck

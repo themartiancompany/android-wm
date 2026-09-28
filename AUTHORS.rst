@@ -27,9 +27,9 @@
    If not, see <https://www.gnu.org/licenses/>.
 
 
-=====================================
-Android Activity Utils authors
-=====================================
+=========================================
+Android Window Manager Utils authors
+=========================================
 
 
 * Pellegrino Prevete

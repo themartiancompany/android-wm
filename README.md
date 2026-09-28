@@ -21,18 +21,19 @@
 [comment]: <> (General Public License along with this program.)
 [comment]: <> (If not, see <https://www.gnu.org/licenses/>.)
 
-# Android Activities Utilities (`android-activity-utils`)
+# Android Window Manager Utilities (`android-wm-utils`)
 
-A collection of programs intended to manage Android activities
-from in standard unix programs and environments.
+A collection of programs for Android window manager,
+to make possible to use it programmatically.
 
 It includes:
 
-- `activity-launch`:
-    Launches Android activities programmatically according
-    to rules;
-- `activity-focused`:
-    Returns the name of the currently focused Android activity.
+- `alt-tab`:
+    Allows to perform a window switch using
+    the Alt+Tab shortcut.
+- `windows-list`:
+    Returns a list of the opened windows names
+    sorted by last focus time (latest first).
     
 ## Installation
 
@@ -49,7 +50,7 @@ on the the uncensorable
 [Ur](
   https://github.com/themartiancompany/ur)
 user repository and application store as
-`android-activity-utils`.
+`android-wm-utils`.
 The source code is published on the
 [Ethereum Virtual Machine File System](
   https://github.com/themartiancompany/evmfs)
@@ -59,14 +60,14 @@ To install it from there just type
 
 ```bash
 ur \
-  android-activity-utils
+  android-wm-utils
 ```
 
 A censorable HTTP Github mirror of the recipe published there,
 containing a full list of the software dependencies needed to run the
 tools is hosted on
-[android-activity-utils-ur](
-  https://github.com/themartiancompany/android-blotter-ur).
+[android-wm-utils-ur](
+  https://github.com/themartiancompany/android-wm-ur).
 
 Be aware the mirror could go offline any time as Github and more
 in general all HTTP resources are inherently unstable and censorable.

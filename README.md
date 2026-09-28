@@ -24,12 +24,12 @@
 # Android Window Manager (`android-wm`)
 
 Google does not distribute the `android-wm`
-command together with Android.
+program together with Android.
 
 This repository provides the `android-wm`
-program, together with many other basic
-Android programs such as `alt-tab`
-and the `windows-list`.
+command, together with many other basic
+Android window management programs such
+as `alt-tab` and `windows-list`.
 
 The Android Window Manager is a core part of
 [DogeOS](

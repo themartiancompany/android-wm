@@ -157,8 +157,10 @@ _set_overrides() {
 # Shows configuration options.
 _show_config() {
   _msg_info "${app_name} configuration"
-  _msg_info "     Got activity at date:   ${get_date}"
-  _msg_info "                 Get mode:   ${get_mode}"
+  _msg_info "             Got activity at date:   ${get_date}"
+  _msg_info "                    Switch method:   ${get_mode}"
+  _msg_info "                       Hover only:   ${hover_only}"
+  _msg_info " Target previously focused window:   ${get_mode}"
 }
 
 # Show help usage, with an exit status.
@@ -185,7 +187,19 @@ Usage:
      -N <windows>         To which previously focused window
                           from the current one to go back.
                           Default: ${target_window}
-                        
+
+     -p                   Hover only, as in do the Alt+Tab
+                          switch but do not release the Alt
+                          key.
+                          You may want to do this to initiate
+                          an window switch action for an
+                          interactive switch.
+
+     -r                   Release Alt key. You may want to
+                          use this option after you've selected
+                          the window you want to select after
+                          running the program with the '-p' option.
+
      -m <method>          Method to perform the switch.
                           All require administrative permissions.
                           It can be:

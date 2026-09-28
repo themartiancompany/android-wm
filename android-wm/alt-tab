@@ -72,7 +72,7 @@ _global_variables() {
   get_date=""
   get_mode=""
   hover_only=""
-  release_alt=""
+  alt_release=""
   target_window=""
   color=""
   quiet=""
@@ -107,7 +107,7 @@ _alt_tab_cmd() {
 _input_run() {
   local \
     _hover_only="${1}" \
-    _release_alt="${2}" \
+    _alt_release="${2}" \
     _target_window="${3}" \
     _alt \
     _tab
@@ -119,12 +119,12 @@ _input_run() {
   #   key2keyevent \
   #     "tab")"
   _tab=61
-  if [[ "${_release_alt}" == "n" ]]; then
+  if [[ "${_alt_release}" == "n" ]]; then
     _alt_tab_cmd \
       "${_target_window}"
   fi
   if [[ "${_hover_only}" == "n" || \
-        "${_release_alt}" == "y" ]]; then
+        "${_alt_release}" == "y" ]]; then
     sudo \
       input \
         keyevent \
@@ -146,7 +146,7 @@ _alt_tab() {
   local \
     _mode="${1}" \
     _hover_only="${2}" \
-    _release_alt="${3}" \
+    _alt_release="${3}" \
     _target_window="${4}" \
     _cmd=() \
     _activities \
@@ -155,7 +155,7 @@ _alt_tab() {
   if [[ "${_mode}" == "input" ]]; then
     _args+=(
       "${_hover_only}"
-      "${_release_alt}"
+      "${_alt_release}"
       "${_target_window}"
     )
   elif [[ "${_mode}" == "activity-launch" ]]; then
@@ -229,7 +229,7 @@ _show_config() {
   _msg_info "             Got activity at date:   ${get_date}"
   _msg_info "                    Switch method:   ${get_mode}"
   _msg_info "                       Hover only:   ${hover_only}"
-  _msg_info "                      Release alt:   ${release_alt}"
+  _msg_info "                      Release alt:   ${alt_release}"
   _msg_info " Target previously focused window:   ${target_window}"
 }
 
@@ -331,7 +331,7 @@ while \
     p)
       override_hover_only="${OPTARG}" ;;
     r)
-      override_release_alt="${OPTARG}" ;;
+      override_alt_release="${OPTARG}" ;;
     c)
       override_color="y" ;;
     v)
@@ -360,7 +360,7 @@ _set_overrides
 app_opts=(
   "${get_mode}"
   "${hover_only}"
-  "${release_alt}"
+  "${alt_release}"
   "${target_window}"
 )
 _show_config

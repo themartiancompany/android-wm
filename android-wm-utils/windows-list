@@ -76,9 +76,14 @@ _root_get() {
   if (( 32 < "${_sdk}" )); then
     _cmd=(
       "/system/bin/dumpsys"
-        "activity"
-        "activities"
+        "window"
+        "windows"
     )
+    # _cmd=(
+    #   "/system/bin/dumpsys"
+    #     "activity"
+    #     "activities"
+    # )
   elif (( "${_sdk}" < 28 )); then
     _cmd=(
       "/system/bin/dumpsys"

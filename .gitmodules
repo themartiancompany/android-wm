@@ -1,3 +1,6 @@
 [submodule "man"]
 	path = man
 	url = https://github.com/themartiancompany/android-wm-utils-man
+[submodule "data"]
+	path = data
+	url = https://github.com/themartiancompany/android-wm-data

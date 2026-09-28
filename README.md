@@ -21,20 +21,34 @@
 [comment]: <> (General Public License along with this program.)
 [comment]: <> (If not, see <https://www.gnu.org/licenses/>.)
 
-# Android Window Manager Utilities (`android-wm-utils`)
+# Android Window Manager (`android-wm`)
 
-A collection of programs for Android window manager,
-to make possible to use it programmatically.
+Google does not distribute the `android-wm`
+command together with Android.
 
-It includes:
+This repository provides the `android-wm`
+program, together with many other basic
+Android programs such as `alt-tab`
+and the `windows-list`.
 
-- `alt-tab`:
-    Allows to perform a window switch using
-    the Alt+Tab shortcut.
-- `windows-list`:
-    Returns a list of the opened windows names
-    sorted by last focus time (latest first).
-    
+The Android Window Manager is a core part of
+[DogeOS](
+  https://github.com/themartiancompany/dogeos)
+Android platform base.
+
+## Manual
+
+Manuals can be consulted with the
+
+```bash
+man \
+  <program-name>
+```
+
+command. For a list of installed manuals consult the
+[manual submodule repository](
+  https://github.com/themartiancompany/android-wm-man).
+
 ## Installation
 
 The programs in this source repo
@@ -50,7 +64,7 @@ on the the uncensorable
 [Ur](
   https://github.com/themartiancompany/ur)
 user repository and application store as
-`android-wm-utils`.
+`android-wm`.
 The source code is published on the
 [Ethereum Virtual Machine File System](
   https://github.com/themartiancompany/evmfs)
@@ -60,13 +74,13 @@ To install it from there just type
 
 ```bash
 ur \
-  android-wm-utils
+  android-wm
 ```
 
 A censorable HTTP Github mirror of the recipe published there,
 containing a full list of the software dependencies needed to run the
 tools is hosted on
-[android-wm-utils-ur](
+[android-wm-ur](
   https://github.com/themartiancompany/android-wm-ur).
 
 Be aware the mirror could go offline any time as Github and more

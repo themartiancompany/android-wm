@@ -94,6 +94,8 @@ _alt_tab_cmd() {
       in $(seq \
              "2" \
              "${_target_window}"); do
+      sleep \
+        1
       sudo \
         input \
           keycombination \

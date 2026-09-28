@@ -64,9 +64,15 @@ _root_get() {
     _activities \
     _activity \
     _cmd \
+    _msg=() \
     _sdk
   _sdk="$(
     sdk-version)"
+  _msg=(
+    "Detected SDK version '${_sdk}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   if (( 32 < "${_sdk}" )); then
     _cmd=(
       "/system/bin/dumpsys"
@@ -86,6 +92,11 @@ _root_get() {
         "windows"
     )
   fi
+  _msg=(
+    "Running '${_cmd[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _activities="$(
     su \
       -c \

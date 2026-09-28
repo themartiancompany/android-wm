@@ -31,10 +31,14 @@ command, together with many other basic
 Android window management programs such
 as `alt-tab` and `windows-list`.
 
-The Android Window Manager is a core part of
+The Android Window Manager is a core component of
+[SissystemD](
+  https://github.com/themartiancompany/sissystemd)
+and as a consequence of
 [DogeOS](
   https://github.com/themartiancompany/dogeos)
 Android platform base.
+
 
 ## Manual
 

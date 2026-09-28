@@ -24,7 +24,10 @@
 # Android Window Manager (`android-wm`)
 
 Google does not distribute the `android-wm`
-program together with Android.
+program together with the
+[Android Open Source Project](
+  https://source.android.com)
+(AOSP).
 
 This repository provides the `android-wm`
 command, together with many other basic

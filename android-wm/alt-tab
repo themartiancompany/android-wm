@@ -168,9 +168,9 @@ _auto_detect_mode() {
     uname \
       -o)"
   if [[ "${_os}" == "Android" ]]; then
-    _root_requirements
+    _input_requirements
     echo \
-      "root"
+      "input"
   elif [[ "${_os}" == "GNU/Linux" ]]; then
     _msg=(
       "Not implemented."

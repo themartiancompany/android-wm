@@ -214,8 +214,8 @@ _set_overrides() {
     "only" \
     "n"
   _set_override \
-    "release" \
     "alt" \
+    "release" \
     "n"
   _set_override \
     "target" \

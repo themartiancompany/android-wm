@@ -214,6 +214,10 @@ _set_overrides() {
     "only" \
     "n"
   _set_override \
+    "release" \
+    "alt" \
+    "n"
+  _set_override \
     "target" \
     "window" \
     1

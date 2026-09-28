@@ -30,6 +30,22 @@ PREFIX ?= /usr/local
 DOC_DIR=$(DESTDIR)$(PREFIX)/share/doc/$(_PROJECT)
 BIN_DIR=$(DESTDIR)$(PREFIX)/bin
 
+_INSTALL_FILE=\
+  install \
+    -vDm644
+_INSTALL_DIR=\
+  install \
+    -vdm755
+_INSTALL_EXE=\
+  install \
+    -vDm755
+_MAKE_EXE=\
+  chmod \
+    755
+_MAKE_LINK=\
+  ln \
+    -sv
+
 DOC_FILES=\
   $(wildcard \
       *.rst)
@@ -80,12 +96,13 @@ install-man:
 
 install-scripts:
 
-	install \
-	  -vDm755 \
+	$(_INSTALL_EXE) \
 	  "$(_PROJECT)/alt-tab" \
 	  "$(BIN_DIR)/alt-tab"
-	install \
-	  -vDm755 \
+	$(_INSTALL_EXE) \
+	  "$(_PROJECT)/$(_PROJECT)" \
+	  "$(BIN_DIR)/$(_PROJECT)"
+	$(_INSTALL_EXE) \
 	  "$(_PROJECT)/windows-list" \
 	  "$(BIN_DIR)/windows-list"
 
@@ -102,6 +119,7 @@ uninstall-scripts:
 	rm \
 	  -vrf \
 	  "$(BIN_DIR)/alt-tab" \
+	  "$(BIN_DIR)/$(_PROJECT)" \
 	  "$(BIN_DIR)/windows-list"
 
 

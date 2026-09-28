@@ -28,7 +28,7 @@
 
 
 =========================================
-Android Window Manager Utils authors
+Android Window Manager authors
 =========================================
 
 

@@ -138,6 +138,8 @@ _window_json_get() {
     _flags_jq_arg \
     _flags_json \
     _flags_encode_opts=() \
+    _msurface \
+    _msurface_ecode_opts=() \
     _private_flags_jq_arg \
     _private_flags_json \
     _private_flags_encode_opts=() \
@@ -149,6 +151,7 @@ _window_json_get() {
     _token_encode_opts=() \
     _window_encode_opts=() \
     _msg=()
+  _msurface=""
   _msg=(
     "Encoding window object JSON."
   )
@@ -217,8 +220,11 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_flags_encode_opts[@]}")"
-  _msg_info \
+  _msg=(
     "Flags JSON: ${_flags_json}"
+  )
+  _msg_info \
+    "${_msg[*]}"
   _msg=(
     "Getting private flags JSON."
   )
@@ -340,6 +346,33 @@ _window_json_get() {
   )
   _msg_info \
     "${_msg[*]}"
+  if [[ "${_surface_id}" != "" ]]; then
+    _msurface_encode_opts+=(
+      --arg
+        "name"
+          "${_surface_name}"
+      --arg
+        "id"
+          "${_surface_id}"
+      '$ARGS.named'
+    )
+    _msg=(
+      "Running jq with options"
+      "'${_jq_opts[*]}"
+      "${_msurface_encode_opts[*]}'."
+    )
+    _msg_info \
+      "${_msg[*]}"
+    _msurface="$(
+      jq \
+        "${_jq_opts[@]}" \
+        "${_msurface_encode_opts[@]}")"
+    _msg=(
+      "Window frames JSON: ${_msurface}"
+    )
+    _msg_info \
+      "${_msg[*]}"
+  fi
   _state_animator_encode_opts+=(
     --arg
       "id"
@@ -347,6 +380,15 @@ _window_json_get() {
     --arg
       "owner"
         "${_state_animator_owner}"
+  )
+  if [[ "${_msurface}" != "" ]]; then
+    _state_animator_encode_opts+=(
+      --argjson
+        "mSurface"
+          "${_msurface}"
+    )
+  fi
+  _state_animator_encode_opts+=(
     '$ARGS.named'
   )
   _msg=(

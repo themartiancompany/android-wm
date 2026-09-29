@@ -901,7 +901,7 @@ _dumpsys_json_encode() {
       _is_ready_for_display="${_is_ready_for_display_word#mHasSurface=}"
       _window_removal_allowed_word="${_line[2]}"
       _window_removal_allowed="${_window_removal_allowed_word#mWindowRemovalAllowed=}"
-    elif [[ "${_line_string}" == "    Frames: "*" parent="*" display="*" frame="*" last="* ]]; then
+    elif [[ "${_line_string}" == "    Frames: "* ]]; then
       for _word in "${_line[@]}"; do
         if [[ "${_word}" == "parent="* ]]; then
           _frames_parent="${_line#parent=}"

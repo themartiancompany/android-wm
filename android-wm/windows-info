@@ -144,6 +144,7 @@ _window_json_get() {
   _msg_info \
     "${_msg[*]}"
   _jq_opts+=(
+    --raw-output
     -n
   )
   _session_encode_opts+=(

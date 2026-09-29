@@ -181,7 +181,7 @@ _window_json_get() {
   _attrs_encode_opts+=(
     --arg
       "position-layout"
-        "${_position_layout_word}"
+        "${_position_layout}"
     --arg
       "position"
         "${_position}"

@@ -155,6 +155,11 @@ _window_json_get() {
   _jq_opts+=(
     -n
   )
+  _msg=(
+    "Getting session JSON."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _session_encode_opts+=(
     --arg
       "id"
@@ -184,6 +189,11 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_session_encode_opts[@]}")"
+  _msg=(
+    "Getting flags JSON."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _flags_jq_arg="[$(
     IFS=","; \
     echo \
@@ -195,6 +205,13 @@ _window_json_get() {
         "${_flags_jq_arg}"
     '$flags'
   )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts[*]}"
+    "${_flags_opts[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _flags_json="$(
     jq \
       "${_flags_opts[@]}")"

@@ -255,7 +255,7 @@ _dumpsys_json_encode() {
       _user_id="${_line[3]}"
       _activity_word="${_line[4]}"
       _activity="${_activity_word%*\}:}"
-    elif [[ "${_line}" == "mDisplayId="*"rootTaskId="*"mSession="*"mClient="* ]]; then
+    elif [[ "${_line_string}" == "mDisplayId="*"rootTaskId="*"mSession="*"mClient="* ]]; then
       _display_id_word="${_line[0]}"
       _display_id="${_display_id_word##mDisplayId=}"
       _root_task_id_word="${_line[1]}"

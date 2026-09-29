@@ -420,7 +420,7 @@ _dumpsys_json_encode() {
       )
     elif [[ "${_line_string}" == "      pfl="* ]]; then
       _pfl_word="${_line[0]}"
-      _pfl="${_pfl_word#fl=}"
+      _pfl="${_pfl_word#pfl=}"
       _private_flags+=(
         "${_pfl}"
         "${_line[@]:1}"

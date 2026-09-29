@@ -135,6 +135,9 @@ _window_json_get() {
   local \
     _msg=() \
     _jq_opts=() \
+    _attrs \
+    _attrs_encode_opts=() \
+    _session \
     _session_encode_opts=() \
     _window_encode_opts=() \
     _msg=()
@@ -175,6 +178,31 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_session_encode_opts[@]}")"
+  _attrs_encode_opts+=(
+    --arg
+      "position-layout"
+        "${_position_layout_word}"
+    --arg
+      "position"
+        "${_position}"
+    --arg
+      "layout"
+        "${_user_word}"
+    --arg
+      "app-uid":
+        "${_uid}"
+    --arg
+      "app-user-name":
+        "${_app_user_name}"
+    --arg
+      "mClient":
+        "${_client}"
+    '$ARGS.named'
+  )
+  _attrs="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_attrs_encode_opts[@]}")"
   _window_encode_opts+=(
       --arg
         "id"
@@ -191,6 +219,9 @@ _window_json_get() {
       --arg
         "rootId"
           "${_display_id}"
+      --argjson
+        "mAttrs"
+          "${_session}"
       --argjson
         "mSession"
           "${_session}"
@@ -240,12 +271,16 @@ _dumpsys_json_encode() {
     _client \
     _client_word \
     _index \
+    _layout \
     _line=() \
     _line_string \
     _owner_uid_word \
     _owner_uid \
     _package \
     _package_word \
+    _position_layout_word \
+    _position_layout \
+    _position \
     _root_task_id \
     _root_task_id_word \
     _session_id \
@@ -344,6 +379,22 @@ _dumpsys_json_encode() {
       _package="${_package_word#package=}"
       _app_op_word="${_line[3]}"
       _app_op="${_app_op_word#appop=}"
+    elif [[ "${_line_string}" == "    mAttrs={"*" sim={state="*" adjust="*" ty="*" fmt="*" wanim="*" sysuil="* ]]; then
+      _msg=(
+        "Parsing first attributes line."
+      )
+      _msg_info \
+        "${_msg[*]}"
+      _position_layout_word="${_line[0]}"
+      _position_layout="${_position_layout_word#mAttrs=\{}"
+      _position="${_position_layout%(*}"
+      _layout="${_position_layout#*)}"
+    # mAttrs={(0,0)(fillxfill) sim={state=always_hidden adjust=resize} ty=BASE_APPLICATION fmt=TRANSPARENT wanim=0x10302fd sysuil=true
+    #   fl=LAYOUT_IN_SCREEN LAYOUT_INSET_DECOR SHOW_WALLPAPER SPLIT_TOUCH HARDWARE_ACCELERATED DRAWS_SYSTEM_BAR_BACKGROUNDS
+    #   pfl=NO_MOVE_ANIMATION FORCE_DRAW_STATUS_BAR_BACKGROUND USE_BLAST FIT_INSETS_CONTROLLED
+    #   bhv=DEFAULT
+    #   fitSides=}
+
     else
       true
       # echo \

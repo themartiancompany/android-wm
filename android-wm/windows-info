@@ -202,7 +202,7 @@ _window_json_get() {
     --argjson
       "flags"
         "${_flags_jq_arg}"
-    '$flags'
+    '$ARGS.named.flags'
   )
   _msg=(
     "Running jq with options"
@@ -230,7 +230,7 @@ _window_json_get() {
     --argjson
       "pflags"
         "${_private_flags_jq_arg}"
-    '$pflags'
+    '$ARGS.named.pflags'
   )
   _msg=(
     "Running jq with options"

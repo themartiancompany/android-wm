@@ -187,16 +187,7 @@ _window_json_get() {
         "${_position}"
     --arg
       "layout"
-        "${_user_word}"
-    --arg
-      "app-uid":
-        "${_uid}"
-    --arg
-      "app-user-name":
-        "${_app_user_name}"
-    --arg
-      "mClient":
-        "${_client}"
+        "${_layout}"
     '$ARGS.named'
   )
   _attrs="$(
@@ -221,7 +212,7 @@ _window_json_get() {
           "${_display_id}"
       --argjson
         "mAttrs"
-          "${_session}"
+          "${_attrs}"
       --argjson
         "mSession"
           "${_session}"

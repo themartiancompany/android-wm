@@ -209,12 +209,12 @@ _dumpsys_json_encode() {
         "${_msg[*]}"
       if [[ "${quiet}" == "n" ]]; then
         echo \
-          "${_window}" \
-          1>2
+          "${_window}"
       fi
     else
-      echo \
-        "${_line}"
+      true
+      # echo \
+      #   "${_line}"
     fi
   done
   # echo \

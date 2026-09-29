@@ -134,32 +134,56 @@ _dumpsys_plain_encode() {
 _window_json_get() {
   local \
     _msg=() \
-    _jq_opts=()
+    _jq_opts=() \
+    _session_encode_opts=() \
+    _window_encode_opts=()
   _jq_opts+=(
     -n
   )
+  _session_encode_opts+=(
+    --arg
+      "id"
+        "${_session_id}"
+    --arg
+      "unknown-session-id"
+        "${_user_word}"
+    --arg
+      "app-user-id":
+        "${_app_user_id}"
+    --arg
+      "app-user-name":
+        "${_app_user_name}"
+    '$ARGS.named'
+  )
   _session="$(
     jq \
-      "${_jq_opts[@]}")"
+      "${_jq_opts[@]}" \
+      "${_session_encode_opts[@]}")"
+  _window_encode_opts+=(
+      --arg
+        "id"
+          "${_id}"
+      --arg
+        "user-id"
+          "${_user_id}"
+      --arg
+        "activity"
+          "${_activity}"
+      --arg
+        "mDisplayId"
+          "${_display_id}"
+      --arg
+        "rootId"
+          "${_display_id}"
+      --arg
+        "mSession"
+          "${_session}"
+      '$ARGS.named'
+  )
   _window="$(
     jq \
       "${_jq_opts[@]}" \
-      --arg \
-        "id" \
-          "${_id}" \
-      --arg \
-        "user-id" \
-          "${_user_id}" \
-      --arg \
-        "activity" \
-          "${_activity}" \
-      --arg \
-        "mDisplayId" \
-          "${_display_id}" \
-      --arg \
-        "rootId" \
-          "${_display_id}" \
-      '$ARGS.named')"
+      "${_window_encode_opts[@]}")"
   _msg=(
     "Detected window ${_index},"
     "extracted:"
@@ -178,16 +202,19 @@ _dumpsys_json_encode() {
     _dumpsys="${1}" \
     _dumpsys_window_windows=() \
     _id \
-    _user_id \
     _activity \
     _activity_word \
+    _app_user_id \
+    _app_user_name \
     _index \
-    _line \
-    _line_array=() \
+    _line=() \
+    _line_string \
     _root_task_id \
     _root_task_id_word \
     _session_id \
     _session_id_word \
+    _user_unknown_id \
+    _user_word \
     _msg=() \
     _window
   _msg=(
@@ -210,34 +237,36 @@ _dumpsys_json_encode() {
     "${_msg[*]}"
   _index=-1
   _window=""
-  for _line in "${_dumpsys_window_windows[@]}"; do
-    if [[ "${_line}" == "  Window #"* ]]; then
+  for _line_string in "${_dumpsys_window_windows[@]}"; do
+    _line=(
+      ${_line_string}
+    )
+    if [[ "${_line_string}" == "  Window #"* ]]; then
       if [[ "${_window}" != "" ]]; then
         _window_json_get
       fi
       _index="$((
         _index + 1 ))"
-      _line_array=(
-        ${_line}
-      )
       _id="$(
         echo \
-          "${_line_array[2]}" |
+          "${_line[2]}" |
             sed \
               's/Window{//g')"
-      _user_id="${_line_array[3]}"
+      _user_id="${_line[3]}"
       _activity_word="${_line[4]}"
       _activity="${_activity_word%*\}:}"
     elif [[ "${_line}" == "mDisplayId="*"rootTaskId="*"mSession="*"mClient="* ]]; then
-      _line_array=(
-        ${_line}
-      )
       _display_id_word="${_line[0]}"
       _display_id="${_display_id_word##mDisplayId=}"
       _root_task_id_word="${_line[1]}"
       _root_task_id="${_root_task_id_word##rootTaskId=}"
       _session_id_word="${_line[2]}"
       _session_id="${_display_id_word##mSession=Session\{}"
+      _user_word="${_line[3]}"
+      _session_unknown_id="${_user_word%%:*}"
+      _user_unknown_id="${_user_word%%:*}"
+      _app_user_id="${_user_word##*:${_user_id}}"
+      _app_user_name="${_user_id}_a${_user_app_id#10}"
     else
       true
       # echo \

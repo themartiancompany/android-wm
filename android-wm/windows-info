@@ -430,6 +430,7 @@ _dumpsys_json_encode() {
       _activity="${_activity_word%*\}:}"
       _flags=()
       _private_flags=()
+      _fit_sides=""
     elif [[ "${_line_string}" == "    mDisplayId="*" rootTaskId="*" mSession="*" mClient="* ]]; then
       _msg=(
         "Parsing display/session/client line."

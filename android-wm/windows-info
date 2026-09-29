@@ -286,6 +286,7 @@ _window_json_get() {
     --arg
       "window-grouping-ibinder-token"
         "${_window_grouping_ibinder_token}"
+    '$ARGS.named'
   )
   _msg=(
     "Running jq with options"

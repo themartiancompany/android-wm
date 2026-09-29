@@ -379,7 +379,8 @@ _dumpsys_json_encode() {
       _package="${_package_word#package=}"
       _app_op_word="${_line[3]}"
       _app_op="${_app_op_word#appop=}"
-    elif [[ "${_line_string}" == "    mAttrs={"*" sim="*"{"*"state="*" adjust="*" ty="*" fmt="*" wanim="*" sysuil="* ]]; then
+    elif [[ "${_line_string}" == "    mAttrs={"* ]]; then
+    # elif [[ "${_line_string}" == "    mAttrs={"*" sim="*"{"*"state="*" adjust="*" ty="*" fmt="*" wanim="*" sysuil="* ]]; then
       _msg=(
         "Parsing first attributes line."
       )

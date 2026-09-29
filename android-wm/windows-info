@@ -169,43 +169,53 @@ _dumpsys_json_encode() {
     if [[ "${_line}" == "  Window: " ]]; then
       _index="$((
         _index + 1 ))"
+      _id="$(
+        echo \
+          "${_line}" |
+          awk \
+            '{print $3}' |
+            sed \
+              's/Window{//g')"
+      _user_id="$(
+        echo \
+          "${_line}" |
+          awk \
+            '{print $4}')"
+      _activity="$(
+        echo \
+          "${_line}" |
+          awk \
+            '{print $5}' |
+            sed \
+              's%}:%%g')"
+      _window="$(
+        jq \
+          "${_jq_opts[@]}" \
+          --arg \
+            "id" \
+              "${_id}" \
+          --arg \
+            "user-id" \
+              "${_user_id}" \
+          --arg \
+            "activity" \
+              "${_activity}" \
+          '$ARGS.named')"
+      _msg=(
+        "Detected window ${_index},"
+        "extracted:"
+      )
+      _msg_info \
+        "${_msg[*]}"
+      if [[ "${quiet}" == "n" ]]; then
+        echo \
+          "${_window}" \
+          1>2
+      fi
     fi
-    _id="$(
-      echo \
-        "${_line}" |
-        awk \
-          '{print $3}' |
-          sed \
-            's/Window{//g')"
-    _user_id="$(
-      echo \
-        "${_line}" |
-        awk \
-          '{print $4}')"
-    _activity="$(
-      echo \
-        "${_line}" |
-        awk \
-          '{print $5}' |
-          sed \
-            's%}:%%g')"
-    _window="$(
-      jq \
-        "${_jq_opts[@]}" \
-        --arg \
-          "id" \
-            "${_id}" \
-        --arg \
-          "user-id" \
-            "${_user_id}" \
-        --arg \
-          "activity" \
-            "${_activity}" \
-        '$ARGS.named')"
   done
-  echo \
-    "${_window}"
-
+  # echo \
+  #   "${_window}"
 }
 
 _windows_info() {

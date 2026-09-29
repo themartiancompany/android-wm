@@ -904,17 +904,17 @@ _dumpsys_json_encode() {
     elif [[ "${_line_string}" == "    Frames: "* ]]; then
       for _word in "${_line[@]}"; do
         if [[ "${_word}" == "parent="* ]]; then
-          _frames_parent="${_line#parent=}"
+          _frames_parent="${_word#parent=}"
         elif [[ "${_word}" == "display="* ]]; then
-          _frames_display="${_line#display=}"
+          _frames_display="${_word#display=}"
         elif [[ "${_word}" == "frame="* ]]; then
-          _frames_frame="${_line#frame=}"
+          _frames_frame="${_word#frame=}"
         elif [[ "${_word}" == "last="* ]]; then
-          _frames_last="${_line#last=}"
+          _frames_last="${_word#last=}"
         elif [[ "${_word}" == "insetsChange="* ]]; then
-          _frames_insets_change="${_line#insetsChange=}"
+          _frames_insets_change="${_word#insetsChange=}"
         elif [[ "${_word}" == "insetsChanged="* ]]; then
-          _frames_insets_changed="${_line#insetsChanged=}"
+          _frames_insets_changed="${_word#insetsChanged=}"
         fi
       done
 insetsChanged=false

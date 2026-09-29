@@ -227,6 +227,7 @@ _dumpsys_json_encode() {
     _root_task_id_word \
     _session_id \
     _session_id_word \
+    _uid \
     _user_id \
     _user_unknown_id \
     _user_word \

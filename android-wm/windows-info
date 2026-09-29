@@ -227,7 +227,7 @@ _window_json_get() {
   _private_flags_opts=(
     --argjson
       "pflags"
-        "[ ${_private_flags_jq_arg} ]"
+        "${_private_flags_jq_arg}"
     '$ARGS.named.pflags'
   )
   _msg=(

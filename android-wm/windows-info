@@ -511,6 +511,9 @@ _window_json_get() {
   )
   _msg_info \
     "${_msg[*]}"
+  _windows+=(
+    "${_window}"
+  )
   if [[ "${quiet}" == "n" ]]; then
     echo \
       "${_window}"
@@ -696,7 +699,8 @@ _dumpsys_json_encode() {
     _window_grouping_token \
     _window_token_id \
     _window_token_id_word \
-    _window_token_type
+    _window_token_type \
+    _windows=()
   _msg=(
     "Encoding dumpsys output"
     "in JSON format."
@@ -917,7 +921,6 @@ _dumpsys_json_encode() {
           _frames_insets_changed="${_word#insetsChanged=}"
         fi
       done
-insetsChanged=false
     elif [[ "${_line_string}" == "      surface="* ]]; then
       _frames_surface_word="${_line[0]}"
       _frames_surface="${_frames_surface_word#surface=}"
@@ -932,9 +935,11 @@ insetsChanged=false
       _surface_name="${_surface_name%\)*}"
       _surface_id="${_surface_name_word##*\/}"
     else
-      true
-      # echo \
-      #   "${_line}"
+      _msg=(
+        "Unparsed line '${_line_string}'."
+      )
+      _msg_warning \
+        "${_msg[*]}"
     fi
   done
   # echo \

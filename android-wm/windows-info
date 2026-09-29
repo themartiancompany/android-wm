@@ -343,7 +343,7 @@ _dumpsys_json_encode() {
       _package_word="${_line[2]}"
       _package="${_package_word#package=}"
       _app_op_word="${_line[3]}"
-      _app_op="${_appop_word#appop=}"
+      _app_op="${_app_op_word#appop=}"
     else
       true
       # echo \

@@ -179,14 +179,18 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_session_encode_opts[@]}")"
-  _flags_json="[ $(
+  _flags_json="[$(
     IFS=","; \
     echo \
-      "${_flags[*]}") ]"
-  _private_flags_json="[ $(
+      "${_flags[*]}")]"
+  _private_flags_json="[$(
     IFS=","; \
     echo \
-      "${_private_flags[*]}") ]"
+      "${_private_flags[*]}")]"
+  _msg_info \
+    "Flags JSON: ${_flags_json}"
+  _msg_info \
+    "Private flags JSON: ${_private_flags_json}"
   _attrs_encode_opts+=(
     --arg
       "position-layout"

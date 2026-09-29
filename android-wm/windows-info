@@ -564,6 +564,7 @@ _dumpsys_json_encode() {
     elif [[ "${_line_string}" == "      bhv="* ]]; then
       _behavior_word="${_line[0]}"
       _behavior="${_behavior_word#bhv=}"
+      _behavior="${_behavior#%\}}"
     elif [[ "${_line_string}" == "      fitSides="* ]]; then
       _fit_sides_word="${_line[0]}"
       _fit_sides="${_fit_sides_word#fitSides=}"
@@ -597,6 +598,8 @@ _dumpsys_json_encode() {
       for _word in "${_line[@]:3}"; do
         if [[ "${_word}" == "type="* ]]; then
           _token_type="${_word#type=}"
+        elif [[ "${_word}" == "android.os.Binder@"* ]]; then
+          _window_grouping_token="${_word%\}}"
         elif [[ "${_word}" == "android.os.BinderProxy@"* ]]; then
           _window_grouping_token="${_word%\}}"
         elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then

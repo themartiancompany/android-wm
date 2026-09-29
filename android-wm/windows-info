@@ -136,7 +136,13 @@ _window_json_get() {
     _msg=() \
     _jq_opts=() \
     _session_encode_opts=() \
-    _window_encode_opts=()
+    _window_encode_opts=() \
+    _msg=()
+  _msg=(
+    "Encoding window object JSON."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _jq_opts+=(
     -n
   )
@@ -155,6 +161,13 @@ _window_json_get() {
         "${_app_user_name}"
     '$ARGS.named'
   )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts[*]}"
+    "${_session_encode_opts[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _session="$(
     jq \
       "${_jq_opts[@]}" \
@@ -261,6 +274,11 @@ _dumpsys_json_encode() {
       _activity_word="${_line[4]}"
       _activity="${_activity_word%*\}:}"
     elif [[ "${_line_string}" == "mDisplayId="*"rootTaskId="*"mSession="*"mClient="* ]]; then
+      _msg=(
+        "Parsing display/session/client line."
+      )
+      _msg_info \
+        "${_msg[*]}"
       _display_id_word="${_line[0]}"
       _display_id="${_display_id_word##mDisplayId=}"
       _root_task_id_word="${_line[1]}"

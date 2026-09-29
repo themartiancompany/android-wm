@@ -354,6 +354,7 @@ _dumpsys_json_encode() {
     _flag \
     _flags=() \
     _index \
+    _index_display \
     _layout \
     _layout_sequence_number_word \
     _layout_sequence_number \
@@ -410,8 +411,10 @@ _dumpsys_json_encode() {
       ${_line_string}
     )
     if [[ "${_line_string}" == "  Window #"* ]]; then
+      _index_display="$((
+        _index + 1))"
       _msg=(
-        "Parsing window line."
+        "Parsing window '${_index_display}' line."
       )
       _msg_info \
         "${_msg[*]}"

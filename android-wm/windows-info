@@ -262,6 +262,9 @@ _window_json_get() {
     --arg
       "bhv"
         "${_behavior}"
+    --arg
+      "fitSides"
+        "${_fit_sides}"
     '$ARGS.named'
   )
   _attrs="$(
@@ -302,6 +305,15 @@ _window_json_get() {
       --arg
         "appop"
           "${_app_op}"
+      --arg
+        "w"
+          "${_requested_width}"
+      --arg
+        "h"
+          "${_requested_height}"
+      --arg
+        "mLayoutSeq"
+          "${_layout_sequence_number}"
       '$ARGS.named'
   )
   _window="$(
@@ -335,12 +347,16 @@ _dumpsys_json_encode() {
     _app_op_word \
     _client \
     _client_word \
+    _fit_sides \
+    _fit_sides_word \
     _fl \
     _fl_word \
     _flag \
     _flags=() \
     _index \
     _layout \
+    _layout_sequence_number_word \
+    _layout_sequence_number \
     _line=() \
     _line_string \
     _owner_uid_word \
@@ -353,6 +369,10 @@ _dumpsys_json_encode() {
     _position_layout \
     _position \
     _private_flags=() \
+    _requested_width \
+    _requested_width_word \
+    _requested_height \
+    _requested_height_word \
     _root_task_id \
     _root_task_id_word \
     _session_id \
@@ -489,12 +509,18 @@ _dumpsys_json_encode() {
     elif [[ "${_line_string}" == "      bhv="* ]]; then
       _behavior_word="${_line[0]}"
       _behavior="${_behavior_word#bhv=}"
-    # mAttrs={(0,0)(fillxfill) sim={state=always_hidden adjust=resize} ty=BASE_APPLICATION fmt=TRANSPARENT wanim=0x10302fd sysuil=true
-    #   fl=LAYOUT_IN_SCREEN LAYOUT_INSET_DECOR SHOW_WALLPAPER SPLIT_TOUCH HARDWARE_ACCELERATED DRAWS_SYSTEM_BAR_BACKGROUNDS
-    #   pfl=NO_MOVE_ANIMATION FORCE_DRAW_STATUS_BAR_BACKGROUND USE_BLAST FIT_INSETS_CONTROLLED
-    #   bhv=DEFAULT
-    #   fitSides=}
-
+    elif [[ "${_line_string}" == "      fitSides="* ]]; then
+      _fit_sides_word="${_line[0]}"
+      _fit_sides="${_fit_sides_word#fitSides=}"
+      _fit_sides="${_fit_sides%\}}"
+    elif [[ "${_line_string}" == "    Requested"*" w="*" h="*" mLayoutSeq="* ]]; then
+      _requested_width_word="${_line[1]}"
+      _requested_width="${_requested_width_word#w=}"
+      _requested_height_word="${_line[2]}"
+      _requested_height="${_requested_height_word#h=}"
+      _layout_sequence_number_word="${_line[3]}"
+      _layout_sequence_number="${_layout_sequence_number_word#mLayoutSeq=}"
+    # Requested w=1024 h=460 mLayoutSeq=39278
     else
       true
       # echo \

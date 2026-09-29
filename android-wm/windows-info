@@ -137,7 +137,12 @@ _window_json_get() {
     _jq_opts=() \
     _attrs \
     _attrs_encode_opts=() \
+    _flags_jq_arg \
     _flags_json \
+    _flags_opts=() \
+    _private_flags_jq_arg \
+    _private_flags_json \
+    _private_flags_opts=() \
     _session \
     _session_encode_opts=() \
     _window_encode_opts=() \
@@ -179,14 +184,34 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_session_encode_opts[@]}")"
-  _flags_json="[$(
+  _flags_jq_arg="[$(
     IFS=","; \
     echo \
       "${_flags[*]}")]"
-  _private_flags_json="[$(
+  _flags_opts=(
+    "${_jq_opts[@]}"
+    --argjson
+      "flags"
+        "${_flags_jq_arg}"
+    '$flags'
+  )
+  _flags_json="$(
+    jq \
+      "${_flags_opts[@]}")"
+  _private_flags_jq_arg="[$(
     IFS=","; \
     echo \
       "${_private_flags[*]}")]"
+  _private_flags_opts=(
+    "${_jq_opts[@]}"
+    --argjson
+      "pflags"
+        "${_private_flags_jq_arg}"
+    '$pflags'
+  )
+  _private_flags_json="$(
+    jq \
+      "${_private_flags_opts[@]}")"
   _msg_info \
     "Flags JSON: ${_flags_json}"
   _msg_info \

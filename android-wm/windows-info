@@ -284,10 +284,19 @@ _window_json_get() {
       "window-grouping-ibinder-token"
         "${_window_grouping_ibinder_token}"
   )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts[*]}"
+    "${_token_encode_opts[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _token="$(
     jq \
       "${_jq_opts[@]}" \
       "${_token_encode_opts[@]}")"
+  _msg_info \
+    "Window token JSON: ${_token}"
   _window_encode_opts+=(
       --arg
         "id"

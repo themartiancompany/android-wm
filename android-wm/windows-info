@@ -284,8 +284,8 @@ _window_json_get() {
       "type"
         "${_token_type}"
     --arg
-      "window-grouping-ibinder-token"
-        "${_window_grouping_ibinder_token}"
+      "window-grouping-token"
+        "${_window_grouping_token}"
     '$ARGS.named'
   )
   _msg=(
@@ -433,7 +433,7 @@ _dumpsys_json_encode() {
     _user_word \
     _msg=() \
     _window \
-    _window_grouping_ibinder_token \
+    _window_grouping_token \
     _window_token_id \
     _window_token_id_word \
     _window_token_type
@@ -598,7 +598,9 @@ _dumpsys_json_encode() {
         if [[ "${_word}" == "type="* ]]; then
           _token_type="${_word#type=}"
         elif [[ "${_word}" == "android.os.BinderProxy@"* ]]; then
-          _window_grouping_ibinder_token="${_word%\}}"
+          _window_grouping_token="${_word%\}}"
+        elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
+          _window_grouping_token="${_word%\}}"
         else
           _msg=(
             "Unknown property '${_word}'"

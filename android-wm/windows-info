@@ -144,7 +144,6 @@ _window_json_get() {
   _msg_info \
     "${_msg[*]}"
   _jq_opts+=(
-    --raw-output
     -n
   )
   _session_encode_opts+=(
@@ -189,7 +188,7 @@ _window_json_get() {
       --arg
         "rootId"
           "${_display_id}"
-      --arg
+      --argjson
         "mSession"
           "${_session}"
       '$ARGS.named'

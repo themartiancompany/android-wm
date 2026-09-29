@@ -143,6 +143,8 @@ _window_json_get() {
     _private_flags_encode_opts=() \
     _session \
     _session_encode_opts=() \
+    _state_animator \
+    _state_animator_encode_opts=() \
     _token \
     _token_encode_opts=() \
     _window_encode_opts=() \
@@ -317,6 +319,9 @@ _window_json_get() {
     --arg
       "insetsChange"
         "${_frames_insets_change}"
+    --arg
+      "surface"
+        "${_frames_surface}"
     '$ARGS.named'
   )
   _msg=(
@@ -332,6 +337,31 @@ _window_json_get() {
       "${_frames_encode_opts[@]}")"
   _msg=(
     "Window frames JSON: ${_frames}"
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _state_animator_encode_opts+=(
+    --arg
+      "id"
+        "${_state_animator_id}"
+    --arg
+      "owner"
+        "${_state_animator_owner}"
+    '$ARGS.named'
+  )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts[*]}"
+    "${_state_animator_encode_opts[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _state_animator="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_state_animator_encode_opts[@]}")"
+  _msg=(
+    "Window State Animator JSON: ${_state_animator}"
   )
   _msg_info \
     "${_msg[*]}"
@@ -409,8 +439,11 @@ _window_json_get() {
         "mLastReportedConfiguration"
           "${_last_reported_configuration_string}"
       --argjson
-        "frames"
+        "Frames"
           "${_frames}"
+      --argjson
+        "WindowStateAnimator"
+          "${_state_animator}"
       '$ARGS.named'
   )
   _window="$(
@@ -462,6 +495,8 @@ _dumpsys_json_encode() {
     _frames_last_word \
     _frames_parent \
     _frames_parent_word \
+    _frames_surface \
+    _frames_surface_word \
     _full_configuration_string \
     _given_content_insets \
     _given_content_insets_word \
@@ -497,6 +532,10 @@ _dumpsys_json_encode() {
     _session_id_word \
     _show_for_all_users \
     _show_for_all_users_word \
+    _state_animator_id \
+    _state_animator_id_word \
+    _state_animator_owner \
+    _state_animator_owner_word \
     _sub_layer \
     _sub_layer_word \
     _token_type \
@@ -732,7 +771,13 @@ _dumpsys_json_encode() {
       _frames_insets_change_word="${_line[5]}"
       _frames_insets_change="${_frames_insets_change_word#insetsChange=}"
     elif [[ "${_line_string}" == "      surface="* ]]; then
-    #     mHasSurface=true isReadyForDisplay()=true mWindowRemovalAllowed=false
+      _frames_surface_word="${_line[0]}"
+      _frames_surface="${_frames_surface_word#surface=}"
+    elif [[ "${_line_string}" == "    WindowStateAnimator={"* ]]; then
+      _state_animator_id_word="${_line[0]}"
+      _state_animator_id="${_state_animator_id_word#WindowStateAnimator\{}"
+      _state_animator_owner_word="${_line[1]}"
+      _state_animator_owner="${_state_animator_owner_word%\}:}"
     else
       true
       # echo \

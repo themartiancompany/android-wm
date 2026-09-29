@@ -120,18 +120,18 @@ _root_get() {
       "${_msg[*]}" \
       1
   fi
-  "_dumpsys_${_output_format}_parse" \
+  "_dumpsys_${_output_format}_encode" \
     "${_dumpsys}"
 }
 
-_dumpsys_plain_parse() {
+_dumpsys_plain_encode() {
   local \
     _dumpsys="${1}"
   echo \
     "${_dumpsys}"
 }
 
-_dumpsys_json_parse() {
+_dumpsys_json_encode() {
   local \
     _dumpsys="${1}" \
     _dumpsys_window_windows=() \
@@ -143,6 +143,12 @@ _dumpsys_json_parse() {
     _line \
     _msg=() \
     _window
+  _msg=(
+    "Encoding dumpsys output"
+    "in JSON format."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _jq_opts+=(
     -n
   )
@@ -152,6 +158,12 @@ _dumpsys_json_parse() {
     _dumpsys_window_windows < \
     <(echo \
         "${_dumpsys}")
+  _msg=(
+    "Dumpsys output is '${#_dumpsys_window_windows[@]}'"
+    "lines long."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _index=-1
   for _line in "${_dumpsys_window_windows[@]}"; do
     if [[ "${_line}" == "  Window: " ]]; then
@@ -177,6 +189,7 @@ _dumpsys_json_parse() {
           '{print $5}' |
           sed \
             's%}:%%g')"
+    echo "debug"
     _window="$(
       jq \
         "${_jq_opts[@]}" \
@@ -190,6 +203,7 @@ _dumpsys_json_parse() {
           "activity" \
             "${_activity}" \
         '$ARGS.named')"
+    echo "debuggo"
   done
   echo \
     "${_window}"

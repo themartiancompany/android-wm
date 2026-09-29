@@ -46,8 +46,6 @@ _root_requirements() {
     "awk" \
     "gawk"
   _check_cmd \
-    "grep"
-  _check_cmd \
     "sdk-version" \
     "android-utils"
   _check_cmd \

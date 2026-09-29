@@ -137,6 +137,7 @@ _window_json_get() {
     _jq_opts=() \
     _attrs \
     _attrs_encode_opts=() \
+    _flags_json \
     _session \
     _session_encode_opts=() \
     _window_encode_opts=() \
@@ -178,6 +179,14 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_session_encode_opts[@]}")"
+  _flags_json="[ $(
+    IFS=","; \
+    echo \
+      "${_flags[*]}") ]"
+  _private_flags_json="[ $(
+    IFS=","; \
+    echo \
+      "${_private_flags[*]}") ]"
   _attrs_encode_opts+=(
     --arg
       "position-layout"
@@ -188,6 +197,15 @@ _window_json_get() {
     --arg
       "layout"
         "${_layout}"
+    --argjson
+      "fl"
+        "${_flags_json}"
+    --argjson
+      "pfl"
+        "${_private_flags_json}"
+    --arg
+      "bhv"
+        "${_behavior}"
     '$ARGS.named'
   )
   _attrs="$(
@@ -261,6 +279,9 @@ _dumpsys_json_encode() {
     _app_op_word \
     _client \
     _client_word \
+    _fl \
+    _fl_word \
+    _flags=() \
     _index \
     _layout \
     _line=() \
@@ -269,9 +290,12 @@ _dumpsys_json_encode() {
     _owner_uid \
     _package \
     _package_word \
+    _pfl \
+    _pfl_word \
     _position_layout_word \
     _position_layout \
     _position \
+    _private_flags=() \
     _root_task_id \
     _root_task_id_word \
     _session_id \
@@ -327,6 +351,8 @@ _dumpsys_json_encode() {
       _user_id="${_line[3]}"
       _activity_word="${_line[4]}"
       _activity="${_activity_word%*\}:}"
+      _flags=()
+      _private_flags=()
     elif [[ "${_line_string}" == "    mDisplayId="*" rootTaskId="*" mSession="*" mClient="* ]]; then
       _msg=(
         "Parsing display/session/client line."
@@ -381,6 +407,23 @@ _dumpsys_json_encode() {
       _position_layout="${_position_layout_word#mAttrs=\{}"
       _position="${_position_layout%(*}"
       _layout="${_position_layout#*)}"
+    elif [[ "${_line_string}" == "      fl="* ]]; then
+      _fl_word="${_line[0]}"
+      _fl="${_fl_word#fl=}"
+      _flags+=(
+        "${_fl}"
+        "${_line[@]:1}"
+      )
+    elif [[ "${_line_string}" == "      pfl="* ]]; then
+      _pfl_word="${_line[0]}"
+      _pfl="${_pfl_word#fl=}"
+      _private_flags+=(
+        "${_pfl}"
+        "${_line[@]:1}"
+      )
+    elif [[ "${_line_string}" == "      bhv="* ]]; then
+      _behavior_word="${_line[0]}"
+      _behavior="${_behavior_word#bhv=}"
     # mAttrs={(0,0)(fillxfill) sim={state=always_hidden adjust=resize} ty=BASE_APPLICATION fmt=TRANSPARENT wanim=0x10302fd sysuil=true
     #   fl=LAYOUT_IN_SCREEN LAYOUT_INSET_DECOR SHOW_WALLPAPER SPLIT_TOUCH HARDWARE_ACCELERATED DRAWS_SYSTEM_BAR_BACKGROUNDS
     #   pfl=NO_MOVE_ANIMATION FORCE_DRAW_STATUS_BAR_BACKGROUND USE_BLAST FIT_INSETS_CONTROLLED

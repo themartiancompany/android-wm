@@ -131,16 +131,63 @@ _dumpsys_plain_encode() {
     "${_dumpsys}"
 }
 
+_window_json_get() {
+  local \
+    _msg=() \
+    _jq_opts=()
+  _jq_opts+=(
+    -n
+  )
+  _session="$(
+    jq \
+      "${_jq_opts[@]}")"
+  _window="$(
+    jq \
+      "${_jq_opts[@]}" \
+      --arg \
+        "id" \
+          "${_id}" \
+      --arg \
+        "user-id" \
+          "${_user_id}" \
+      --arg \
+        "activity" \
+          "${_activity}" \
+      --arg \
+        "mDisplayId" \
+          "${_display_id}" \
+      --arg \
+        "rootId" \
+          "${_display_id}" \
+      '$ARGS.named')"
+  _msg=(
+    "Detected window ${_index},"
+    "extracted:"
+  )
+  _msg_info \
+    "${_msg[*]}"
+  if [[ "${quiet}" == "n" ]]; then
+    echo \
+      "${_window}"
+  fi
+  _window=""
+}
+
 _dumpsys_json_encode() {
   local \
     _dumpsys="${1}" \
     _dumpsys_window_windows=() \
-    _jq_opts=() \
     _id \
     _user_id \
     _activity \
+    _activity_word \
     _index \
     _line \
+    _line_array=() \
+    _root_task_id \
+    _root_task_id_word \
+    _session_id \
+    _session_id_word \
     _msg=() \
     _window
   _msg=(
@@ -149,9 +196,6 @@ _dumpsys_json_encode() {
   )
   _msg_info \
     "${_msg[*]}"
-  _jq_opts+=(
-    -n
-  )
   mapfile \
     -d \
       $'\n' \
@@ -165,52 +209,35 @@ _dumpsys_json_encode() {
   _msg_info \
     "${_msg[*]}"
   _index=-1
+  _window=""
   for _line in "${_dumpsys_window_windows[@]}"; do
     if [[ "${_line}" == "  Window #"* ]]; then
+      if [[ "${_window}" != "" ]]; then
+        _window_json_get
+      fi
       _index="$((
         _index + 1 ))"
+      _line_array=(
+        ${_line}
+      )
       _id="$(
         echo \
-          "${_line}" |
-          awk \
-            '{print $3}' |
+          "${_line_array[2]}" |
             sed \
               's/Window{//g')"
-      _user_id="$(
-        echo \
-          "${_line}" |
-          awk \
-            '{print $4}')"
-      _activity="$(
-        echo \
-          "${_line}" |
-          awk \
-            '{print $5}' |
-            sed \
-              's%}:%%g')"
-      _window="$(
-        jq \
-          "${_jq_opts[@]}" \
-          --arg \
-            "id" \
-              "${_id}" \
-          --arg \
-            "user-id" \
-              "${_user_id}" \
-          --arg \
-            "activity" \
-              "${_activity}" \
-          '$ARGS.named')"
-      _msg=(
-        "Detected window ${_index},"
-        "extracted:"
+      _user_id="${_line_array[3]}"
+      _activity_word="${_line[4]}"
+      _activity="${_activity_word%*\}:}"
+    elif [[ "${_line}" == "mDisplayId="*"rootTaskId="*"mSession="*"mClient="* ]]; then
+      _line_array=(
+        ${_line}
       )
-      _msg_info \
-        "${_msg[*]}"
-      if [[ "${quiet}" == "n" ]]; then
-        echo \
-          "${_window}"
-      fi
+      _display_id_word="${_line[0]}"
+      _display_id="${_display_id_word##mDisplayId=}"
+      _root_task_id_word="${_line[1]}"
+      _root_task_id="${_root_task_id_word##rootTaskId=}"
+      _session_id_word="${_line[2]}"
+      _session_id="${_display_id_word##mSession=Session\{}"
     else
       true
       # echo \

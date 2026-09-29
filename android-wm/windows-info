@@ -266,7 +266,7 @@ _dumpsys_json_encode() {
       _root_task_id_word="${_line[1]}"
       _root_task_id="${_root_task_id_word##rootTaskId=}"
       _session_id_word="${_line[2]}"
-      _session_id="${_display_id_word##mSession=Session\{}"
+      _session_id="${_session_id_word##mSession=Session\{}"
       _user_word="${_line[3]}"
       _session_unknown_id="${_user_word%%:*}"
       _user_unknown_id="${_user_word%%:*}"

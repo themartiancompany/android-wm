@@ -143,6 +143,8 @@ _window_json_get() {
     _private_flags_encode_opts=() \
     _session \
     _session_encode_opts=() \
+    _token \
+    _token_encode_opts=() \
     _window_encode_opts=() \
     _msg=()
   _msg=(
@@ -271,6 +273,15 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_attrs_encode_opts[@]}")"
+  _token_encode_opts+=(
+    --arg
+      "id"
+        "${_window_token_id}"
+  )
+  _token="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_token_encode_opts[@]}")"
   _window_encode_opts+=(
       --arg
         "id"
@@ -293,6 +304,9 @@ _window_json_get() {
       --argjson
         "mSession"
           "${_session}"
+      --argjson
+        "mToken"
+          "${_token}"
       --arg
         "mOwnerUid"
           "${_owner_uid}"
@@ -314,6 +328,12 @@ _window_json_get() {
       --arg
         "mLayoutSeq"
           "${_layout_sequence_number}"
+      --arg
+        "mBaseLayer"
+          "${_base_layer}"
+      --arg
+        "mSubLayer"
+          "${_sub_layer}"
       '$ARGS.named'
   )
   _window="$(
@@ -345,6 +365,8 @@ _dumpsys_json_encode() {
     _app_user_name \
     _app_op \
     _app_op_word \
+    _base_layer \
+    _base_layer_word \
     _client \
     _client_word \
     _fit_sides \
@@ -380,12 +402,19 @@ _dumpsys_json_encode() {
     _session_id_word \
     _show_for_all_users \
     _show_for_all_users_word \
+    _sub_layer \
+    _sub_layer_word \
+    _token_type \
+    _token_type_word \
     _uid \
     _user_id \
     _user_unknown_id \
     _user_word \
     _msg=() \
-    _window
+    _window \
+    _window_token_id \
+    _window_token_id_word \
+    _window_token_type
   _msg=(
     "Encoding dumpsys output"
     "in JSON format."
@@ -524,7 +553,28 @@ _dumpsys_json_encode() {
       _requested_height="${_requested_height_word#h=}"
       _layout_sequence_number_word="${_line[3]}"
       _layout_sequence_number="${_layout_sequence_number_word#mLayoutSeq=}"
-    # Requested w=1024 h=460 mLayoutSeq=39278
+    elif [[ "${_line_string}" == "    mBaseLayer"*" mSubLayer="*" mToken="* ]]; then
+      _base_layer_word="${_line[0]}"
+      _base_layer="${_base_layer_word#mBaseLayer=}"
+      _sub_layer_word="${_line[1]}"
+      _sub_layer="${_sub_layer_word#mSubLayer=}"
+      _window_token_id_word="${_line[2]}"
+      _window_token_id="${_window_token_id_word#mToken=WindowToken\{}"
+      if [[ "${_window_token_id_word}" == "${_window_token_id}" ]]; then
+        _window_token_type="${_window_token_id_word#mToken=}"
+        _window_token_type="${_window_token_type%\{}"
+        _msg=(
+          "Unknown token type '${_window_token_type}'"
+          "at line '${_line_string}' in output"
+          "of 'dumpsys window windows'."
+        )
+        _msg_error \
+          "${_msg[*]}" \
+          1
+      fi
+      _token_type_word="${_line[3]}"
+      _token_type="${_token_type_word#type=}"
+    #    mBaseLayer=251000 mSubLayer=0    mToken=WindowToken{f1954b6 type=2024 android.os.BinderProxy@dbf2451}
     else
       true
       # echo \

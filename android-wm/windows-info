@@ -249,7 +249,7 @@ _dumpsys_json_encode() {
       )
       _msg_info \
         "${_msg[*]}"
-      if [[ "${_window}" != "" ]]; then
+      if (( -1 < "${_index}" )); then
         _window_json_get
       fi
       _index="$((

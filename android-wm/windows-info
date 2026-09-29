@@ -523,6 +523,13 @@ _window_json_get() {
           "${_given_insets_pending}"
     )
   fi
+  if [[ "${_touchable_region}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "touchable-region"
+          "${_touchable_region}"
+    )
+  fi
   _window_encode_opts+=(
     '$ARGS.named'
   )
@@ -622,6 +629,8 @@ _values_clean() {
   _token_type=""
   _touchable_insets=""
   _touchable_insets_word=""
+  _touchable_region=""
+  _touchable_region_word=""
   _uid=""
   _user_unknown_id=""
   _user_word=""
@@ -933,6 +942,10 @@ _dumpsys_json_encode() {
       _touchable_insets="${_touchable_insets_word#mTouchableInsets=}"
       _given_insets_pending_word="${_line[1]}"
       _given_insets_pending="${_given_insets_pending_word#mGivenInsetsPending=}"
+    elif [[ "${_line_string}" == "    touchable region="* ]]; then
+      _touchable_region_word="${_line[1]}"
+      _touchable_region="${_touchable_region_word#region=}"
+    #     touchable region=SkRegion()
     elif [[ "${_line_string}" == "    mFullConfiguration="* ]]; then
       _full_configuration_string="${_line_string#    mFullConfiguration=\{}"
       _full_configuration_string="${_full_configuration_string%\}}"

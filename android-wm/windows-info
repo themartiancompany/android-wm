@@ -277,6 +277,12 @@ _window_json_get() {
     --arg
       "id"
         "${_window_token_id}"
+    --arg
+      "type"
+        "${_token_type}"
+    --arg
+      "window-grouping-ibinder-token"
+        "${_window_grouping_ibinder_token}"
   )
   _token="$(
     jq \
@@ -405,13 +411,13 @@ _dumpsys_json_encode() {
     _sub_layer \
     _sub_layer_word \
     _token_type \
-    _token_type_word \
     _uid \
     _user_id \
     _user_unknown_id \
     _user_word \
     _msg=() \
     _window \
+    _window_grouping_ibinder_token \
     _window_token_id \
     _window_token_id_word \
     _window_token_type
@@ -572,8 +578,21 @@ _dumpsys_json_encode() {
           "${_msg[*]}" \
           1
       fi
-      _token_type_word="${_line[3]}"
-      _token_type="${_token_type_word#type=}"
+      for _word in "${_line[@]:3}"; do
+        if [[ "${_word}" == "type="* ]]; then
+          _token_type="${_word#type=}"
+        elif [[ "${_word}" == "android.os.BinderProxy@"* ]]; then
+          _window_grouping_ibinder_token="${_word%\}}"
+        else
+          _msg=(
+            "Unknown property '${_word}'"
+            "for 'WindowToken' object."
+          )
+          _msg_error \
+            "${_msg[*]}" \
+            1
+        fi
+      done
     #    mBaseLayer=251000 mSubLayer=0    mToken=WindowToken{f1954b6 type=2024 android.os.BinderProxy@dbf2451}
     else
       true

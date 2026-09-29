@@ -224,7 +224,7 @@ _window_json_get() {
     IFS=","; \
     echo \
       "${_private_flags[*]}")]"
-  _private_flags_opts=(
+  _private_flags_encode_opts+=(
     --argjson
       "pflags"
         "${_private_flags_jq_arg}"

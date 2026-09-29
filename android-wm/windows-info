@@ -343,7 +343,7 @@ app_opts=(
   "${output_format}"
 )
 _show_config
-_windows_list \
+_windows_info \
   "${app_opts[@]}"
 
 # vim:set sw=2 sts=-1 et:

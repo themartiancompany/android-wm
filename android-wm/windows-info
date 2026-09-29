@@ -200,9 +200,9 @@ _window_json_get() {
       "${_flags[*]}")]"
   _flags_encode_opts+=(
     --argjson
-      "v"
+      "flags"
         "${_flags_jq_arg}"
-    '$v'
+    '$flags'
   )
   _msg=(
     "Running jq with options"
@@ -215,22 +215,34 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_flags_encode_opts[@]}")"
+  _msg_info \
+    "Flags JSON: ${_flags_json}"
+  _msg=(
+    "Getting private flags JSON."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _private_flags_jq_arg="[$(
     IFS=","; \
     echo \
       "${_private_flags[*]}")]"
   _private_flags_opts=(
-    "${_jq_opts[@]}"
     --argjson
       "pflags"
         "${_private_flags_jq_arg}"
     '$pflags'
   )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts[*]}"
+    "${_private_flags_encode_opts[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _private_flags_json="$(
     jq \
-      "${_private_flags_opts[@]}")"
-  _msg_info \
-    "Flags JSON: ${_flags_json}"
+      "${_jq_opts[@]}" \
+      "${_private_flags_encode_opts[@]}")"
   _msg_info \
     "Private flags JSON: ${_private_flags_json}"
   _attrs_encode_opts+=(

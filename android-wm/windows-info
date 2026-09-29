@@ -189,7 +189,6 @@ _dumpsys_json_encode() {
           '{print $5}' |
           sed \
             's%}:%%g')"
-    echo "debug"
     _window="$(
       jq \
         "${_jq_opts[@]}" \
@@ -203,7 +202,6 @@ _dumpsys_json_encode() {
           "activity" \
             "${_activity}" \
         '$ARGS.named')"
-    echo "debuggo"
   done
   echo \
     "${_window}"

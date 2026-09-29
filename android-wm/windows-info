@@ -323,11 +323,24 @@ _window_json_get() {
       "last"
         "${_frames_last}"
     --arg
-      "insetsChange"
-        "${_frames_insets_change}"
-    --arg
       "surface"
         "${_frames_surface}"
+  )
+  if [[ "${_frames_insets_change}" != "" ]]; then
+    _frames_encode_opts+=(
+      --arg
+        "insetsChange"
+          "${_frames_insets_change}"
+    )
+  fi
+  if [[ "${_frames_insets_changed}" != "" ]]; then
+    _frames_encode_opts+=(
+      --arg
+        "insetsChanged"
+          "${_frames_insets_changed}"
+    )
+  fi
+  _frames_encode_opts+=(
     '$ARGS.named'
   )
   _msg=(
@@ -530,15 +543,12 @@ _values_clean() {
   _given_visible_insets=""
   _given_visible_insets_word=""
   _frames_display=""
-  _frames_display_word=""
   _frames_frame=""
-  _frames_frame_word=""
-  _frames_inset_change=""
-  _frames_inset_change_word=""
+  _frames_insets_change=""
+  _frames_insets_changed=""
   _frames_last=""
   _frames_last_word=""
   _frames_parent=""
-  _frames_parent_word=""
   _frames_surface=""
   _frames_surface_word=""
   _have_frame=""
@@ -620,15 +630,12 @@ _dumpsys_json_encode() {
     _flag \
     _flags=() \
     _frames_display \
-    _frames_display_word \
     _frames_frame \
-    _frames_frame_word \
     _frames_insets_change \
-    _frames_insets_change_word \
+    _frames_insets_changed \
     _frames_last \
     _frames_last_word \
     _frames_parent \
-    _frames_parent_word \
     _frames_surface \
     _frames_surface_word \
     _full_configuration_string \
@@ -894,17 +901,23 @@ _dumpsys_json_encode() {
       _is_ready_for_display="${_is_ready_for_display_word#mHasSurface=}"
       _window_removal_allowed_word="${_line[2]}"
       _window_removal_allowed="${_window_removal_allowed_word#mWindowRemovalAllowed=}"
-    elif [[ "${_line_string}" == "    Frames: "*" parent="*" display="*" frame="*" last="*" insetsChange="* ]]; then
-      _frames_parent_word="${_line[1]}"
-      _frames_parent="${_frames_parent_word#parent=}"
-      _frames_display_word="${_line[2]}"
-      _frames_display="${_frames_display_word#display=}"
-      _frames_frame_word="${_line[3]}"
-      _frames_frame="${_frames_frame_word#frame=}"
-      _frames_last_word="${_line[4]}"
-      _frames_last="${_frames_last_word#last=}"
-      _frames_insets_change_word="${_line[5]}"
-      _frames_insets_change="${_frames_insets_change_word#insetsChange=}"
+    elif [[ "${_line_string}" == "    Frames: "*" parent="*" display="*" frame="*" last="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "parent="* ]]; then
+          _frames_parent="${_line#parent=}"
+        elif [[ "${_word}" == "display="* ]]; then
+          _frames_display="${_line#display=}"
+        elif [[ "${_word}" == "frame="* ]]; then
+          _frames_frame="${_line#frame=}"
+        elif [[ "${_word}" == "last="* ]]; then
+          _frames_last="${_line#last=}"
+        elif [[ "${_word}" == "insetsChange="* ]]; then
+          _frames_insets_change="${_line#insetsChange=}"
+        elif [[ "${_word}" == "insetsChanged="* ]]; then
+          _frames_insets_changed="${_line#insetsChanged=}"
+        fi
+      done
+insetsChanged=false
     elif [[ "${_line_string}" == "      surface="* ]]; then
       _frames_surface_word="${_line[0]}"
       _frames_surface="${_frames_surface_word#surface=}"

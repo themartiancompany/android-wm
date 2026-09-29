@@ -708,7 +708,7 @@ _dumpsys_json_encode() {
     _view_visibility \
     _view_visibility_word \
     _vsysui \
-    _vsysui_word
+    _vsysui_word \
     _msg=() \
     _window \
     _window_grouping_token \

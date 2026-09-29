@@ -159,6 +159,9 @@ _window_json_get() {
     --arg
       "app-user-name":
         "${_app_user_name}"
+    --arg
+      "mClient":
+        "${_client}"
     '$ARGS.named'
   )
   _msg=(
@@ -191,6 +194,18 @@ _window_json_get() {
       --argjson
         "mSession"
           "${_session}"
+      --arg
+        "mOwnerUid"
+          "${_owner_uid}"
+      --arg
+        "showForAllUsers"
+          "true"
+      --arg
+        "package"
+          "${_package}"
+      --arg
+        "appop"
+          "${_app_op}"
       '$ARGS.named'
   )
   _window="$(
@@ -220,13 +235,23 @@ _dumpsys_json_encode() {
     _app_user \
     _app_user_id \
     _app_user_name \
+    _app_op \
+    _app_op_word \
+    _client \
+    _client_word \
     _index \
     _line=() \
     _line_string \
+    _owner_uid_word \
+    _owner_uid \
+    _package \
+    _package_word \
     _root_task_id \
     _root_task_id_word \
     _session_id \
     _session_id_word \
+    _show_for_all_users \
+    _show_for_all_users_word \
     _uid \
     _user_id \
     _user_unknown_id \
@@ -276,7 +301,7 @@ _dumpsys_json_encode() {
       _user_id="${_line[3]}"
       _activity_word="${_line[4]}"
       _activity="${_activity_word%*\}:}"
-    elif [[ "${_line_string}" == "    mDisplayId="*"rootTaskId="*"mSession="*"mClient="* ]]; then
+    elif [[ "${_line_string}" == "    mDisplayId="*" rootTaskId="*" mSession="*" mClient="* ]]; then
       _msg=(
         "Parsing display/session/client line."
       )
@@ -303,6 +328,22 @@ _dumpsys_json_encode() {
             -un \
             "${_uid}")"
       fi
+      _client_word="${_line[4]}"
+      _client="${_client_word#mClient=}"
+    elif [[ "${_line_string}" == "    mOwnerUid="*" showForAllUsers="*" package="*" appop="* ]]; then
+      _msg=(
+        "Parsing owner-uid/visibility/package line."
+      )
+      _msg_info \
+        "${_msg[*]}"
+      _owner_uid_word="${_line[0]}"
+      _owner_uid="${_owner_uid_word#mOwnerUid=}"
+      _show_for_all_users_word="${_line[1]}"
+      _show_for_all_users="${_show_for_all_users_word#showForAllUsers=}"
+      _package_word="${_line[2]}"
+      _package="${_package_word#package=}"
+      _app_op_word="${_line[3]}"
+      _app_op="${_appop_word#appop=}"
     else
       true
       # echo \

@@ -166,7 +166,7 @@ _dumpsys_json_encode() {
     "${_msg[*]}"
   _index=-1
   for _line in "${_dumpsys_window_windows[@]}"; do
-    if [[ "${_line}" == "  Window: " ]]; then
+    if [[ "${_line}" == "  Window: "* ]]; then
       _index="$((
         _index + 1 ))"
       _id="$(

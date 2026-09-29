@@ -243,8 +243,11 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_private_flags_encode_opts[@]}")"
-  _msg_info \
+  _msg=(
     "Private flags JSON: ${_private_flags_json}"
+  )
+  _msg_info \
+    "${_msg[*]}"
   _attrs_encode_opts+=(
     --arg
       "position-layout"
@@ -295,8 +298,11 @@ _window_json_get() {
     jq \
       "${_jq_opts[@]}" \
       "${_token_encode_opts[@]}")"
-  _msg_info \
+  _msg=(
     "Window token JSON: ${_token}"
+  )
+  _msg_info \
+    "${_msg[*]}"
   _window_encode_opts+=(
       --arg
         "id"

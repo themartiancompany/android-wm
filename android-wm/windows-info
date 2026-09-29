@@ -229,7 +229,7 @@ _window_json_get() {
   _private_flags_opts=(
     --argjson
       "pflags"
-        "${_private_flags_jq_arg}"
+        "[ ${_private_flags_jq_arg} ]"
     '$ARGS.named.pflags'
   )
   _msg=(
@@ -339,6 +339,7 @@ _dumpsys_json_encode() {
     _client_word \
     _fl \
     _fl_word \
+    _flag \
     _flags=() \
     _index \
     _layout \
@@ -469,16 +470,24 @@ _dumpsys_json_encode() {
       _fl_word="${_line[0]}"
       _fl="${_fl_word#fl=}"
       _flags+=(
-        "${_fl}"
-        "${_line[@]:1}"
+        "'${_fl}'"
       )
+      for _flag in "${_line[@]:1}"; do
+        _flags+=(
+          "'${_flag}'"
+        )
+      done
     elif [[ "${_line_string}" == "      pfl="* ]]; then
       _pfl_word="${_line[0]}"
       _pfl="${_pfl_word#pfl=}"
       _private_flags+=(
-        "${_pfl}"
-        "${_line[@]:1}"
+        "'${_pfl}'"
       )
+      for _flag in "${_line[@]:1}"; do
+        _private_flags+=(
+          "'${_flag}'"
+        )
+      done
     elif [[ "${_line_string}" == "      bhv="* ]]; then
       _behavior_word="${_line[0]}"
       _behavior="${_behavior_word#bhv=}"

@@ -288,7 +288,7 @@ _dumpsys_json_encode() {
       _user_word="${_line[3]}"
       _session_unknown_id="${_user_word%%:*}"
       _user_unknown_id="${_user_word%%:*}"
-      _app_user_id="${_user_word##*:${_user_id}}"
+      _app_user_id="${_user_word##*:a${_user_id}}"
       _app_user_name="${_user_id}_a${_app_user_id#10}"
     else
       true

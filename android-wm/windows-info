@@ -979,7 +979,7 @@ _dumpsys_json_encode() {
           _frames_insets_changed="${_word#insetsChanged=}"
         fi
       done
-    elif [[ "${_line_string}" == "      surface="* ]]; then
+    elif [[ "${_line_string}" == "     surface="* ]]; then
       _frames_surface_word="${_line[0]}"
       _frames_surface="${_frames_surface_word#surface=}"
     elif [[ "${_line_string}" == "    WindowStateAnimator={"* ]]; then

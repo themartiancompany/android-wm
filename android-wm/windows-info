@@ -430,85 +430,101 @@ _window_json_get() {
   _msg_info \
     "${_msg[*]}"
   _window_encode_opts+=(
+    --arg
+      "id"
+        "${_id}"
+    --arg
+      "user-id"
+        "${_user_id}"
+    --arg
+      "activity"
+        "${_activity}"
+    --arg
+      "mDisplayId"
+        "${_display_id}"
+    --arg
+      "rootId"
+        "${_display_id}"
+    --argjson
+      "mAttrs"
+        "${_attrs}"
+    --argjson
+      "mSession"
+        "${_session}"
+    --argjson
+      "mToken"
+        "${_token}"
+    --arg
+      "mOwnerUid"
+        "${_owner_uid}"
+    --arg
+      "showForAllUsers"
+        "true"
+    --arg
+      "package"
+        "${_package}"
+    --arg
+      "appop"
+        "${_app_op}"
+    --arg
+      "w"
+        "${_requested_width}"
+    --arg
+      "h"
+        "${_requested_height}"
+    --arg
+      "mLayoutSeq"
+        "${_layout_sequence_number}"
+    --arg
+      "mBaseLayer"
+        "${_base_layer}"
+    --arg
+      "mSubLayer"
+        "${_sub_layer}"
+    --arg
+      "mViewVisibility"
+        "${_view_visibility}"
+    --arg
+      "mHaveFrame"
+        "${_have_frame}"
+    --arg
+      "mObscured"
+        "${_view_obscured}"
+    --arg
+      "mGivenContentInsets"
+        "${_given_content_insets}"
+    --arg
+      "mGivenVisibleInsets"
+        "${_given_visible_insets}"
+    --arg
+      "mFullConfiguration"
+        "${_full_configuration_string}"
+    --arg
+      "mLastReportedConfiguration"
+        "${_last_reported_configuration_string}"
+    --argjson
+      "Frames"
+        "${_frames}"
+    --argjson
+      "WindowStateAnimator"
+        "${_state_animator}"
+  )
+  if [[ "${_touchable_insets}" != "" ]]; then
+    _window_encode_opts+=(
       --arg
-        "id"
-          "${_id}"
+        "mTouchableInsets"
+          "${_touchable_insets}"
+    )
+  fi
+  if [[ "${_given_insets_pending}" != "" ]]; then
+    _window_encode_opts+=(
       --arg
-        "user-id"
-          "${_user_id}"
-      --arg
-        "activity"
-          "${_activity}"
-      --arg
-        "mDisplayId"
-          "${_display_id}"
-      --arg
-        "rootId"
-          "${_display_id}"
-      --argjson
-        "mAttrs"
-          "${_attrs}"
-      --argjson
-        "mSession"
-          "${_session}"
-      --argjson
-        "mToken"
-          "${_token}"
-      --arg
-        "mOwnerUid"
-          "${_owner_uid}"
-      --arg
-        "showForAllUsers"
-          "true"
-      --arg
-        "package"
-          "${_package}"
-      --arg
-        "appop"
-          "${_app_op}"
-      --arg
-        "w"
-          "${_requested_width}"
-      --arg
-        "h"
-          "${_requested_height}"
-      --arg
-        "mLayoutSeq"
-          "${_layout_sequence_number}"
-      --arg
-        "mBaseLayer"
-          "${_base_layer}"
-      --arg
-        "mSubLayer"
-          "${_sub_layer}"
-      --arg
-        "mViewVisibility"
-          "${_view_visibility}"
-      --arg
-        "mHaveFrame"
-          "${_have_frame}"
-      --arg
-        "mObscured"
-          "${_view_obscured}"
-      --arg
-        "mGivenContentInsets"
-          "${_given_content_insets}"
-      --arg
-        "mGivenVisibleInsets"
-          "${_given_visible_insets}"
-      --arg
-        "mFullConfiguration"
-          "${_full_configuration_string}"
-      --arg
-        "mLastReportedConfiguration"
-          "${_last_reported_configuration_string}"
-      --argjson
-        "Frames"
-          "${_frames}"
-      --argjson
-        "WindowStateAnimator"
-          "${_state_animator}"
-      '$ARGS.named'
+        "mGivenInsetsPending"
+          "${_given_insets_pending}"
+    )
+  fi
+  _window_encode_opts+=(
+    '$ARGS.named'
   )
   _window="$(
     jq \
@@ -604,6 +620,8 @@ _values_clean() {
   _surface_name_word=""
   _surface_id=""
   _token_type=""
+  _touchable_insets=""
+  _touchable_insets_word=""
   _uid=""
   _user_unknown_id=""
   _user_word=""
@@ -657,6 +675,8 @@ _dumpsys_json_encode() {
     _full_configuration_string \
     _given_content_insets \
     _given_content_insets_word \
+    _given_insets_pending \
+    _given_insets_pending_word \
     _given_visible_insets \
     _given_visible_insets_word \
     _have_frame \
@@ -699,6 +719,8 @@ _dumpsys_json_encode() {
     _sub_layer \
     _sub_layer_word \
     _token_type \
+    _touchable_insets \
+    _touchable_insets_word \
     _uid \
     _user_id \
     _user_unknown_id \
@@ -906,6 +928,11 @@ _dumpsys_json_encode() {
       _given_content_insets="${_given_content_insets_word#mGivenContentInsets=}"
       _given_visible_insets_word="${_line[1]}"
       _given_visible_insets="${_given_visible_insets_word#mGivenVisibleInsets=}"
+    elif [[ "${_line_string}" == "    mTouchableInsets="*" mGivenInsetsPending="* ]]; then
+      _touchable_insets_word="${_line[0]}"
+      _touchable_insets="${_touchable_insets_word#mTouchableInsets=}"
+      _given_insets_pending_word="${_line[1]}"
+      _given_insets_pending="${_given_insets_pending_word#mGivenInsetsPending=}"
     elif [[ "${_line_string}" == "    mFullConfiguration="* ]]; then
       _full_configuration_string="${_line_string#    mFullConfiguration=\{}"
       _full_configuration_string="${_full_configuration_string%\}}"

@@ -200,14 +200,14 @@ _window_json_get() {
       "${_flags[*]}")]"
   _flags_encode_opts+=(
     --argjson
-      "flags"
+      "v"
         "${_flags_jq_arg}"
-    '$flags'
+    '$v'
   )
   _msg=(
     "Running jq with options"
     "'${_jq_opts[*]}"
-    "${_flags_opts[*]}'."
+    "${_flags_encode_opts[*]}'."
   )
   _msg_info \
     "${_msg[*]}"

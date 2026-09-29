@@ -137,61 +137,59 @@ _window_json_get() {
     _jq_opts=() \
     _session_encode_opts=() \
     _window_encode_opts=()
-  if [[ "${_window}" == "" ]]; then
-    _jq_opts+=(
-      -n
-    )
-    _session_encode_opts+=(
+  _jq_opts+=(
+    -n
+  )
+  _session_encode_opts+=(
+    --arg
+      "id"
+        "${_session_id}"
+    --arg
+      "unknown-session-id"
+        "${_user_word}"
+    --arg
+      "app-user-id":
+        "${_app_user_id}"
+    --arg
+      "app-user-name":
+        "${_app_user_name}"
+    '$ARGS.named'
+  )
+  _session="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_session_encode_opts[@]}")"
+  _window_encode_opts+=(
       --arg
         "id"
-          "${_session_id}"
+          "${_id}"
       --arg
-        "unknown-session-id"
-          "${_user_word}"
+        "user-id"
+          "${_user_id}"
       --arg
-        "app-user-id":
-          "${_app_user_id}"
+        "activity"
+          "${_activity}"
       --arg
-        "app-user-name":
-          "${_app_user_name}"
+        "mDisplayId"
+          "${_display_id}"
+      --arg
+        "rootId"
+          "${_display_id}"
+      --arg
+        "mSession"
+          "${_session}"
       '$ARGS.named'
-    )
-    _session="$(
-      jq \
-        "${_jq_opts[@]}" \
-        "${_session_encode_opts[@]}")"
-    _window_encode_opts+=(
-        --arg
-          "id"
-            "${_id}"
-        --arg
-          "user-id"
-            "${_user_id}"
-        --arg
-          "activity"
-            "${_activity}"
-        --arg
-          "mDisplayId"
-            "${_display_id}"
-        --arg
-          "rootId"
-            "${_display_id}"
-        --arg
-          "mSession"
-            "${_session}"
-        '$ARGS.named'
-    )
-    _window="$(
-      jq \
-        "${_jq_opts[@]}" \
-        "${_window_encode_opts[@]}")"
-    _msg=(
-      "Detected window ${_index},"
-      "extracted:"
-    )
-    _msg_info \
-      "${_msg[*]}"
-  fi
+  )
+  _window="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_window_encode_opts[@]}")"
+  _msg=(
+    "Detected window ${_index},"
+    "extracted:"
+  )
+  _msg_info \
+    "${_msg[*]}"
   if [[ "${quiet}" == "n" ]]; then
     echo \
       "${_window}"

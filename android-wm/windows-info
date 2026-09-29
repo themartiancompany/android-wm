@@ -154,8 +154,8 @@ _window_json_get() {
       "unknown-session-id"
         "${_user_word}"
     --arg
-      "app-user-id":
-        "${_app_user_id}"
+      "app-uid":
+        "${_uid}"
     --arg
       "app-user-name":
         "${_app_user_name}"

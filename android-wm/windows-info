@@ -397,6 +397,8 @@ _dumpsys_json_encode() {
     _fl_word \
     _flag \
     _flags=() \
+    _have_frame \
+    _have_frame_word \
     _index \
     _index_display \
     _layout \
@@ -431,6 +433,10 @@ _dumpsys_json_encode() {
     _user_id \
     _user_unknown_id \
     _user_word \
+    _view_obscured \
+    _view_obscured_word \
+    _view_visibility \
+    _view_visibility_word \
     _msg=() \
     _window \
     _window_grouping_token \
@@ -614,7 +620,14 @@ _dumpsys_json_encode() {
             1
         fi
       done
-    #    mBaseLayer=251000 mSubLayer=0    mToken=WindowToken{f1954b6 type=2024 android.os.BinderProxy@dbf2451}
+    elif [[ "${_line_string}" == "    mViewVisibility="*" mHaveFrame="*" mObscured="* ]]; then
+      _view_visibility_word="${_line[0]}"
+      _view_visibility="${_view_visibility_word#mViewVisibility=}"
+      _have_frame_word="${_line[1]}"
+      _have_frame="${_have_frame_word#mHaveFrame=}"
+      _view_obscured_word="${_line[2]}"
+      _view_obscured="${_view_obscured_word#mObscured=}"
+    #       mViewVisibility=0x0 mHaveFrame=true mObscured=false
     else
       true
       # echo \

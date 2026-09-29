@@ -285,6 +285,7 @@ Usage:
 
      -o                   Output format.
                           It can be 'json' or 'plain'.
+                          Default: ${output_format}
 
      -h                   This message.
      -c                   Enable color output.

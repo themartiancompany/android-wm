@@ -55,7 +55,7 @@ SCRIPT_FILES=\
 
 all: build-man
 
-build-man:
+prepare:
 
 	git \
 	  submodule \
@@ -63,6 +63,11 @@ build-man:
 	    --init \
 	      "man" || \
 	true
+
+build-man:
+
+	make \
+	  prepare
 	mkdir \
 	  -p \
 	  "build/man"
@@ -114,13 +119,25 @@ install-doc:
 	  -t \
 	  $(DOC_DIR)
 
+uninstall: uninstall-man uninstall-scripts
+
+uninstall-man:
+
+	make \
+	  prepare
+	cd \
+	  "man"; \
+	make \
+	  uninstall-man
+
 uninstall-scripts:
 
 	rm \
 	  -vrf \
 	  "$(BIN_DIR)/alt-tab" \
 	  "$(BIN_DIR)/$(_PROJECT)" \
+	  "$(BIN_DIR)/windows-info" \
 	  "$(BIN_DIR)/windows-list"
 
 
-.PHONY: check install install-doc install-man install-scripts shellcheck
+.PHONY: check install install-doc install-man install-scripts shellcheck uninstall-scripts

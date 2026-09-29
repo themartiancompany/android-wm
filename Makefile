@@ -108,6 +108,9 @@ install-scripts:
 	  "$(_PROJECT)/$(_PROJECT)" \
 	  "$(BIN_DIR)/$(_PROJECT)"
 	$(_INSTALL_EXE) \
+	  "$(_PROJECT)/windows-info" \
+	  "$(BIN_DIR)/windows-info"
+	$(_INSTALL_EXE) \
 	  "$(_PROJECT)/windows-list" \
 	  "$(BIN_DIR)/windows-list"
 

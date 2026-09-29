@@ -143,6 +143,9 @@ _dumpsys_json_parse() {
     _line \
     _msg=() \
     _window
+  _jq_opts+=(
+    -n
+  )
   mapfile \
     -d \
       $'\n' \
@@ -176,7 +179,7 @@ _dumpsys_json_parse() {
             's%}:%%g')"
     _window="$(
       jq \
-        -n \
+        "${_jq_opts[@]}" \
         --arg \
           "id" \
             "${_id}" \
@@ -185,7 +188,8 @@ _dumpsys_json_parse() {
             "${_user_id}" \
         --arg \
           "activity" \
-            "${_activity}")"
+            "${_activity}" \
+        '$ARGS.named')"
   done
   echo \
     "${_window}"

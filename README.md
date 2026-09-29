@@ -21,6 +21,7 @@
 [comment]: <> (General Public License along with this program.)
 [comment]: <> (If not, see <https://www.gnu.org/licenses/>.)
 
+
 # Android Window Manager (`android-wm`)
 
 Google does not distribute the `android-wm`
@@ -42,6 +43,16 @@ and as a consequence of
   https://github.com/themartiancompany/dogeos)
 Android platform base.
 
+Android Window Manager is written using the
+[Crash Bash](
+  https://github.com/themartiancompany/crash-bash)
+library; its dependencies include the
+[`jq`](
+  https://jqlang.org)
+JSON processor and
+[GNU awk](
+  https://www.gnu.org/software/gawk).
+
 
 ## Manual
 
@@ -55,6 +66,7 @@ man \
 command. For a list of installed manuals consult the
 [manual submodule repository](
   https://github.com/themartiancompany/android-wm-man).
+
 
 ## Installation
 
@@ -92,6 +104,7 @@ tools is hosted on
 
 Be aware the mirror could go offline any time as Github and more
 in general all HTTP resources are inherently unstable and censorable.
+
 
 ## License
 

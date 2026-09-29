@@ -304,6 +304,37 @@ _window_json_get() {
   )
   _msg_info \
     "${_msg[*]}"
+  _frames_encode_opts+=(
+    --arg
+      "display"
+        "${_frames_display}"
+    --arg
+      "frame"
+        "${_frames_frame}"
+    --arg
+      "last"
+        "${_frames_last}"
+    --arg
+      "insetsChange"
+        "${_frames_insets_change}"
+    '$ARGS.named'
+  )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts[*]}"
+    "${_frames_encode_opts[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _frames="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_frames_encode_opts[@]}")"
+  _msg=(
+    "Window frames JSON: ${_frames}"
+  )
+  _msg_info \
+    "${_msg[*]}"
   _window_encode_opts+=(
       --arg
         "id"
@@ -356,6 +387,30 @@ _window_json_get() {
       --arg
         "mSubLayer"
           "${_sub_layer}"
+      --arg
+        "mViewVisibility"
+          "${_view_visibility}"
+      --arg
+        "mHaveFrame"
+          "${_have_frame}"
+      --arg
+        "mObscured"
+          "${_view_obscured}"
+      --arg
+        "mGivenContentInsets"
+          "${_given_content_insets}"
+      --arg
+        "mGivenVisibleInsets"
+          "${_given_visible_insets}"
+      --arg
+        "mFullConfiguration"
+          "${_full_configuration_string}"
+      --arg
+        "mLastReportedConfiguration"
+          "${_last_reported_configuration_string}"
+      --argjson
+        "frames"
+          "${_frames}"
       '$ARGS.named'
   )
   _window="$(
@@ -397,10 +452,26 @@ _dumpsys_json_encode() {
     _fl_word \
     _flag \
     _flags=() \
+    _frames_display \
+    _frames_display_word \
+    _frames_frame \
+    _frames_frame_word \
+    _frames_insets_change \
+    _frames_insets_change_word \
+    _frames_last \
+    _frames_last_word \
+    _frames_parent \
+    _frames_parent_word \
+    _full_configuration_string \
+    _given_content_insets \
+    _given_content_insets_word \
+    _given_visible_insets \
+    _given_visible_insets_word \
     _have_frame \
     _have_frame_word \
     _index \
     _index_display \
+    _last_reported_configuration_string \
     _layout \
     _layout_sequence_number_word \
     _layout_sequence_number \
@@ -627,7 +698,41 @@ _dumpsys_json_encode() {
       _have_frame="${_have_frame_word#mHaveFrame=}"
       _view_obscured_word="${_line[2]}"
       _view_obscured="${_view_obscured_word#mObscured=}"
-    #       mViewVisibility=0x0 mHaveFrame=true mObscured=false
+    elif [[ "${_line_string}" == "    mGivenContentInsets="*" mGivenVisibleInsets="* ]]; then
+      _given_content_insets_word="${_line[0]}"
+      _given_content_insets="${_given_content_insets_word#mGivenContentInsets=}"
+      _given_visible_insets_word="${_line[1]}"
+      _given_visible_insets="${_given_visible_insets_word#mGivenVisibleInsets=}"
+    elif [[ "${_line_string}" == "    mFullConfiguration="* ]]; then
+      _full_configuration_string="${_line_string#    mFullConfiguration=\{}"
+      _full_configuration_string="${_full_configuration_string%\}}"
+      _full_configuration_string_parse \
+        "${_full_configuration_string}"
+    elif [[ "${_line_string}" == "    mLastReportedConfiguration="* ]]; then
+      _last_reported_configuration_string="${_line_string#    mLastReportedConfiguration=\{}"
+      _last_reported_configuration_string="${_last_reported_configuration_string%\}}"
+      _full_configuration_string_parse \
+        "${_last_reported_configuration_string}"
+    elif [[ "${_line_string}" == "    mHasSurface="*" isReadyForDisplay()="*" mWindowRemovalAllowed="* ]]; then
+      _has_surface_word="${_line[0]}"
+      _has_surface="${_has_surface_word#mHasSurface=}"
+      _is_ready_for_display_word="${_line[1]}"
+      _is_ready_for_display="${_is_ready_for_display_word#mHasSurface=}"
+      _window_removal_allowed_word="${_line[2]}"
+      _window_removal_allowed="${_window_removal_allowed_word#mWindowRemovalAllowed=}"
+    elif [[ "${_line_string}" == "    Frames: "*" parent="*" display="*" frame="*" last="*" insetsChange="* ]]; then
+      _frames_parent_word="${_line[1]}"
+      _frames_parent="${_frames_parent_word#parent=}"
+      _frames_display_word="${_line[2]}"
+      _frames_display="${_frames_display_word#display=}"
+      _frames_frame_word="${_line[3]}"
+      _frames_frame="${_frames_frame_word#frame=}"
+      _frames_last_word="${_line[4]}"
+      _frames_last="${_frames_last_word#last=}"
+      _frames_insets_change_word="${_line[5]}"
+      _frames_insets_change="${_frames_insets_change_word#insetsChange=}"
+    elif [[ "${_line_string}" == "      surface="* ]]; then
+    #     mHasSurface=true isReadyForDisplay()=true mWindowRemovalAllowed=false
     else
       true
       # echo \
@@ -636,6 +741,58 @@ _dumpsys_json_encode() {
   done
   # echo \
   #   "${_window}"
+}
+
+_full_configuration_string_parse() {
+  local \
+    _full_configuration_string="${1}" \
+    _line=() \
+    _win_config_flag \
+    _word
+  _line=(
+    ${_full_configuration_string}
+  )
+  _win_config_flag="false"
+  # at the end.
+  # for _word in "${_line[@]}"; do
+  #   if [[ ]]; then
+  #   fi
+  # done
+  # true
+  # TODO:
+  #   this is an example string of the type it
+  #   gets given in input to this function
+  #   I dont need fully parsed right now so it can stay
+  #   a string as far as I'm concerned.
+  #   Feel free to do it yourself.
+  #   mFullConfiguration={
+  #     2.0
+  #     222mcc8mnc
+  #     [en_US,it_IT]
+  #     ldltr sw480dp
+  #     w1067dp
+  #     h480dp
+  #     72dpi
+  #     lrg
+  #     long
+  #     land
+  #     night
+  #     finger
+  #     -keyb/v/h
+  #     -nav/h
+  #     winConfig={
+  #       mBounds=Rect(0, 0 - 480, 216)
+  #       mAppBounds=Rect(0, 0 - 480, 216)
+  #       mMaxBounds=Rect(0, 0 - 480, 216)
+  #       mDisplayRotation=ROTATION_90
+  #       mWindowingMode=fullscreen
+  #       mDisplayWindowingMode=fullscreen
+  #       mActivityType=undefined
+  #       mAlwaysOnTop=undefined
+  #       mRotation=ROTATION_90}
+  #       as.16
+  #       s.6006
+  #       fontWeightAdjustment=0}
 }
 
 _windows_info() {

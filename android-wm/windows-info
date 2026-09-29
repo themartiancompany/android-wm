@@ -292,7 +292,7 @@ _dumpsys_json_encode() {
       _user_unknown_id="${_user_word%%:*}"
       _app_user="${_user_word##*:}"
       _app_user_id="${_app_user##${_user_id}}"
-      _app_user_id="${_app_user%\}}"
+      _app_user_id="${_app_user_id%\}}"
       _user_id="${_app_user_id#a}"
       if [[ "${_app_user_id}" == "a"* ]]; then
         _app_user_name="${_user_id}_a${_user_id#10}"

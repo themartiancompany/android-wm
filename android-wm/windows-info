@@ -463,6 +463,98 @@ _window_json_get() {
   _window=""
 }
 
+_values_clean() {
+  _app_op=""
+  _app_op_word=""
+  _app_user=""
+  _app_user_id=""
+  _app_user_name=""
+  _base_layer=""
+  _base_layer_word=""
+  _behavior=""
+  _behavior_word=""
+  _client_word=""
+  _client=""
+  _display_id=""
+  _display_id_word=""
+  _fit_sides=""
+  _fit_sides_word=""
+  _fl=""
+  _fl_word=""
+  _flags=()
+  _full_configuration_string=""
+  _given_content_insets=""
+  _given_content_insets_word=""
+  _given_visible_insets=""
+  _given_visible_insets_word=""
+  _frames_display=""
+  _frames_display_word=""
+  _frames_frame=""
+  _frames_frame_word=""
+  _frames_inset_change=""
+  _frames_inset_change_word=""
+  _frames_last=""
+  _frames_last_word=""
+  _frames_parent=""
+  _frames_parent_word=""
+  _frames_surface=""
+  _frames_surface_word=""
+  _have_frame=""
+  _have_frame_word=""
+  _has_surface=""
+  _has_surface_word=""
+  _is_ready_for_display=""
+  _is_ready_for_display_word=""
+  _last_reported_configuration_string=""
+  _layout=""
+  _layout_sequence_number=""
+  _layout_sequence_number_word=""
+  _owner_uid=""
+  _owner_uid_word=""
+  _package=""
+  _package_word=""
+  _pfl=""
+  _pfl_word=""
+  _position=""
+  _position_layout=""
+  _position_layout_word=""
+  _private_flags=()
+  _requested_height=""
+  _requested_height_word=""
+  _requested_width=""
+  _requested_width_word=""
+  _root_task_id=""
+  _root_task_id_word=""
+  _session_id=""
+  _session_id_word=""
+  _session_unknown_id=""
+  _show_for_all_users=""
+  _show_for_all_users_word=""
+  _state_animator_id=""
+  _state_animator_id_word=""
+  _state_animator_owner=""
+  _state_animator_owner_word=""
+  _sub_layer=""
+  _sub_layer_word=""
+  _surface_name=""
+  _surface_name_word=""
+  _surface_id=""
+  _token_type=""
+  _uid=""
+  _user_unknown_id=""
+  _user_word=""
+  _view_obscured=""
+  _view_obscured_word=""
+  _view_visibility=""
+  _view_visibility_word=""
+  _window_grouping_token=""
+  _window_removal_allowed=""
+  _window_removal_allowed_word=""
+  _window_token_id=""
+  _window_token_id_word=""
+  _window_token_type=""
+}
+
 _dumpsys_json_encode() {
   local \
     _dumpsys="${1}" \
@@ -536,6 +628,9 @@ _dumpsys_json_encode() {
     _state_animator_id_word \
     _state_animator_owner \
     _state_animator_owner_word \
+    _surface_id \
+    _surface_name \
+    _surface_name_word \
     _sub_layer \
     _sub_layer_word \
     _token_type \
@@ -598,9 +693,7 @@ _dumpsys_json_encode() {
       _user_id="${_line[3]}"
       _activity_word="${_line[4]}"
       _activity="${_activity_word%*\}:}"
-      _flags=()
-      _private_flags=()
-      _fit_sides=""
+      _values_clean
     elif [[ "${_line_string}" == "    mDisplayId="*" rootTaskId="*" mSession="*" mClient="* ]]; then
       _msg=(
         "Parsing display/session/client line."
@@ -778,6 +871,11 @@ _dumpsys_json_encode() {
       _state_animator_id="${_state_animator_id_word#WindowStateAnimator\{}"
       _state_animator_owner_word="${_line[1]}"
       _state_animator_owner="${_state_animator_owner_word%\}:}"
+    elif [[ "${_line_string}" == "      mSurface=Surface("* ]]; then
+      _surface_name_word="${_line[0]}"
+      _surface_name="${_surface_name_word#mSurface=Surface\(name=}"
+      _surface_name="${_surface_name%\)*}"
+      _surface_id="${_surface_name_word##*\/}"
     else
       true
       # echo \

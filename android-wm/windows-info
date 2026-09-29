@@ -242,6 +242,11 @@ _dumpsys_json_encode() {
       ${_line_string}
     )
     if [[ "${_line_string}" == "  Window #"* ]]; then
+      _msg=(
+        "Parsing window line."
+      )
+      _msg_info \
+        "${_msg[*]}"
       if [[ "${_window}" != "" ]]; then
         _window_json_get
       fi

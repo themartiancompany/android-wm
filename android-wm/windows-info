@@ -982,7 +982,7 @@ _dumpsys_json_encode() {
     elif [[ "${_line_string}" == "     surface="* ]]; then
       _frames_surface_word="${_line[0]}"
       _frames_surface="${_frames_surface_word#surface=}"
-    elif [[ "${_line_string}" == "    WindowStateAnimator={"* ]]; then
+    elif [[ "${_line_string}" == "    WindowStateAnimator{"* ]]; then
       _state_animator_id_word="${_line[0]}"
       _state_animator_id="${_state_animator_id_word#WindowStateAnimator\{}"
       _state_animator_owner_word="${_line[1]}"

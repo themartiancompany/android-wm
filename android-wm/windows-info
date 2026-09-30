@@ -1817,25 +1817,26 @@ _dumpsys_json_encode() {
             "${_msg[*]}"
         elif [[ "${_word}" == *"\}" ]]; then
           if [[ "${_sim_opened}" == "false" ]]; then
-          if [[ "${_strict_mode}" == "y" ]]; then
-            _msg=(
-              "Unknown word '${_word}'."
-              "Line:"
-            )
-            _msg_error \
-              "${_msg[*]}" \
-              0
-            echo \
-              "${_line_string[*]}" \
-              1>&2
-            exit \
-              1
-          if [[ "${_strict_mode}" == "y" ]]; then
-            _msg=(
-              "Unknown attribute of an object, ignoring."
-            )
-            _msg_warning \
-              "${_msg[*]}"
+            if [[ "${_strict_mode}" == "y" ]]; then
+              _msg=(
+                "Unknown word '${_word}'."
+                "Line:"
+              )
+              _msg_error \
+                "${_msg[*]}" \
+                0
+              echo \
+                "${_line_string[*]}" \
+                1>&2
+              exit \
+                1
+            elif [[ "${_strict_mode}" == "y" ]]; then
+              _msg=(
+                "Unknown attribute of an object, ignoring."
+              )
+              _msg_warning \
+                "${_msg[*]}"
+            fi
           fi
         else
           _msg=(

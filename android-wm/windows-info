@@ -1084,7 +1084,9 @@ _dumpsys_json_encode() {
         _surface_transform+=(
           "${_line[@]:${_surface_index}:${_word_index_end}}"
         )
+        echo "surface transform ${_surface_transform[*]}"
         _surface_transform_word="${_line["${_line_index_last}"]}"
+        echo "surface transform last ${_surface_transform_word%\)}"
         _surface_transform+=(
           "${_surface_transform_word%\)}"
         )

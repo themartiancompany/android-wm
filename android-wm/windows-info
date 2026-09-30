@@ -196,6 +196,7 @@ _attrs_json_get() {
     _or="${12}" \
     _if="${13}" \
     _user_activity_timeout="${14}" \
+    _sim_json="${15}" \
     _attrs_encode_opts=() \
     _msg=()
   if [[ "${_position_layout}" == "" || \
@@ -253,6 +254,13 @@ _attrs_json_get() {
       --arg
         "if"
           "${_if}"
+    )
+  fi
+  if [[ "${_sim_json}" != "" ]]; then
+    _attrs_encode_opts+=(
+      --argjson
+        "sim"
+          "${_sim_json}"
     )
   fi
   if [[ "${_user_activity_timeout}" != "" ]]; then
@@ -659,6 +667,37 @@ _state_animator_json_get() {
     "${_msg[*]}"
 }
 
+_sim_json_get() {
+  local \
+    _sim="${1}" \
+    _parameters=() \
+    _word \
+    _sim_encode_opts=()
+  _sim_adjust=""
+  _sim="${_sim#\{}"
+  _sim="${_sim%\}}"
+  _parameters=(
+    ${_sim}
+  )
+  for _word in "${_parameters}"; do
+    if [[ "${_word}" == "adjust="* ]]; then
+      _sim_adjust="${_word#adjust=}"
+    fi
+  done
+  if [[ "${_sim_adjust}" != "" ]]; then
+    _sim_encode_opts+=(
+      --arg
+        "adjust"
+          "${_sim_adjust}"
+    )
+  fi
+  _sim_json="$(
+   jq \
+    "${_jq_opts[@]}" \
+    "${_sim_encode_opts[@]}" \
+    '$ARGS.named')"
+}
+
 _window_json_get() {
   local \
     _msg=() \
@@ -675,6 +714,7 @@ _window_json_get() {
     _private_flags_json \
     _session_json \
     _session_json_get_args=() \
+    _sim_json \
     _surface_json \
     _surface_json_get_args=() \
     _state_animator_json \
@@ -689,6 +729,7 @@ _window_json_get() {
   _frames_json=""
   _msurface_json=""
   _session_json=""
+  _sim_json=""
   _surface_json=""
   _state_animator_json=""
   _msg=(
@@ -713,6 +754,8 @@ _window_json_get() {
     "${_flags[@]}"
   _private_flags_json_get \
     "${_private_flags[@]}"
+  _sim_json_get \
+    "${_sim}"
   _attrs_json_get_args+=(
     "${_position_layout}"
     "${_position}"
@@ -728,6 +771,7 @@ _window_json_get() {
     "${_or}"
     "${_if}"
     "${_user_activity_timeout}"
+    "${_sim_json}"
   )
   _attrs_json_get \
     "${_attrs_json_get_args[@]}"
@@ -1145,6 +1189,7 @@ _values_clean() {
   _session_unknown_id=""
   _show_for_all_users=""
   _show_for_all_users_word=""
+  _sim=""
   _state_animator_id=""
   _state_animator_id_word=""
   _state_animator_owner=""
@@ -1305,6 +1350,7 @@ _dumpsys_json_encode() {
     _session_unknown_id \
     _show_for_all_users \
     _show_for_all_users_word \
+    _sim \
     _state_animator_id \
     _state_animator_id_word \
     _state_animator_owner \
@@ -1473,11 +1519,13 @@ _dumpsys_json_encode() {
           _fmt="${_word#fmt=}"
         elif [[ "${_word}" == "or="* ]]; then
           _or="${_word#or=}"
-        elif [[ "${_word}" == "or="* ]]; then
+        elif [[ "${_word}" == "if="* ]]; then
           _if="${_word#if=}"
+        elif [[ "${_word}" == "sim="* ]]; then
+          _sim="${_word#sim=}"
         elif [[ "${_word}" == "userActivityTimeout="* ]]; then
           _user_activity_timeout="${_word#userActivityTimeout=}"
-        elif [[ "${_word}" == "if="* ]]; then
+        elif [[ "${_word}" == "wanim="* ]]; then
           _wanim="${_word#wanim=}"
         elif [[ "${_word}" == "sysuil="* ]]; then
           _sysuil="${_word#sysuil=}"

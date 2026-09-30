@@ -147,11 +147,14 @@ _window_json_get() {
     _session_encode_opts=() \
     _state_animator \
     _state_animator_encode_opts=() \
+    _surface \
+    _surface_encode_opts=() \
     _token \
     _token_encode_opts=() \
     _window_encode_opts=() \
     _msg=()
   _msurface=""
+  _surface=""
   _msg=(
     "Encoding window object JSON."
   )
@@ -410,6 +413,48 @@ _window_json_get() {
           "${_msurface}"
     )
   fi
+  _surface_encode_opts+=(
+    --arg
+      "shown"
+        "${_surface_shown}"
+    --arg
+      "layer"
+        "${_surface_layer}"
+    --arg
+      "alpha"
+        "${_surface_layer}"
+    --arg
+      "rect"
+        "${_surface_rect}"
+    # In case one wanted
+    # to have also those encoded
+    # it's easier with this array.
+    --arg
+      "transform"
+        "(${_surface_transform[*]})"
+    '$ARGS.named'
+  )
+  if [[ "${_surface_rect}" != "" ]]; then
+    _msg=(
+      "Running jq with options"
+      "'${_jq_opts[*]}"
+      "${_surface_encode_opts[*]}'."
+    )
+    _msg_info \
+      "${_msg[*]}"
+    _surface="$(
+      jq \
+        "${_jq_opts[@]}" \
+        "${_surface_encode_opts[@]}")"
+    _msg=(
+      "State animator surface JSON: ${_surface}"
+    )
+    _state_animator_encode_opts+=(
+      --argjson
+        "Surface"
+          "${_surface}"
+    )
+  fi
   _state_animator_encode_opts+=(
     '$ARGS.named'
   )
@@ -623,9 +668,16 @@ _values_clean() {
   _state_animator_owner_word=""
   _sub_layer=""
   _sub_layer_word=""
+  _surface_alpha=""
+  _surface_id=""
+  _surface_index=""
+  _surface_layer=""
   _surface_name=""
   _surface_name_word=""
-  _surface_id=""
+  _surface_rect=""
+  _surface_shown=""
+  _surface_transform=()
+  _surface_transform_word=""
   _token_type=""
   _touchable_insets=""
   _touchable_insets_word=""
@@ -697,6 +749,7 @@ _dumpsys_json_encode() {
     _layout_sequence_number_word \
     _layout_sequence_number \
     _line=() \
+    _line_index_last \
     _line_string \
     _owner_uid_word \
     _owner_uid \
@@ -725,6 +778,12 @@ _dumpsys_json_encode() {
     _surface_id \
     _surface_name \
     _surface_name_word \
+    _surface_alpha \
+    _surface_layer \
+    _surface_shown \
+    _surface_rect \
+    _surface_transform=() \
+    _surface_transform_word \
     _sub_layer \
     _sub_layer_word \
     _token_type \
@@ -746,7 +805,9 @@ _dumpsys_json_encode() {
     _window_token_id \
     _window_token_id_word \
     _window_token_type \
-    _windows=()
+    _windows=() \
+    _word \
+    _word_index
   _msg=(
     "Encoding dumpsys output"
     "in JSON format."
@@ -992,6 +1053,40 @@ _dumpsys_json_encode() {
       _surface_name="${_surface_name_word#mSurface=Surface\(name=}"
       _surface_name="${_surface_name%\)*}"
       _surface_id="${_surface_name_word##*\/}"
+    elif [[ "${_line_string}" == "      Surface: "* ]]; then
+      _word_index=0
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "shown="* ]]; then
+          _surface_shown="${_word#shown=}"
+        elif [[ "${_word}" == "layer="* ]]; then
+          _surface_layer="${_word#layer=}"
+        elif [[ "${_word}" == "alpha="* ]]; then
+          _surface_alpha="${_word#alpha=}"
+        elif [[ "${_word}" == "rect="* ]]; then
+          _surface_rect="${_word#rect=}"
+        elif [[ "${_word}" == "transform=("* ]]; then
+          _surface_transform+=(
+            "${_word#transform=\(}"
+          )
+          _surface_index="${_word_index}"
+        fi
+        _word_index=$((
+          _word_index + 1))
+      done
+      if [[ "${_surface_index}" != "" ]]; then
+        _line_length="${#_line[@]}"
+        _line_index_last=$((
+          _line_length - 1))
+        _word_index_end=$((
+          _line_index_last - 1 ))
+        _surface_transform+=(
+          "${_line[@]:${_surface_index}:${_word_index_end}}"
+        )
+        _surface_transform_word="${_line["${_line_index_last}"]}"
+        _surface_transform+=(
+          "${_surface_transform_word%\)}"
+        )
+      fi
     else
       _msg=(
         "Unparsed line '${_line_string}'."

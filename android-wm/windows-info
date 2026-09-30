@@ -823,7 +823,8 @@ _window_json_get() {
     "${_msurface_json}"
     "${_surface_json}"
   )
-  _state_animator_json_get
+  _state_animator_json_get \
+    "${_state_animator_json_get_args[@]}"
   _window_encode_opts+=(
     --arg
       "id"
@@ -900,10 +901,14 @@ _window_json_get() {
     --argjson
       "Frames"
         "${_frames_json}"
-    --argjson
-      "WindowStateAnimator"
-        "${_state_animator_json}"
   )
+  if [[ "${_state_animator_json}" != "" ]]; then
+    _state_animator_encode_opts+=(
+      --argjson
+        "WindowStateAnimator"
+          "${_state_animator_json}"
+    )
+  fi
   if [[ "${_window_removal_allowed}" != "" ]]; then
     _window_encode_opts+=(
       --arg

@@ -601,7 +601,7 @@ _window_json_get() {
     _window_encode_opts+=(
       --arg
         "isReadyForDisplay()"
-          "${_is_readyForDisplay}"
+          "${_is_ready_for_display}"
     )
   fi
   if [[ "${_touchable_insets}" != "" ]]; then

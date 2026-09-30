@@ -1686,7 +1686,7 @@ _dumpsys_json_encode() {
       _window_token_id_word="${_line[2]}"
       _window_token_id="${_window_token_id_word#mToken=*\{}"
       _window_token_type="${_window_token_id_word#mToken=}"
-      _window_token_type="${_window_token_type%\{}"
+      _window_token_type="${_window_token_type%\{*}"
       for _word in "${_line[@]:3}"; do
         if [[ "${_word}" == "type="* ]]; then
           _token_type="${_word#type=}"

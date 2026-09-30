@@ -773,6 +773,12 @@ _window_json_get() {
     "${_user_activity_timeout}"
     "${_sim_json}"
   )
+  _msg=(
+    "Running '_attrs_json_get'"
+    "with arguments '${_attrs_json_get_args[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _attrs_json_get \
     "${_attrs_json_get_args[@]}"
   _token_json_get_args+=(

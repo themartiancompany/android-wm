@@ -445,7 +445,7 @@ _frames_json_get() {
     _frames_frame="${2}" \
     _frames_last="${3}" \
     _frames_surface="${4}" \
-    _frames_inset_change="${5}" \
+    _frames_insets_change="${5}" \
     _frames_insets_changed="${6}" \
     _frames_encode_opts=() \
     _msg=()
@@ -793,8 +793,8 @@ _window_json_get() {
     "${_frames_frame}"
     "${_frames_last}"
     "${_frames_surface}"
-    "${_frames_inset_change}"
-    "${_frames_inset_changed}"
+    "${_frames_insets_change}"
+    "${_frames_insets_changed}"
   )
   _frames_json_get \
     "${_frames_json_get_args[@]}"

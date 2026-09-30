@@ -827,7 +827,7 @@ _window_json_get() {
     "${_sim}"
   _insets_json_get \
     "${_insets[@]}"
-  # _provided_insets_json
+  # _provided_insets_json_get
   _attrs_json_get_args+=(
     "${_position_layout}"
     "${_position}"

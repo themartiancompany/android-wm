@@ -1336,7 +1336,6 @@ _dumpsys_json_encode() {
           _areas_unrestricted="${_word#unrestricted=}"
         fi
       done
-      _areas_restricted="${
     else
       _msg=(
         "Unparsed line '${_line_string}'."

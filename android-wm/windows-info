@@ -1858,8 +1858,18 @@ _dumpsys_json_encode() {
           1
       fi
     elif [[ "${_line_string}" == "      paramsForRotation="* ]]; then
+        _msg=(
+          "Parsing parameters for rotation attributes first line."
+        )
+        _msg_info \
+          "${_msg[*]}"
       _params_for_rotation_opened="true"
-      _params_for_rotation
+      # _params_for_rotation
+      _msg=(
+        "Skipping for debug."
+      )
+      _msg_info \
+        "${_msg[*]}"
     #       paramsForRotation={(0,0)(fillx0) gr=BOTTOM CENTER_VERTICAL layoutInDisplayCutoutMode=always ty=NAVIGATION_BAR fmt=TRANSLUCENT
     elif [[ "${_line_string}" == "    Requested"*" w="*" h="*" mLayoutSeq="* ]]; then
       _msg=(

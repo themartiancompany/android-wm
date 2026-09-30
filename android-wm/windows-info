@@ -1282,7 +1282,7 @@ _dumpsys_json_encode() {
           _prepare_sync_seq_id="${_word#mPrepareSyncSeqId=}"
         fi
       done
-    elif [[ "${_is_im_window}" == "    mIsImWindow="* ]]; then
+    elif [[ "${_line_string}" == "    mIsImWindow="* ]]; then
       for _word in "${_line[@]}"; do
         if [[ "${_word}" == "mIsImWindow="* ]]; then
           _is_im_window="${_word#mIsImWindow=}"

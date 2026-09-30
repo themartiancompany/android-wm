@@ -1112,7 +1112,7 @@ _dumpsys_json_encode() {
           "${_surface_transform_word%\)}"
         )
       fi
-    elif [[ "${_line_string}" == "      mDrawState: "* ]]; then
+    elif [[ "${_line_string}" == "      mDrawState="* ]]; then
       for _word in "${_line[@]}"; do
         if [[ "${_word}" == "mDrawState="* ]]; then
           _draw_state="${_word#mDrawState=}"

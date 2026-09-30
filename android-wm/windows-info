@@ -408,28 +408,28 @@ _window_json_get() {
   )
   if [[ "${_draw_state}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --json
+      --arg
         "mDrawState"
           "${_draw_state}"
     )
   fi
   if [[ "${_last_hidden}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --json
+      --arg
         "mLastHidden"
           "${_last_hidden}"
     )
   fi
   if [[ "${_enter_animation_pending}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --json
+      --arg
         "mEnterAnimationPending"
           "${_enter_animation_pending}"
     )
   fi
   if [[ "${_system_decor_rect}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --json
+      --arg
         "mSystemDecorRect"
           "${_system_decor_rect}"
     )
@@ -626,7 +626,7 @@ _window_json_get() {
   fi
   if [[ "${_last_freeze_duration}" != "" ]]; then
     _window_encode_opts+=(
-      --json
+      --arg
         "mLastFreezeDuration"
           "${_last_freeze_duration}"
     )

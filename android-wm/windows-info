@@ -185,13 +185,19 @@ _insets_json_get() {
     _insets=() \
     _insets_encode_opts=() \
     _index \
+    _index_end \
     _inset \
     _key \
     _msg=()
   insets+=(
     "$@"
   )
-  for _index in $(seq 0 3); do
+  _index_end=$((
+    ${#_insets[@]} - 1 ))
+  for _index \
+    in $(seq \
+           0 \
+           ${_index_end} ); do
     _inset="${_insets["${_index}"]}"
     if [[ "${_inset}" != "" ]]; then
       if [[ "${_index}" == 0 ]]; then

@@ -1336,7 +1336,7 @@ _insets_parse() {
   local \
     _insets_params=() \
     _msg=() \
-    _word \
+    _param \
     _left \
     _top \
     _right \
@@ -1350,13 +1350,17 @@ _insets_parse() {
   )
   for _param in "${_insets_params[@]}"; do
     if [[ "${_param}" == "left="* ]]; then
-      _left="${_param#left=}}"
+      _left="${_param#left=}"
+      _left="${_left%\}}"
     elif [[ "${_param}" == "top="* ]]; then
-      _top="${_param#top=}}"
+      _top="${_param#top=}"
+      _top="${_top%\}}"
     elif [[ "${_param}" == "right="* ]]; then
-      _right="${_param#right=}}"
+      _right="${_param#right=}"
+      _right="${_right%\}}"
     elif [[ "${_param}" == "bottom="* ]]; then
-      _right="${_param#right=}}"
+      _bottom="${_param#bottom=}"
+      _bottom="${_bottom%\}}"
     else
       _msg=(
         "Unknown parameter '${_param}'."

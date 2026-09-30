@@ -1814,10 +1814,18 @@ _dumpsys_json_encode() {
           )
           _msg_info \
             "${_msg[*]}"
+        elif [[ "${_word}" == *"\}" ]]; then
+          if [[ "${_word}" != "forwardNavigation}" ]]; then
+            _msg=(
+              "Part of an object, ignoring."
+            )
+            _msg_warning \
+              "${_msg[*]}"
+          fi
         else
           _msg=(
             "Unknown property '${_word}'"
-            "for 'WindowToken' object."
+            "for window attributes object."
             "Line:"
           )
           _msg_error \
@@ -2021,7 +2029,7 @@ _dumpsys_json_encode() {
         else
           _msg=(
             "Unknown property '${_word}'"
-            "for 'WindowToken' object."
+            "for the window token '${_window_token_type}'."
             "Line:"
           )
           _msg_error \
@@ -2030,6 +2038,8 @@ _dumpsys_json_encode() {
           echo \
             "${_line}" \
             1>&2
+          exit \
+            1
         fi
       done
     elif [[ "${_line_string}" == "    mViewVisibility="*" mHaveFrame="*" mObscured="* ]]; then

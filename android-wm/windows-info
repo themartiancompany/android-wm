@@ -1442,7 +1442,12 @@ _dumpsys_json_encode() {
         elif [[ "${_word}" == "sysuil="* ]]; then
           _sysuil="${_word#sysuil=}"
         elif [[ "${_word}" == "CENTER_HORIZONTAL" ]]; then
-          true
+          _msg=(
+            "Probably the field unknown word"
+            "'${_word}' is the second argument of 'gr'."
+          )
+          _msg_info \
+            "${_msg[*]}"
         else
           _msg=(
             "Unknown property '${_word}'"

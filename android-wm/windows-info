@@ -1441,6 +1441,8 @@ _dumpsys_json_encode() {
           _wanim="${_word#wanim=}"
         elif [[ "${_word}" == "sysuil="* ]]; then
           _sysuil="${_word#sysuil=}"
+        elif [[ "${_word}" == "CENTER_HORIZONTAL" ]]; then
+          true
         else
           _msg=(
             "Unknown property '${_word}'"

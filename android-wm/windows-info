@@ -1781,7 +1781,11 @@ _dumpsys_json_encode() {
         "${_msg[*]}"
       if [[ "${_attrs_opened}" == "true" ]]; then
         if [[ "${_params_for_rotation_opened}" == "true" ]]; then
-          echo
+          _msg=(
+            "Params for rotation attributes opened."
+          )
+          _msg_info \
+            "${_msg[*]}"
         elif [[ "${_params_for_rotation_opened}" == "false" ]]; then
           _provided_insets_object_type_word="${_line[0]}"
           _provided_insets_object_type="${_provided_insets_object_type_word#providedInsets=}"
@@ -1812,7 +1816,7 @@ _dumpsys_json_encode() {
               _insets_opened="true"
               _insets_word="${_word#insetsSize=}"
               _insets_type="${_insets_word%\{*}"
-              _insets_param="${_insets_type#${_insets_type}\{}"
+              _insets_param="${_insets_word#${_insets_type}\{}"
               _insets_params+=(
                 "${_insets_param}"
               )

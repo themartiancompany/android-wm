@@ -1049,7 +1049,7 @@ _dumpsys_json_encode() {
       _values_clean
     elif [[ "${_line_string}" == "    mDisplayId="*" rootTaskId="*" mSession="*" mClient="* ]]; then
       _msg=(
-        "Parsing display/session/client line."
+        "Parsing window '${_index}' display/session/client line."
       )
       _msg_info \
         "${_msg[*]}"

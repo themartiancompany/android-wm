@@ -807,7 +807,8 @@ _dumpsys_json_encode() {
     _window_token_type \
     _windows=() \
     _word \
-    _word_index
+    _word_index \
+    _word_index_end
   _msg=(
     "Encoding dumpsys output"
     "in JSON format."
@@ -1068,7 +1069,8 @@ _dumpsys_json_encode() {
           _surface_transform+=(
             "${_word#transform=\(}"
           )
-          _surface_index="${_word_index}"
+          _surface_index=$((
+            _word_index + 1))
         fi
         _word_index=$((
           _word_index + 1))
@@ -1078,7 +1080,7 @@ _dumpsys_json_encode() {
         _line_index_last=$((
           _line_length - 1))
         _word_index_end=$((
-          _line_index_last - 1 ))
+          _line_index_last - 2 ))
         _surface_transform+=(
           "${_line[@]:${_surface_index}:${_word_index_end}}"
         )

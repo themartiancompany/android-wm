@@ -426,6 +426,7 @@ _token_json_get() {
       --arg
         "object-type"
           "${_window_token_type}"
+    )
   fi
   _msg=(
     "Running jq with options"

@@ -1752,7 +1752,10 @@ _dumpsys_json_encode() {
           _sysuil="${_word#sysuil=}"
         elif [[ "${_word}" == "CENTER_HORIZONTAL" || \
                 "${_word}" == "CENTER_VERTICAL" || \
+                "${_word}" == "LEFT" ||
+                "${_word}" == "TOP" ||
                 "${_word}" == "RIGHT" ||
+                "${_word}" == "BOTTOM" ||
                 "${_word}" == "CENTER" ]]; then
           _msg=(
             "Probably the field unknown word"

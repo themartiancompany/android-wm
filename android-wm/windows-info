@@ -1079,23 +1079,24 @@ _dumpsys_json_encode() {
         _line_length="${#_line[@]}"
         _line_index_last=$((
           _line_length - 1))
-        _word_index_end=$((
-          _line_index_last - 2 ))
+        _word_index_end="$((
+          "${_line_index_last}" - 2 ))"
         _surface_transform+=(
-          "${_line[@]:${_surface_index}:${_word_index_end}}"
+          "${_line[@]:${_surface_index}:$(( ${_word_index_end} - 1 ))}"
         )
         echo "line length ${_line_length}"
         echo "word index end ${_word_index_end}"
         echo "all ${_line[@]:${_surface_index}:${_line_index_last}}"
         _surface_transform_not_last="${_line["${_word_index_end}"]}"
         echo "the last before last ${_surface_transform_not_last}"
-        echo "all except last ${_line[@]:${_surface_index}:${_word_index_end}}"
+        echo "all except last ${_line[@]:${_surface_index}:$(( ${_word_index_end} - 1 ))}"
         echo "surface transform ${_surface_transform[*]}"
         _surface_transform_word="${_line["${_line_index_last}"]}"
         echo "surface transform last ${_surface_transform_word%\)}"
         _surface_transform+=(
-          "${_surface_transform_word%\)}"
+          "${_surface_transform_word%)}"
         )
+        echo "surface transform ${_surface_transform[*]}"
       fi
     else
       _msg=(

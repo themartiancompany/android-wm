@@ -1779,7 +1779,7 @@ _dumpsys_json_encode() {
         if [[ "${_params_for_rotation_opened}" == "true" ]]; then
           echo
         elif [[ "${_params_for_rotation_opened}" == "false" ]]; then
-          _provided_insets_object_type_word="${line[0]}"
+          _provided_insets_object_type_word="${_line[0]}"
           _provided_insets_object_type="${_provided_insets_object_type_word#providedInsets=}"
           _provided_insets_object_type="${_provided_insets_object_type%\:}"
           _line_string="${_line[@]:1}"

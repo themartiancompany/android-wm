@@ -1585,7 +1585,6 @@ shift \
 _set_overrides
 app_opts=(
   "${get_mode}"
-  "${strict_mode}"
   "${output_format}"
   "${strict_mode}"
 )

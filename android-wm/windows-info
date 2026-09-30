@@ -400,7 +400,8 @@ _token_json_get() {
   local \
     _window_token_id="${1}" \
     _token_type="${2}" \
-    _window_grouping_token="${3}" \
+    _window_token_type="${3}" \
+    _window_grouping_token="${4}" \
     _msg=() \
     _token_encode_opts=()
   _msg=(
@@ -420,6 +421,12 @@ _token_json_get() {
       "window-grouping-token"
         "${_window_grouping_token}"
   )
+  if [[ "${_window_token_type}" != "" ]]; then
+    _token_encode_opts+=(
+      --arg
+        "object-type"
+          "${_window_token_type}"
+  fi
   _msg=(
     "Running jq with options"
     "'${_jq_opts[*]}"
@@ -784,6 +791,7 @@ _window_json_get() {
   _token_json_get_args+=(
     "${_window_token_id}"
     "${_token_type}"
+    "${_window_token_type}"
     "${_window_grouping_token}"
   )
   _token_json_get \

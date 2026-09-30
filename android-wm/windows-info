@@ -1119,6 +1119,7 @@ _dumpsys_json_encode() {
         elif [[ "${_word}" == "mLastHidden="* ]]; then
           _last_hidden="${_word#mLastHidden=}"
         fi
+      done
     else
       _msg=(
         "Unparsed line '${_line_string}'."

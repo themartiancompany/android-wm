@@ -427,6 +427,13 @@ _token_json_get() {
         "object-type"
           "${_window_token_type}"
     )
+  else
+    _msg=(
+      "Why no window token type?"
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      1
   fi
   _msg=(
     "Running jq with options"
@@ -1677,19 +1684,9 @@ _dumpsys_json_encode() {
       _sub_layer_word="${_line[1]}"
       _sub_layer="${_sub_layer_word#mSubLayer=}"
       _window_token_id_word="${_line[2]}"
-      _window_token_id="${_window_token_id_word#mToken=WindowToken\{}"
-      if [[ "${_window_token_id_word}" == "${_window_token_id}" ]]; then
-        _window_token_type="${_window_token_id_word#mToken=}"
-        _window_token_type="${_window_token_type%\{}"
-        _msg=(
-          "Unknown token type '${_window_token_type}'"
-          "at line '${_line_string}' in output"
-          "of 'dumpsys window windows'."
-        )
-        _msg_error \
-          "${_msg[*]}" \
-          1
-      fi
+      _window_token_id="${_window_token_id_word#mToken=*\{}"
+      _window_token_type="${_window_token_id_word#mToken=}"
+      _window_token_type="${_window_token_type%\{}"
       for _word in "${_line[@]:3}"; do
         if [[ "${_word}" == "type="* ]]; then
           _token_type="${_word#type=}"

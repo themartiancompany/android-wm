@@ -1318,6 +1318,7 @@ _values_clean() {
   _insets_opened=""
   _insets_param=""
   _insets_params=()
+  _insets_set=""
   _is_floating_layer=""
   _is_im_window=""
   _is_on_screen=""
@@ -1544,6 +1545,7 @@ _dumpsys_json_encode() {
     _insets_opened \
     _insets_param \
     _insets_params=() \
+    _insets_set \
     _is_floating_layer \
     _is_im_window \
     _is_on_screen \

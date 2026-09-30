@@ -193,7 +193,11 @@ _attrs_json_get() {
     _sysuil="${9}" \
     _vsysui="${10}" \
     _wanim="${11}" \
-    _attrs_encode_opts=()
+    _or="${12}" \
+    _if="${13}" \
+    _user_activity_timeout="${14}" \
+    _attrs_encode_opts=() \
+    _msg=()
   if [[ "${_position_layout}" == "" || \
         "${_position}" == "" || \
         "${_layout}" ]]; then
@@ -244,11 +248,32 @@ _attrs_json_get() {
           "${_fit_sides}"
     )
   fi
+  if [[ "${_if}" != "" ]]; then
+    _attrs_encode_opts+=(
+      --arg
+        "if"
+          "${_if}"
+    )
+  fi
+  if [[ "${_user_activity_timeout}" != "" ]]; then
+    _attrs_encode_opts+=(
+      --arg
+        "userActivityTimeout"
+          "${_user_activity_timeout}"
+    )
+  fi
   if [[ "${_adjust}" != "" ]]; then
     _attrs_encode_opts+=(
       --arg
         "adjust"
           "${_adjust}"
+    )
+  fi
+  if [[ "${_or}" != "" ]]; then
+    _attrs_encode_opts+=(
+      --arg
+        "or"
+          "${_or}"
     )
   fi
   if [[ "${_sysuil}" != "" ]]; then
@@ -700,6 +725,9 @@ _window_json_get() {
     "${_sysuil}"
     "${_vsysui}"
     "${_wanim}"
+    "${_or}"
+    "${_if}"
+    "${_user_activity_timeout}"
   )
   _attrs_json_get \
     "${_attrs_json_get_args[@]}"
@@ -1050,6 +1078,7 @@ _values_clean() {
   _fl=""
   _fl_word=""
   _fmt=""
+  _if=""
   _flags=()
   _full_configuration_string=""
   _given_content_insets=""
@@ -1088,6 +1117,7 @@ _values_clean() {
   _layout_sequence_number=""
   _layout_sequence_number_word=""
   _legacy_policy_visibility_after_anim=""
+  _or=""
   _owner_uid=""
   _owner_uid_word=""
   _package=""
@@ -1140,6 +1170,7 @@ _values_clean() {
   _touchable_region_word=""
   _ty=""
   _uid=""
+  _user_activity_timeout=""
   _user_unknown_id=""
   _user_word=""
   _view_obscured=""
@@ -1224,6 +1255,7 @@ _dumpsys_json_encode() {
     _have_frame \
     _have_frame_word \
     _hidden_while_suspended \
+    _if \
     _index \
     _index_display \
     _is_floating_layer \
@@ -1244,6 +1276,7 @@ _dumpsys_json_encode() {
     _line=() \
     _line_index_last \
     _line_string \
+    _or \
     _owner_uid_word \
     _owner_uid \
     _package \
@@ -1294,6 +1327,7 @@ _dumpsys_json_encode() {
     _touchable_insets_word \
     _ty \
     _uid \
+    _user_activity_timeout \
     _user_id \
     _user_unknown_id \
     _user_word \
@@ -1437,7 +1471,13 @@ _dumpsys_json_encode() {
           _ty="${_word#ty=}"
         elif [[ "${_word}" == "fmt="* ]]; then
           _fmt="${_word#fmt=}"
-        elif [[ "${_word}" == "wanim="* ]]; then
+        elif [[ "${_word}" == "or="* ]]; then
+          _or="${_word#or=}"
+        elif [[ "${_word}" == "or="* ]]; then
+          _if="${_word#if=}"
+        elif [[ "${_word}" == "userActivityTimeout="* ]]; then
+          _user_activity_timeout="${_word#userActivityTimeout=}"
+        elif [[ "${_word}" == "if="* ]]; then
           _wanim="${_word#wanim=}"
         elif [[ "${_word}" == "sysuil="* ]]; then
           _sysuil="${_word#sysuil=}"

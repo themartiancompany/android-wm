@@ -1173,6 +1173,9 @@ _values_clean() {
   _has_surface=""
   _has_surface_word=""
   _hidden_while_suspended=""
+  _insets_opened=""
+  _insets_param=""
+  _insets_params=()
   _is_floating_layer=""
   _is_im_window=""
   _is_on_screen=""
@@ -1203,6 +1206,8 @@ _values_clean() {
   _position_layout_word=""
   _prepare_sync_seq_id=""
   _private_flags=()
+  _provided_insets_object_type=""
+  _provided_insets_object_type_word=""
   _requested_height=""
   _requested_height_word=""
   _requested_width=""
@@ -1258,6 +1263,62 @@ _values_clean() {
   _window_token_id=""
   _window_token_id_word=""
   _window_token_type=""
+}
+
+_insets_parse() {
+  local \
+    _insets_params=() \
+    _msg=() \
+    _word \
+    _left \
+    _top \
+    _right \
+    _bottom
+  _top=""
+  _left=""
+  _right=""
+  _bottom=""
+  _insets_params+=(
+    "$@"
+  )
+  for _param in "${_insets_params[@]}"; do
+    if [[ "${_param}" == "left="* ]]; then
+      _left="${_param#left=}}"
+    elif [[ "${_param}" == "top="* ]]; then
+      _top="${_param#top=}}"
+    elif [[ "${_param}" == "right="* ]]; then
+      _right="${_param#right=}}"
+    elif [[ "${_param}" == "bottom="* ]]; then
+      _right="${_param#right=}}"
+    else
+      _msg=(
+        "Unknown parameter '${_param}'."
+      )
+      _msg_error \
+        "${_msg[*]}" \
+        1
+    fi
+  done
+  if [[ "${_left}" != "" ]]; then
+    _insets+=(
+      "${_left}"
+    )
+  fi
+  if [[ "${_top}" != "" ]]; then
+    _insets+=(
+      "${_top}"
+    )
+  fi
+  if [[ "${_right}" != "" ]]; then
+    _insets+=(
+      "${_right}"
+    )
+  fi
+  if [[ "${_bottom}" != "" ]]; then
+    _insets+=(
+      "${_bottom}"
+    )
+  fi
 }
 
 # NOTE:
@@ -1330,6 +1391,9 @@ _dumpsys_json_encode() {
     _if \
     _index \
     _index_display \
+    _insets_opened \
+    _insets_param \
+    _insets_params=() \
     _is_floating_layer \
     _is_im_window \
     _is_on_screen \
@@ -1364,6 +1428,8 @@ _dumpsys_json_encode() {
     _position \
     _prepare_sync_seq_id \
     _private_flags=() \
+    _provided_insets_object_type \
+    _provided_insets_object_type_word \
     _requested_width \
     _requested_width_word \
     _requested_height \
@@ -1640,13 +1706,39 @@ _dumpsys_json_encode() {
         if [[ "${_params_for_rotation_opened}" == "true" ]]; then
           echo
         elif [[ "${_params_for_rotation_opened}" == "false" ]]; then
-          for _word in "${_line[@]:1}"; do
-            if [[ "${_word}" == "type="* ]]; then
-              _token_type="${_word#type=}"
-            elif [[ "${_word}" == "android.os.Binder@"* ]]; then
-              _window_grouping_token="${_word%\}}"
-            elif [[ "${_word}" == "android.os.BinderProxy@"* ]]; then
-              _window_grouping_token="${_word%\}}"
+          _provided_insets_object_type_word="${line[0]}"
+          _provided_insets_object_type="${_provided_insets_object_type_word#providedInsets=}"
+          _provided_insets_object_type="${_provided_insets_object_type%\:}"
+          _line_string="${_line[@]:1}"
+          _line_string="${_line_string#\{}"
+          _line_string="${_line_string%\}}"
+          _line=(
+            ${_line_string}
+          )
+          _insets_params=()
+          _insets_opened="false"
+          for _word in "${_line[@]}"; do
+            if [[ "${_insets_opened}" == "true" ]]; then
+              _insets_param="${_word}"
+              if [[ "${_insets_param}" != "${_insets_param%\}}" ]]; then
+                _insets_param="${_insets_param%\}}"
+                _insets_opened="false"
+              fi
+              _insets_params+=(
+                "${_insets_param}"
+              )
+            elif [[ "${_word}" == "type="* ]]; then
+              _insets_frame_provider_type="${_word#type=}"
+            elif [[ "${_word}" == "source="* ]]; then
+              _nsets_frame_provider_source="${_word%source=}"
+            elif [[ "${_word}" == "insetsSize="* ]]; then
+              _insets_opened="true"
+              _insets_word="${_word#insetsSize=}"
+              _insets_type="${_insets_word%\{}"
+              _insets_param="${_insets_word#${_insets_type}\{}"
+              _insets_params+=(
+                "${_insets_param}"
+              )
             elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
               _window_grouping_token="${_word%\}}"
             else
@@ -1659,6 +1751,20 @@ _dumpsys_json_encode() {
                 1
             fi
           done
+          if [[ "${_insets_opened}" == "false" ]]; then
+            _msg=(
+              "Parsing window provided insets."
+            )
+            _insets=()
+            _insets_parse \
+              "${_insets_params[@]}"
+          else
+            _msg=(
+              "No provided insets."
+            )
+            _msg_info \
+              "${_msg[*]}"
+          fi
     #  providedInsets=InsetsFrameProvider: {type=ITYPE_NAVIGATION_BAR, source=SOURCE_FRAME, insetsSize=Insets{left=0, top=0, right=0, bottom=0}}
           echo
         fi

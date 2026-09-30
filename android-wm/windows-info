@@ -1558,7 +1558,8 @@ _dumpsys_json_encode() {
           _sysuil="${_word#sysuil=}"
         elif [[ "${_word}" == "CENTER_HORIZONTAL" || \
                 "${_word}" == "CENTER_VERTICAL" || \
-                "${_word}" == "RIGHT" ]]; then
+                "${_word}" == "RIGHT" ||
+                "${_word}" == "CENTER" ]]; then
           _msg=(
             "Probably the field unknown word"
             "'${_word}' is the second argument of 'gr'."

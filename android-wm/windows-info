@@ -582,6 +582,27 @@ _window_json_get() {
       "WindowStateAnimator"
         "${_state_animator}"
   )
+  if [[ "${_window_removal_allowed}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "mWindowRemovalAllowed"
+          "${_window_removal_allowed}"
+    )
+  fi
+  if [[ "${_has_surface}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "mHasSurface"
+          "${_has_surface}"
+    )
+  fi
+  if [[ "${_is_ready_for_display}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "isReadyForDisplay()"
+          "${_is_readyForDisplay}"
+    )
+  fi
   if [[ "${_touchable_insets}" != "" ]]; then
     _window_encode_opts+=(
       --arg
@@ -608,6 +629,62 @@ _window_json_get() {
       --json
         "mLastFreezeDuration"
           "${_last_freeze_duration}"
+    )
+  fi
+  if [[ "${_force_seamlessly_rotate}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "mForceSeamlesslyRotate"
+          "${_force_seamlessly_rotate}"
+    )
+  fi
+  if [[ "${_rotate_pending}" != "" ]]; then
+    _window_encode_opts+=(
+      --argjson
+        "seamlesslyRotate"
+          "{ \"pending\": \"${_rotate_pending}\"}"
+    )
+  fi
+  if [[ "${_is_on_screen}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "isOnScreen"
+          "${_is_on_screen}"
+    )
+  fi
+  if [[ "${_is_visible}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "isVisible"
+          "${_is_visible}"
+    )
+  fi
+  if [[ "${_prepare_sync_seq_id}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "mPrepareSyncSeqId"
+          "${_prepare_sync_seq_id}"
+    )
+  fi
+  if [[ "${_is_floating_layer}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "mIsFloatingLayer"
+          "${_is_floating_layer}"
+    )
+  fi
+  if [[ "${_is_im_window}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "mIsImWindow"
+          "${_is_im_window}"
+    )
+  fi
+  if [[ "${_is_wallpaper}" != "" ]]; then
+    _window_encode_opts+=(
+      --arg
+        "mIsWallpaper"
+          "${_is_wallpaper}"
     )
   fi
   _window_encode_opts+=(
@@ -659,6 +736,7 @@ _values_clean() {
   _given_content_insets_word=""
   _given_visible_insets=""
   _given_visible_insets_word=""
+  _force_seamlessly_rotate=""
   _frames_display=""
   _frames_frame=""
   _frames_insets_change=""
@@ -672,8 +750,13 @@ _values_clean() {
   _have_frame_word=""
   _has_surface=""
   _has_surface_word=""
+  _is_floating_layer=""
+  _is_im_window=""
+  _is_on_screen=""
+  _is_wallpaper=""
   _is_ready_for_display=""
   _is_ready_for_display_word=""
+  _is_visible=""
   _last_freeze_duration=""
   _last_hidden=""
   _last_reported_configuration_string=""
@@ -689,6 +772,7 @@ _values_clean() {
   _position=""
   _position_layout=""
   _position_layout_word=""
+  _prepare_sync_seq_id=""
   _private_flags=()
   _requested_height=""
   _requested_height_word=""
@@ -696,6 +780,7 @@ _values_clean() {
   _requested_width_word=""
   _root_task_id=""
   _root_task_id_word=""
+  _rotate_pending=""
   _session_id=""
   _session_id_word=""
   _session_unknown_id=""
@@ -766,6 +851,7 @@ _dumpsys_json_encode() {
     _fl_word \
     _flag \
     _flags=() \
+    _force_seamlessly_rotate \
     _frames_display \
     _frames_frame \
     _frames_insets_change \
@@ -782,10 +868,19 @@ _dumpsys_json_encode() {
     _given_insets_pending_word \
     _given_visible_insets \
     _given_visible_insets_word \
+    _has_surface \
+    _has_surface_word \
     _have_frame \
     _have_frame_word \
     _index \
     _index_display \
+    _is_floating_layer \
+    _is_im_window \
+    _is_on_screen \
+    _is_ready_for_display \
+    _is_ready_for_display_word \
+    _is_visible \
+    _is_wallpaper \
     _last_reported_configuration_string \
     _last_freeze_duration \
     _last_hidden \
@@ -804,6 +899,7 @@ _dumpsys_json_encode() {
     _position_layout_word \
     _position_layout \
     _position \
+    _prepare_sync_seq_id \
     _private_flags=() \
     _requested_width \
     _requested_width_word \
@@ -811,6 +907,7 @@ _dumpsys_json_encode() {
     _requested_height_word \
     _root_task_id \
     _root_task_id_word \
+    _rotate_pending \
     _session_id \
     _session_id_word \
     _show_for_all_users \
@@ -847,6 +944,8 @@ _dumpsys_json_encode() {
     _msg=() \
     _window \
     _window_grouping_token \
+    _window_removal_allowed \
+    _window_removal_allowed_word \
     _window_token_id \
     _window_token_id_word \
     _window_token_type \
@@ -1067,7 +1166,7 @@ _dumpsys_json_encode() {
       _has_surface_word="${_line[0]}"
       _has_surface="${_has_surface_word#mHasSurface=}"
       _is_ready_for_display_word="${_line[1]}"
-      _is_ready_for_display="${_is_ready_for_display_word#mHasSurface=}"
+      _is_ready_for_display="${_is_ready_for_display_word#isReadyForDisplay\(\)=}"
       _window_removal_allowed_word="${_line[2]}"
       _window_removal_allowed="${_window_removal_allowed_word#mWindowRemovalAllowed=}"
     elif [[ "${_line_string}" == "    Frames: "* ]]; then
@@ -1159,6 +1258,38 @@ _dumpsys_json_encode() {
       for _word in "${_line[@]}"; do
         if [[ "${_word}" == "mLastFreezeDuration="* ]]; then
           _last_freeze_duration="${_word#mLastFreezeDuration=}"
+        fi
+      done
+    elif [[ "${_line_string}" == "    mForceSeamlesslyRotate="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "mForceSeamlesslyRotate="* ]]; then
+          _force_seamlessly_rotate="${_word#mForceSeamlesslyRotate=}"
+        elif [[ "${_word}" == "pending="* ]]; then
+          _rotate_pending="${_word#pending=}"
+        elif [[ "${_word}" == "isOnScreen="* ]]; then
+          _is_on_screen="${_word#isOnScreen=}"
+        fi
+      done
+    elif [[ "${_line_string}" == "    isVisible="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "isVisible="* ]]; then
+          _is_visible="${_word#isVisible=}"
+        fi
+      done
+    elif [[ "${_line_string}" == "    mPrepareSyncSeqId="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "mPrepareSyncSeqId="* ]]; then
+          _prepare_sync_seq_id="${_word#mPrepareSyncSeqId=}"
+        fi
+      done
+    elif [[ "${_is_im_window}" == "    mIsImWindow="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "mIsImWindow="* ]]; then
+          _is_im_window="${_word#mIsImWindow=}"
+        elif [[ "${_word}" == "mIsWallpaper="* ]]; then
+          _is_wallpaper="${_word#mIsWallpaper=}"
+        elif [[ "${_word}" == "mIsWallpaper="* ]]; then
+          _is_floating_layer="${_word#mIsFloatingLayer=}"
         fi
       done
     else

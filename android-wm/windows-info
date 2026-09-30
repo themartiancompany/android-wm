@@ -1568,9 +1568,15 @@ _dumpsys_json_encode() {
           _msg=(
             "Unknown property '${_word}'"
             "for 'WindowToken' object."
+            "Line:"
           )
           _msg_error \
             "${_msg[*]}" \
+            0
+          echo \
+            "${_line_string}" \
+            1>2
+          exit \
             1
         fi
         _word_index=$((

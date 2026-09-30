@@ -977,7 +977,9 @@ _dumpsys_json_encode() {
     _line=(
       ${_line_string}
     )
-    if [[ "${_line_string}" == "  Window #"* ]]; then
+    if [[ "${_line_string}" == "WINDOW MANAGER WINDOWS (dumpsys window windows)"* ]]; then
+      true
+    elif [[ "${_line_string}" == "  Window #"* ]]; then
       _index_display="$((
         _index + 1))"
       _msg=(

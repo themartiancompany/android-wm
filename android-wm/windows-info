@@ -1826,7 +1826,7 @@ _dumpsys_json_encode() {
                 "${_msg[*]}" \
                 0
               echo \
-                "${_line_string[*]}" \
+                "${_line_string}" \
                 1>&2
               exit \
                 1
@@ -2052,7 +2052,7 @@ _dumpsys_json_encode() {
             "${_msg[*]}" \
             0
           echo \
-            "${_line}" \
+            "${_line_string}" \
             1>&2
           exit \
             1

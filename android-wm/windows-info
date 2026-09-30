@@ -57,8 +57,9 @@ _root_requirements() {
 # shellcheck disable=SC2034
 _global_variables() {
   get_date=""
-  get_mode=""
   output_format=""
+  get_mode=""
+  strict_mode=""
   color=""
   quiet=""
 }
@@ -857,6 +858,17 @@ _values_clean() {
   _window_token_type=""
 }
 
+# NOTE:
+#   Parsing of the fields
+#   using '*_word' variables
+#   is hard-coded.
+#   Also the program implicitly
+#   assumes some properties
+#   will always be found
+#   on the same line,
+#   still it should come up
+#   if the program is run
+#   with 'strict mode' on.
 _dumpsys_json_encode() {
   local \
     _dumpsys="${1}" \
@@ -1340,8 +1352,14 @@ _dumpsys_json_encode() {
       _msg=(
         "Unparsed line '${_line_string}'."
       )
-      _msg_warning \
-        "${_msg[*]}"
+      if [[ "${_strict_mode}" == "n" ]]; then
+        _msg_warning \
+          "${_msg[*]}"
+      elif [[ "${_strict_mode}" == "y" ]]; then
+        _msg_error \
+          "${_msg[*]}" \
+          1
+      fi
     fi
   done
   # echo \
@@ -1402,8 +1420,9 @@ _full_configuration_string_parse() {
 
 _windows_info() {
   local \
-    _mode="${1}" \
+    _get_mode="${1}" \
     _output_format="${2}" \
+    _strict_mode="${3}" \
     _output_info \
     _cmd=() \
     _activities
@@ -1425,7 +1444,14 @@ _auto_detect_mode() {
     _msg=(
       "Not implemented."
       "Something with 'xdotool'"
-      "needs to be written."
+      "for X.org environment"
+      "and ad-hoc support for"
+      "wayland compositors"
+      "need to be written"
+      "but really this is text"
+      "for a cross-platform"
+      "window manager, not the"
+      "Android one."
     )
     _msg_error \
       "${_msg[*]}" \
@@ -1453,21 +1479,22 @@ _set_overrides() {
     "mode" \
     "$(_auto_detect_mode)"
   _set_override \
-    "get" \
-    "mode" \
-    "$(_auto_detect_mode)"
-  _set_override \
     "output" \
     "format" \
     "json"
+  _set_override \
+    "strict" \
+    "mode" \
+    "n"
 }
 
 # Shows configuration options.
 _show_config() {
   _msg_info "${app_name} configuration"
   _msg_info "     Got activity at date:   ${get_date}"
-  _msg_info "                 Get mode:   ${get_mode}"
+  _msg_info "                Info mode:   ${get_mode}"
   _msg_info "            Output format:   ${output_format}"
+  _msg_info "              Strict mode:   ${strict_mode}"
 }
 
 # Show help usage, with an exit status.
@@ -1491,13 +1518,21 @@ Usage:
 
   options:
 
-     -o                   Output format.
-                          It can be 'json' or 'plain'.
-                          Default: ${output_format}
+     -m <mode>      How to obtain windows information.
+                    It can be 'root' for obtaining them
+                    using 'dumpsys window windows'.
+                    Default: ${output_format}
+     -o <format>    Output format.
+                    It can be 'json' or 'plain'.
+                    Default: ${output_format}
+     -s             Strict mode. If enabled
+                    will stop if finds
+                    an unknown field.
+                    Default: ${strict_mode}
 
-     -h                   This message.
-     -c                   Enable color output.
-     -v                   Enable verbose output
+     -h             This message.
+     -c             Enable color output.
+     -v             Enable verbose output
 
 ENDUSAGETEXT
   _printf \
@@ -1513,7 +1548,7 @@ _global_variables
 # shellcheck disable=SC2034
 while \
   getopts \
-    'm:o:cvh?' \
+    'm:o:scvh?' \
     arg; do
   case \
     "${arg}" in
@@ -1521,6 +1556,8 @@ while \
       override_get_mode="${OPTARG}" ;;
     o)
       override_output_format="${OPTARG}" ;;
+    s)
+      override_strict_mode="y" ;;
     c)
       override_color="y" ;;
     v)
@@ -1548,7 +1585,9 @@ shift \
 _set_overrides
 app_opts=(
   "${get_mode}"
+  "${strict_mode}"
   "${output_format}"
+  "${strict_mode}"
 )
 _show_config
 _windows_info \

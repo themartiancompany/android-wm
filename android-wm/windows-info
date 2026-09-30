@@ -1715,7 +1715,7 @@ _dumpsys_json_encode() {
             0
           echo \
             "${_line_string}" \
-            1>2
+            1>&2
           exit \
             1
         fi

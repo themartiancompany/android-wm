@@ -138,6 +138,7 @@ _window_json_get() {
     _flags_jq_arg \
     _flags_json \
     _flags_encode_opts=() \
+    _keep_clear_areas \
     _msurface \
     _msurface_ecode_opts=() \
     _private_flags_jq_arg \
@@ -687,6 +688,35 @@ _window_json_get() {
           "${_is_wallpaper}"
     )
   fi
+  if [[ "${_areas_restricted}" != "" ]]; then
+    _keep_clear_areas_encode_opts+=(
+      --arg
+        "restricted"
+          "${_areas_restricted}"
+    )
+  fi
+  if [[ "${_areas_unrestricted}" != "" ]]; then
+    _keep_clear_areas_encode_opts+=(
+      --arg
+        "unrestricted"
+          "${_areas_unrestricted}"
+    )
+  fi
+  if [[ "${_areas_restricted}" != "" || \
+        "${_areas_unrestricted}" != "" ]]; then
+    _keep_clear_areas_encode_opts+=(
+      '$ARGS.named'
+    )
+    _keep_clear_areas="$(
+      jq \
+        "${_jq_opts[@]}" \
+        "${_keep_clear_areas_encode_opts[@]}")"
+    _window_encode_opts+=(
+      --argjson
+        "keepClearAreas"
+          "${_keep_clear_areas}"
+    )
+  fi
   _window_encode_opts+=(
     '$ARGS.named'
   )
@@ -716,6 +746,8 @@ _values_clean() {
   _app_user=""
   _app_user_id=""
   _app_user_name=""
+  _area_restricted=""
+  _area_unrestricted=""
   _base_layer=""
   _base_layer_word=""
   _behavior=""
@@ -837,6 +869,8 @@ _dumpsys_json_encode() {
     _app_user_name \
     _app_op \
     _app_op_word \
+    _areas_restricted \
+    _areas_unrestricted \
     _base_layer \
     _base_layer_word \
     _behavior \
@@ -1294,6 +1328,15 @@ _dumpsys_json_encode() {
           _is_floating_layer="${_word#mIsFloatingLayer=}"
         fi
       done
+    elif [[ "${_line_string}" == "    keepClearAreas: "* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "restricted="* ]]; then
+          _areas_restricted="${_word#restricted=}"
+        elif [[ "${_word}" == "unrestricted="* ]]; then
+          _areas_unrestricted="${_word#unrestricted=}"
+        fi
+      done
+      _areas_restricted="${
     else
       _msg=(
         "Unparsed line '${_line_string}'."

@@ -743,7 +743,7 @@ _window_json_get() {
   _session_json_get_args+=(
     "${_session_id}"
     "${_session_object_type}"
-    "${_unknown_session_id}"
+    "${_user_word}"
     "${_uid}"
     "${_app_user_name}"
     "${_client}"

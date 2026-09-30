@@ -1783,6 +1783,7 @@ _dumpsys_json_encode() {
                 "${_sim_word}"
               )
               if [[ "${_sim_word}" == *"}" ]]; then
+                _sim_opened="false"
                 break
               fi
             done
@@ -1815,9 +1816,23 @@ _dumpsys_json_encode() {
           _msg_info \
             "${_msg[*]}"
         elif [[ "${_word}" == *"\}" ]]; then
-          if [[ "${_word}" != "forwardNavigation}" ]]; then
+          if [[ "${_sim_opened}" == "false" ]]; then
+          if [[ "${_strict_mode}" == "y" ]]; then
             _msg=(
-              "Part of an object, ignoring."
+              "Unknown word '${_word}'."
+              "Line:"
+            )
+            _msg_error \
+              "${_msg[*]}" \
+              0
+            echo \
+              "${_line_string[*]}" \
+              1>&2
+            exit \
+              1
+          if [[ "${_strict_mode}" == "y" ]]; then
+            _msg=(
+              "Unknown attribute of an object, ignoring."
             )
             _msg_warning \
               "${_msg[*]}"

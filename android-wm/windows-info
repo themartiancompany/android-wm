@@ -212,6 +212,11 @@ _insets_json_get() {
       "${_jq_opts[@]}" \
       "${_insets_encode_opts[@]}" \
       '$ARGS.named')"
+  _msg=(
+    "Insets JSON: ${_insets_json}"
+  )
+  _msg_info \
+    "${_msg[*]}"
 }
 
 _attrs_json_get() {

@@ -1811,8 +1811,8 @@ _dumpsys_json_encode() {
             elif [[ "${_word}" == "insetsSize="* ]]; then
               _insets_opened="true"
               _insets_word="${_word#insetsSize=}"
-              _insets_type="${_insets_word%\{}"
-              _insets_param="${_insets_word#${_insets_type}\{}"
+              _insets_type="${_insets_word%\{*}"
+              _insets_param="${_insets_type#${_insets_type}\{}"
               _insets_params+=(
                 "${_insets_param}"
               )

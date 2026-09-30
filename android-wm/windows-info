@@ -1426,7 +1426,7 @@ _windows_info() {
     _output_info \
     _cmd=() \
     _activities
-  "_${_mode}_get"
+  "_${_get_mode}_get"
 }
 
 _auto_detect_mode() {

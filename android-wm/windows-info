@@ -741,8 +741,8 @@ _state_animator_json_get() {
 _sim_json_get() {
   local \
     _sim=() \
-    _forward_navigation
-    _param
+    _forward_navigation \
+    _param \
     _sim_adjust \
     _sim_state \
     _sim_encode_opts=() \

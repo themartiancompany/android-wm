@@ -201,7 +201,7 @@ _attrs_json_get() {
     _msg=()
   if [[ "${_position_layout}" == "" || \
         "${_position}" == "" || \
-        "${_layout}" ]]; then
+        "${_layout}" == "" ]]; then
     _msg=(
       "The arguments 'position layout',"
       "'position' and 'layout' are mandatory."

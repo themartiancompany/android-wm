@@ -184,11 +184,14 @@ _insets_json_get() {
   local \
     _insets=() \
     _insets_encode_opts=() \
-    _direction
+    _index \
+    _inset \
+    _key \
+    _msg=()
   insets+=(
     "$@"
   )
-  for _index in $(seq 0 3);; do
+  for _index in $(seq 0 3); do
     _inset="${_insets["${_index}"]}"
     if [[ "${_inset}" != "" ]]; then
       if [[ "${_index}" == 0 ]]; then

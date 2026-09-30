@@ -420,6 +420,20 @@ _window_json_get() {
           "${_last_hidden}"
     )
   fi
+  if [[ "${_enter_animation_pending}" != "" ]]; then
+    _state_animator_encode_opts+=(
+      --argjson
+        "mEnterAnimationPending"
+          "${_enter_animation_pending}"
+    )
+  fi
+  if [[ "${_system_decor_rect}" != "" ]]; then
+    _state_animator_encode_opts+=(
+      --argjson
+        "mSystemDecorRect"
+          "${_system_decor_rect}"
+    )
+  fi
   if [[ "${_msurface}" != "" ]]; then
     _state_animator_encode_opts+=(
       --argjson
@@ -627,6 +641,7 @@ _values_clean() {
   _display_id=""
   _display_id_word=""
   _draw_state=""
+  _enter_animation_pending=""
   _fit_sides=""
   _fit_sides_word=""
   _fl=""
@@ -694,6 +709,7 @@ _values_clean() {
   _surface_shown=""
   _surface_transform=()
   _surface_transform_word=""
+  _system_decor_rect=""
   _token_type=""
   _touchable_insets=""
   _touchable_insets_word=""
@@ -735,6 +751,7 @@ _dumpsys_json_encode() {
     _client \
     _client_word \
     _draw_state \
+    _enter_animation_pending \
     _fit_sides \
     _fit_sides_word \
     _fl \
@@ -804,6 +821,7 @@ _dumpsys_json_encode() {
     _surface_transform_word \
     _sub_layer \
     _sub_layer_word \
+    _system_decor_rect \
     _token_type \
     _touchable_insets \
     _touchable_insets_word \
@@ -1118,6 +1136,14 @@ _dumpsys_json_encode() {
           _draw_state="${_word#mDrawState=}"
         elif [[ "${_word}" == "mLastHidden="* ]]; then
           _last_hidden="${_word#mLastHidden=}"
+        fi
+      done
+    elif [[ "${_line_string}" == "      mEnterAnimationPending="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "mEnterAnimationPending="* ]]; then
+          _enter_animation_pending="${_word#mEnterAnimationPending=}"
+        elif [[ "${_word}" == "mSystemDecorRect="* ]]; then
+          _system_decor_rect="${_word#mSystemDecorRect=}"
         fi
       done
     else

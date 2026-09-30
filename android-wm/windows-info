@@ -1769,7 +1769,12 @@ _dumpsys_json_encode() {
         _fit_sides="${_fit_sides#%\}}"
         _attrs_opened="false"
       fi
-    elif [[ "${_line_string}" == " ' providedInsets=InsetsFrameProvider:"* ]]; then
+    elif [[ "${_line_string}" == " providedInsets=InsetsFrameProvider:"* ]]; then
+      _msg=(
+        "Parsing provided insets line."
+      )
+      _msg_info \
+        "${_msg[*]}"
       if [[ "${_attrs_opened}" == "true" ]]; then
         if [[ "${_params_for_rotation_opened}" == "true" ]]; then
           echo

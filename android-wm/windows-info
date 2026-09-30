@@ -408,28 +408,28 @@ _window_json_get() {
   )
   if [[ "${_draw_state}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --argjson
+      --json
         "mDrawState"
           "${_draw_state}"
     )
   fi
   if [[ "${_last_hidden}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --argjson
+      --json
         "mLastHidden"
           "${_last_hidden}"
     )
   fi
   if [[ "${_enter_animation_pending}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --argjson
+      --json
         "mEnterAnimationPending"
           "${_enter_animation_pending}"
     )
   fi
   if [[ "${_system_decor_rect}" != "" ]]; then
     _state_animator_encode_opts+=(
-      --argjson
+      --json
         "mSystemDecorRect"
           "${_system_decor_rect}"
     )
@@ -603,6 +603,13 @@ _window_json_get() {
           "${_touchable_region}"
     )
   fi
+  if [[ "${_last_freeze_duration}" != "" ]]; then
+    _window_encode_opts+=(
+      --json
+        "mLastFreezeDuration"
+          "${_last_freeze_duration}"
+    )
+  fi
   _window_encode_opts+=(
     '$ARGS.named'
   )
@@ -667,8 +674,9 @@ _values_clean() {
   _has_surface_word=""
   _is_ready_for_display=""
   _is_ready_for_display_word=""
-  _last_reported_configuration_string=""
+  _last_freeze_duration=""
   _last_hidden=""
+  _last_reported_configuration_string=""
   _layout=""
   _layout_sequence_number=""
   _layout_sequence_number_word=""
@@ -779,6 +787,7 @@ _dumpsys_json_encode() {
     _index \
     _index_display \
     _last_reported_configuration_string \
+    _last_freeze_duration \
     _last_hidden \
     _layout \
     _layout_sequence_number_word \
@@ -1144,6 +1153,12 @@ _dumpsys_json_encode() {
           _enter_animation_pending="${_word#mEnterAnimationPending=}"
         elif [[ "${_word}" == "mSystemDecorRect="* ]]; then
           _system_decor_rect="${_word#mSystemDecorRect=}"
+        fi
+      done
+    elif [[ "${_line_string}" == "    mLastFreezeDuration="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "mLastFreezeDuration="* ]]; then
+          _last_freeze_duration="${_word#mLastFreezeDuration=}"
         fi
       done
     else

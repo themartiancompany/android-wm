@@ -1424,9 +1424,9 @@ _dumpsys_json_encode() {
       _layout="${_position_layout#*)}"
       _word_index=0
       for _word in "${_line[@]:1}"; do
-        elif [[ "${_word}" == "adjust="* ]]; then
+        if [[ "${_word}" == "adjust="* ]]; then
           _adjust="${_word#adjust=}}"
-        if [[ "${_word}" == "gr="* ]]; then
+        elif [[ "${_word}" == "gr="* ]]; then
           _gr+=(
             "${_word#gr=}"
             "${_line["$((_word_index + 1))"]}"

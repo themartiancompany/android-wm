@@ -1080,7 +1080,7 @@ _dumpsys_json_encode() {
         _line_index_last=$((
           _line_length - 1))
         _word_index_end=$((
-          _line_index_last - 2 ))
+          _line_index_last - 1 ))
         _surface_transform+=(
           "${_line[@]:${_surface_index}:${_word_index_end}}"
         )

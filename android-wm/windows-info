@@ -180,6 +180,40 @@ _session_json_get() {
       '$ARGS.named')"
 }
 
+_insets_json_get() {
+  local \
+    _insets=() \
+    _insets_encode_opts=() \
+    _direction
+  insets+=(
+    "$@"
+  )
+  for _index in $(seq 0 3);; do
+    _inset="${_insets["${_index}"]}"
+    if [[ "${_inset}" != "" ]]; then
+      if [[ "${_index}" == 0 ]]; then
+        _key="left"
+      elif [[ "${_index}" == 1 ]]; then
+        _key="top"
+      elif [[ "${_index}" == 2 ]]; then
+        _key="right"
+      elif [[ "${_index}" == 3 ]]; then
+        _key="bottom"
+      fi
+      _insets_encode_opts+=(
+        --arg
+          "${_key}" \
+            "${_inset}"
+      )
+    fi
+  done
+  _insets_json="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_insets_encode_opts[@]}" \
+      '$ARGS.named')"
+}
+
 _attrs_json_get() {
   local \
     _position_layout="${1}" \
@@ -197,6 +231,7 @@ _attrs_json_get() {
     _if="${13}" \
     _user_activity_timeout="${14}" \
     _sim_json="${15}" \
+    _provided_insets_json="${16}" \
     _attrs_encode_opts=() \
     _msg=()
   if [[ "${_position_layout}" == "" || \
@@ -233,6 +268,13 @@ _attrs_json_get() {
       --argjson
         "pfl"
           "${_private_flags_json}"
+    )
+  fi
+  if [[ "${_provided_insets_json}" != "" ]]; then
+    _attrs_encode_opts+=(
+      --argjson
+        "providedInsets"
+          "${_provided_insets_json}"
     )
   fi
   if [[ "${_behavior}" != "" ]]; then
@@ -713,6 +755,11 @@ _sim_json_get() {
     '$ARGS.named')"
 }
 
+_provided_insets_json() {
+  local \
+    _insets
+}
+
 _window_json_get() {
   local \
     _msg=() \
@@ -727,6 +774,7 @@ _window_json_get() {
     _msurface_json \
     _msurface_json_get_args=() \
     _private_flags_json \
+    _provided_insets_json \
     _session_json \
     _session_json_get_args=() \
     _sim_json \
@@ -743,6 +791,7 @@ _window_json_get() {
   _attrs_json=""
   _frames_json=""
   _msurface_json=""
+  _provided_insets_json=""
   _session_json=""
   _sim_json=""
   _surface_json=""
@@ -771,6 +820,9 @@ _window_json_get() {
     "${_private_flags[@]}"
   _sim_json_get \
     "${_sim}"
+  _insets_json_get \
+    "${_insets[@]}"
+  # _provided_insets_json
   _attrs_json_get_args+=(
     "${_position_layout}"
     "${_position}"
@@ -787,6 +839,7 @@ _window_json_get() {
     "${_if}"
     "${_user_activity_timeout}"
     "${_sim_json}"
+    "${_provided_insets_json}"
   )
   _msg=(
     "Running '_attrs_json_get'"
@@ -1391,6 +1444,7 @@ _dumpsys_json_encode() {
     _if \
     _index \
     _index_display \
+    _insets=() \
     _insets_opened \
     _insets_param \
     _insets_params=() \

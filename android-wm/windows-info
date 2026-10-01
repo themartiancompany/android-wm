@@ -539,6 +539,7 @@ _token_json_get() {
       )
       _msg_warning \
         "${_msg[*]}"
+    fi
   fi
   _msg=(
     "Running jq with options"

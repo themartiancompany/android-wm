@@ -2366,8 +2366,15 @@ _dumpsys_json_encode() {
       "windows"
         "${_windows_jq_arg}"
   )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts}"
+    "${_windows_encode_opts[@]}"
+  )
+  _msg_info \
+    "${_msg[*]}"
   jq \
-    "${_jq_args[@]}" \
+    "${_jq_opts[@]}" \
     "${_windows_encode_opts[@]}" \
     '$ARGS.named.windows'
 }

@@ -2074,9 +2074,9 @@ _dumpsys_json_encode() {
         elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
           _window_grouping_token="${_word%\}}"
         elif [[ "${_window_token_type}" == "ActivityRecord" ]]; then
-          if [[ "${_word#u}" =~ $_is_number ]]; then
+          if [[ ${_word#u} =~ $_is_number ]]; then
             _msg=(
-              "Invalid user '${_word}'."
+              "Invalid user '${_word#u}'."
             )
             _msg_error \
               "${_msg[*]}" \

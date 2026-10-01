@@ -2074,14 +2074,8 @@ _dumpsys_json_encode() {
         elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
           _window_grouping_token="${_word%\}}"
         elif [[ "${_window_token_type}" == "ActivityRecord" ]]; then
-          if ! [[ ${_word#u} =~ $_is_number ]]; then
-            _msg=(
-              "Invalid user '${_word#u}'."
-            )
-            _msg_error \
-              "${_msg[*]}" \
-              1
-              _token_activity_record_user="${_word}"
+          if [[ ${_word#u} =~ $_is_number ]]; then
+            _token_activity_record_user="${_word}"
           elif [[ "${_word}" == *"}" ]]; then
             if [[ "${_activity_record_opened}" == "false" ]]; then
               _activity_check="${_word%\}}"
@@ -2100,6 +2094,13 @@ _dumpsys_json_encode() {
             else
               _activity_record_unknown_id="${_word%\}}"
             fi
+          else
+            _msg=(
+              "Invalid user '${_word#u}'."
+            )
+            _msg_error \
+              "${_msg[*]}" \
+              1
           fi
         fi
         else

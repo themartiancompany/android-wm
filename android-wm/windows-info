@@ -2102,7 +2102,6 @@ _dumpsys_json_encode() {
               "${_msg[*]}" \
               1
           fi
-        fi
         else
           _msg=(
             "Unknown property '${_word}'"

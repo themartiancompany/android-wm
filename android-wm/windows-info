@@ -1558,6 +1558,8 @@ _dumpsys_json_encode() {
     _given_insets_pending_word \
     _given_visible_insets \
     _given_visible_insets_word \
+    _gr_index \
+    _gr_word_index \
     _gr=() \
     _has_surface \
     _has_surface_word \
@@ -1785,10 +1787,21 @@ _dumpsys_json_encode() {
         if [[ "${_word}" == "adjust="* ]]; then
           _adjust="${_word#adjust=}}"
         elif [[ "${_word}" == "gr="* ]]; then
+          _gr_word_index=$((
+            _word_index + 1 ))
           _gr+=(
             "${_word#gr=}"
-            "${_line["$((_word_index + 1))"]}"
           )
+          for _gr_index \
+            in "${_line[@]:${_gr_word_index}}"; do
+            if [[ "${_word}" == *"="* ]]; then
+              break
+            else
+              _gr+=(
+                "${_word}"
+              )
+            fi
+          done
         elif [[ "${_word}" == "layoutInDisplayCutoutMode"* ]]; then
           _layout_in_display_cutout_mode="${_word#layoutInDisplayCutoutMode}}"
         elif [[ "${_word}" == "ty="* ]]; then

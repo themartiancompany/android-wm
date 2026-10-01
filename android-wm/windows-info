@@ -2540,7 +2540,7 @@ Usage:
      -m <mode>      How to obtain windows information.
                     It can be 'root' for obtaining them
                     using 'dumpsys window windows'.
-                    Default: ${output_format}
+                    Default: ${get_mode}
      -o <format>    Output format.
                     It can be 'json' or 'plain'.
                     Default: ${output_format}

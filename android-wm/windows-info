@@ -66,8 +66,10 @@ _global_variables() {
 
 _root_get() {
   local \
+    _output_format="${1}" \
+    _strict_mode="${2}" \
     _dumpsys \
-    _cmd \
+    _cmd=() \
     _msg=() \
     _permissions_error_start=() \
     _permissions_error_end=() \
@@ -91,11 +93,6 @@ _root_get() {
         "window"
         "windows"
     )
-    # _cmd=(
-    #   "/system/bin/dumpsys"
-    #     "activity"
-    #     "activities"
-    # )
   elif (( "${_sdk}" < 28 )); then
     _cmd=(
       "/system/bin/dumpsys"
@@ -2445,11 +2442,10 @@ _windows_info() {
   local \
     _get_mode="${1}" \
     _output_format="${2}" \
-    _strict_mode="${3}" \
-    _output_info \
-    _cmd=() \
-    _activities
-  "_${_get_mode}_get"
+    _strict_mode="${3}"
+  "_${_get_mode}_get" \
+    "${_output_format}" \
+    "${_strict_mode}"
 }
 
 _auto_detect_mode() {

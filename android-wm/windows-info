@@ -2082,7 +2082,7 @@ _dumpsys_json_encode() {
               "${_msg[*]}" \
               1
               _token_activity_record_user="${_word}"
-          if [[ "${_word}" == *"}" ]]; then
+          elif [[ "${_word}" == *"}" ]]; then
             if [[ "${_activity_record_opened}" == "false" ]]; then
               _activity_check="${_word%\}}"
               if [[ "${_activity_check}" != "${_activity}" ]]; then

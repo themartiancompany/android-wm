@@ -488,8 +488,10 @@ _token_json_get() {
   local \
     _window_token_id="${1}" \
     _token_type="${2}" \
-    _window_token_type="${3}" \
-    _window_grouping_token="${4}" \
+    _token_activity_record_user="${3}" \
+    _activity_record_unknown_id="${4}" \
+    _window_token_type="${5}" \
+    _window_grouping_token="${6}" \
     _msg=() \
     _token_encode_opts=()
   _msg=(
@@ -522,6 +524,21 @@ _token_json_get() {
     _msg_error \
       "${_msg[*]}" \
       1
+  fi
+  if [[ "${_activity_record_unknown_id}" != "" ]]; then
+    _token_encode_opts+=(
+      --arg
+        "activity-record-unknown-id"
+          "${_activity_record_unknown_id}"
+    )
+  else
+    if [[ "${_window_token_type}" == "ActivityRecorder" ]]; then
+      _msg=(
+        "An 'ActivityRecorder' without the unknown"
+        "id."
+      )
+      _msg_warning \
+        "${_msg[*]}"
   fi
   _msg=(
     "Running jq with options"
@@ -940,6 +957,8 @@ _window_json_get() {
   _token_json_get_args+=(
     "${_window_token_id}"
     "${_token_type}"
+    "${_token_activity_record_user}"
+    "${_activity_record_unknown_id}"
     "${_window_token_type}"
     "${_window_grouping_token}"
   )
@@ -1266,6 +1285,9 @@ _window_json_get() {
 }
 
 _values_clean() {
+  _activity_check=""
+  _activity_record_opened=""
+  _activity_record_unknown_id=""
   _adjust=""
   _app_op=""
   _app_op_word=""
@@ -1384,6 +1406,7 @@ _values_clean() {
   _surface_transform_word=""
   _system_decor_rect=""
   _sysuil=""
+  _token_activity_record_user=""
   _token_type=""
   _touchable_insets=""
   _touchable_insets_word=""
@@ -1487,6 +1510,9 @@ _dumpsys_json_encode() {
     _dumpsys_window_windows=() \
     _id \
     _activity \
+    _activity_check \
+    _activity_record_opened \
+    _activity_record_unknown_id \
     _activity_word \
     _adjust \
     _app_user \
@@ -1616,6 +1642,7 @@ _dumpsys_json_encode() {
     _sub_layer_word \
     _system_decor_rect \
     _sysuil \
+    _token_activity_record_user \
     _token_type \
     _touchable_insets \
     _touchable_insets_word \
@@ -2033,6 +2060,7 @@ _dumpsys_json_encode() {
       _window_token_id="${_window_token_id_word#mToken=*\{}"
       _window_token_type="${_window_token_id_word#mToken=}"
       _window_token_type="${_window_token_type%\{*}"
+      _activity_record_opened="false"
       for _word in "${_line[@]:3}"; do
         if [[ "${_word}" == "type="* ]]; then
           _token_type="${_word#type=}"
@@ -2042,6 +2070,36 @@ _dumpsys_json_encode() {
           _window_grouping_token="${_word%\}}"
         elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
           _window_grouping_token="${_word%\}}"
+        elif [[ "${_window_token_type}" == "ActivityRecord" ]]; then
+          _re='^[0-9]+$'
+          if [[ "${_word#u}" =~ $re ]]; then
+            _msg=(
+              "Invalid user '${_word}'."
+            )
+            _msg_error \
+              "${_msg[*]}" \
+              1
+              _token_activity_record_user="${_word}"
+          if [[ "${_word}" == *"}" ]]; then
+            if [[ "${_activity_record_opened}" == "false" ]]; then
+              _activity_check="${_word%\}}"
+              if [[ "${_activity_check}" != "${_activity}" ]]; then
+                _msg=(
+                  "Window token has an ActivityRecord"
+                  "for an activity '${_activity_check}'"
+                  "different from the"
+                  "activity '${_activity}'"
+                  "the window belongs to."
+                )
+                _msg_warning \
+                  "${_msg}"
+              fi
+              _activity_record_opened="true"
+            else
+              _activity_record_unknown_id="${_word%\}}"
+            fi
+          fi
+        fi
         else
           _msg=(
             "Unknown property '${_word}'"

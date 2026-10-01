@@ -488,10 +488,11 @@ _token_json_get() {
   local \
     _window_token_id="${1}" \
     _token_type="${2}" \
-    _token_activity_record_user="${3}" \
-    _activity_record_unknown_id="${4}" \
-    _window_token_type="${5}" \
-    _window_grouping_token="${6}" \
+    _token_token="${3}" \
+    _token_activity_record_user="${4}" \
+    _activity_record_unknown_id="${5}" \
+    _window_token_type="${6}" \
+    _window_grouping_token="${7}" \
     _msg=() \
     _token_encode_opts=()
   _msg=(
@@ -540,6 +541,13 @@ _token_json_get() {
       _msg_warning \
         "${_msg[*]}"
     fi
+  fi
+  if [[ "${_token_token}" != "" ]]; then
+    _token_encode_opts+=(
+      --arg
+        "token"
+          "${_token_token}"
+    )
   fi
   _msg=(
     "Running jq with options"
@@ -958,6 +966,7 @@ _window_json_get() {
   _token_json_get_args+=(
     "${_window_token_id}"
     "${_token_type}"
+    "${_token_token}"
     "${_token_activity_record_user}"
     "${_activity_record_unknown_id}"
     "${_window_token_type}"
@@ -1408,6 +1417,7 @@ _values_clean() {
   _system_decor_rect=""
   _sysuil=""
   _token_activity_record_user=""
+  _token_token=""
   _token_type=""
   _touchable_insets=""
   _touchable_insets_word=""
@@ -1647,6 +1657,7 @@ _dumpsys_json_encode() {
     _system_decor_rect \
     _sysuil \
     _token_activity_record_user \
+    _token_token \
     _token_type \
     _touchable_insets \
     _touchable_insets_word \
@@ -2081,6 +2092,8 @@ _dumpsys_json_encode() {
       for _word in "${_line[@]:3}"; do
         if [[ "${_word}" == "type="* ]]; then
           _token_type="${_word#type=}"
+        elif [[ "${_word}" == "token="* ]]; then
+          _token_token="${_word#token=}"
         elif [[ "${_word}" == "android.os.Binder@"* ]]; then
           _window_grouping_token="${_word%\}}"
         elif [[ "${_word}" == "android.os.BinderProxy@"* ]]; then

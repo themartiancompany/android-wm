@@ -2383,10 +2383,11 @@ _dumpsys_json_encode() {
 _full_configuration_string_parse() {
   local \
     _full_configuration_string="${1}" \
+    _full_configuration=() \
     _line=() \
     _win_config_flag \
     _word
-  _line=(
+  _full_configuration=(
     ${_full_configuration_string}
   )
   _win_config_flag="false"

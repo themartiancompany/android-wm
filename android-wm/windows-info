@@ -1887,7 +1887,7 @@ _dumpsys_json_encode() {
                 1>&2
               exit \
                 1
-            elif [[ "${_strict_mode}" == "y" ]]; then
+            elif [[ "${_strict_mode}" == "n" ]]; then
               _msg=(
                 "Unknown attribute of an object, ignoring."
               )
@@ -2345,7 +2345,8 @@ _dumpsys_json_encode() {
     # ' providedInsets=InsetsFrameProvider: {type=ITYPE_NAVIGATION_BAR, source=SOURCE_FRAME, insetsSize=Insets{left=0, top=0, right=0, bottom=0}}
     else
       _msg=(
-        "Unparsed line '${_line_string}'."
+        "Window '${_index}',"
+        "unparsed line '${_line_string}'."
       )
       if [[ "${_strict_mode}" == "n" ]]; then
         _msg_warning \

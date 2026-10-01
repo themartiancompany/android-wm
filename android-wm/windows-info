@@ -873,7 +873,6 @@ _provided_insets_json() {
 _window_json_get() {
   local \
     _msg=() \
-    _jq_opts=() \
     _attrs_json \
     _attrs_json_get_args=() \
     _frames_json \
@@ -911,9 +910,6 @@ _window_json_get() {
   )
   _msg_info \
     "${_msg[*]}"
-  _jq_opts+=(
-    -n
-  )
   _session_json_get_args+=(
     "${_session_id}"
     "${_session_object_type}"
@@ -1593,6 +1589,7 @@ _dumpsys_json_encode() {
     _is_ready_for_display_word \
     _is_visible \
     _is_wallpaper \
+    _jq_opts=() \
     _last_reported_configuration_string \
     _last_freeze_duration \
     _last_hidden \
@@ -1683,9 +1680,14 @@ _dumpsys_json_encode() {
     _window_token_id_word \
     _window_token_type \
     _windows=() \
+    _windows_encode_opts=() \
+    _windows_jq_arg \
     _word \
     _word_index \
     _word_index_end
+  _jq_opts+=(
+    -n
+  )
   _is_number='^[0-9]+$'
   _msg=(
     "Encoding dumpsys output"
@@ -2355,8 +2357,19 @@ _dumpsys_json_encode() {
       fi
     fi
   done
-  # echo \
-  #   "${_window}"
+  _windows_jq_arg="[$(
+    IFS=","; \
+    echo \
+      "${_windows[*]}")]"
+  _windows_encode_opts+=(
+    --argjson
+      "windows"
+        "${_windows_jq_arg}"
+  )
+  jq \
+    "${_jq_args[@]}" \
+    "${_windows_encode_opts[@]}" \
+    '$ARGS.named.windows'
 }
 
 _full_configuration_string_parse() {

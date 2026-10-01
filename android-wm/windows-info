@@ -1843,7 +1843,7 @@ _dumpsys_json_encode() {
           )
           _msg_info \
             "${_msg[*]}"
-        elif [[ "${_word}" == *"\}" ]]; then
+        elif [[ "${_word}" == *"}" ]]; then
           if [[ "${_sim_opened}" == "false" ]]; then
             if [[ "${_strict_mode}" == "y" ]]; then
               _msg=(

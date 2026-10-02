@@ -2452,7 +2452,8 @@ _windows_info() {
   local \
     _get_mode="${1}" \
     _output_format="${2}" \
-    _strict_mode="${3}"
+    _strict_mode="${3}" \
+    _silent_mode="${4}"
   "_${_get_mode}_get" \
     "${_output_format}" \
     "${_silent_mode}" \

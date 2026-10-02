@@ -60,6 +60,7 @@ _global_variables() {
   output_format=""
   get_mode=""
   strict_mode=""
+  silent_mode=""
   color=""
   quiet=""
 }
@@ -68,6 +69,7 @@ _root_get() {
   local \
     _output_format="${1}" \
     _strict_mode="${2}" \
+    _silent_mode="${3}" \
     _dumpsys \
     _cmd=() \
     _msg=() \
@@ -539,12 +541,14 @@ _token_json_get() {
     )
   else
     if [[ "${_window_token_type}" == "ActivityRecorder" ]]; then
-      _msg=(
-        "An 'ActivityRecorder' without the unknown"
-        "id."
-      )
-      _msg_warning \
-        "${_msg[*]}"
+      if [[ "${_silent_mode}" == "n" ]]; then
+        _msg=(
+          "An 'ActivityRecorder' without the unknown"
+          "id."
+        )
+        _msg_warning \
+          "${_msg[*]}"
+      fi
     fi
   fi
   if [[ "${_token_token}" != "" ]]; then
@@ -1893,11 +1897,13 @@ _dumpsys_json_encode() {
               exit \
                 1
             elif [[ "${_strict_mode}" == "n" ]]; then
-              _msg=(
-                "Unknown attribute of an object, ignoring."
-              )
-              _msg_warning \
-                "${_msg[*]}"
+              if [[ "${_silent_modeh}" == "n" ]]; then
+                _msg=(
+                  "Unknown attribute of an object, ignoring."
+                )
+                _msg_warning \
+                  "${_msg[*]}"
+              fi
             fi
           fi
         else
@@ -2114,15 +2120,17 @@ _dumpsys_json_encode() {
             if [[ "${_activity_record_opened}" == "false" ]]; then
               _activity_check="${_word%\}}"
               if [[ "${_activity_check}" != "${_activity}" ]]; then
-                _msg=(
-                  "Window token has an ActivityRecord"
-                  "for an activity '${_activity_check}'"
-                  "different from the"
-                  "activity '${_activity}'"
-                  "the window belongs to."
-                )
-                _msg_warning \
-                  "${_msg}"
+                if [[ "${_silent_mode}" == "n" ]]; then
+                  _msg=(
+                    "Window token has an ActivityRecord"
+                    "for an activity '${_activity_check}'"
+                    "different from the"
+                    "activity '${_activity}'"
+                    "the window belongs to."
+                  )
+                  _msg_warning \
+                    "${_msg}"
+                fi
               fi
               _activity_record_opened="true"
             else
@@ -2353,7 +2361,9 @@ _dumpsys_json_encode() {
         "Window '${_index}',"
         "unparsed line '${_line_string}'."
       )
-      if [[ "${_strict_mode}" == "n" ]]; then
+      if [[ "${_silent_mode}" == "y" ]]; then
+        true
+      elif [[ "${_strict_mode}" == "n" ]]; then
         _msg_warning \
           "${_msg[*]}"
       elif [[ "${_strict_mode}" == "y" ]]; then
@@ -2445,6 +2455,7 @@ _windows_info() {
     _strict_mode="${3}"
   "_${_get_mode}_get" \
     "${_output_format}" \
+    "${_silent_mode}" \
     "${_strict_mode}"
 }
 
@@ -2505,6 +2516,10 @@ _set_overrides() {
     "strict" \
     "mode" \
     "n"
+  _set_override \
+    "silent" \
+    "mode" \
+    "n"
 }
 
 # Shows configuration options.
@@ -2514,6 +2529,7 @@ _show_config() {
   _msg_info "                Info mode:   ${get_mode}"
   _msg_info "            Output format:   ${output_format}"
   _msg_info "              Strict mode:   ${strict_mode}"
+  _msg_info "              Silent mode:   ${silent_mode}"
 }
 
 # Show help usage, with an exit status.
@@ -2548,6 +2564,10 @@ Usage:
                     will stop if finds
                     an unknown field.
                     Default: ${strict_mode}
+     -v             Silent mode. If enabled
+                    it won't print warnings onto
+                    stderr.
+                    Default: ${silent_mode}
 
      -h             This message.
      -c             Enable color output.
@@ -2567,7 +2587,7 @@ _global_variables
 # shellcheck disable=SC2034
 while \
   getopts \
-    'm:o:scvh?' \
+    'm:o:sqcvh?' \
     arg; do
   case \
     "${arg}" in
@@ -2577,6 +2597,8 @@ while \
       override_output_format="${OPTARG}" ;;
     s)
       override_strict_mode="y" ;;
+    q)
+      override_silent_mode="y" ;;
     c)
       override_color="y" ;;
     v)
@@ -2605,6 +2627,7 @@ _set_overrides
 app_opts=(
   "${get_mode}"
   "${output_format}"
+  "${silent_mode}"
   "${strict_mode}"
 )
 _show_config

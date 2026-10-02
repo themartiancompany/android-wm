@@ -2575,7 +2575,7 @@ Usage:
                     will stop if finds
                     an unknown field.
                     Default: ${strict_mode}
-     -v             Silent mode. If enabled
+     -q             Silent mode. If enabled
                     it won't print warnings onto
                     stderr.
                     Default: ${silent_mode}

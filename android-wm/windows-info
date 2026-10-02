@@ -1897,7 +1897,7 @@ _dumpsys_json_encode() {
               exit \
                 1
             elif [[ "${_strict_mode}" == "n" ]]; then
-              if [[ "${_silent_modeh}" == "n" ]]; then
+              if [[ "${_silent_mode}" == "n" ]]; then
                 _msg=(
                   "Unknown attribute of an object, ignoring."
                 )

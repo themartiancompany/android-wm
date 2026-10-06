@@ -259,11 +259,6 @@ _root_get() {
           --raw-output \
           '.[]."mToken"."id"')
     )
-    echo \
-      "${_windows_json}" |
-      jq \
-        --raw-output \
-        '.[]."mAppDied"'
     _opened+=( $(
       echo \
         "${_windows_json}" |
@@ -302,6 +297,7 @@ _root_get() {
             "${_description}"
           )
         fi
+        echo "hi"
         if [[ "${_package_enabled}" == "true" ]]; then
           _filter_package=(
             "${_jq_filter[*]} |"

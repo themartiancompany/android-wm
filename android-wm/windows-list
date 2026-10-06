@@ -99,7 +99,7 @@ _windows_get() {
       "${_cmd[*]}")"
   _windows="$(
     echo \
-      "${_dupmsys}" |
+      "${_dumpsys}" |
       grep \
         "  Window #" |
         sort \

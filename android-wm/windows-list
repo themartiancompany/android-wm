@@ -230,7 +230,7 @@ _root_get() {
             'select('
               '."task-id"=="'${_task_id#t}'") |'
                 'select('
-                  '"id"=="'${_token}'")'
+                  '."id"=="'${_token}'")'
         )
         _description="$(
           echo \

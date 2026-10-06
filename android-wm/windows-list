@@ -229,6 +229,11 @@ _output_template_auto_detect() {
     "window"
     "open"
     "title"
+  )
+  _set_override \
+    "output" \
+    "template" \
+    "${_template[*]}"
 }
 
 _title_format_check() {
@@ -271,6 +276,7 @@ _set_overrides() {
     "title" \
     "format" \
     "description app"
+  _title_format_check
   _set_override \
     "output" \
     "format" \

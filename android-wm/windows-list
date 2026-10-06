@@ -202,14 +202,14 @@ _root_get() {
         "${_windows_json}" |
         jq \
           --raw-output \
-          '[]."activity"')
+          '.[]."activity"')
     )
     _tasks_ids=( $(
       echo \
         "${_windows_json}" |
         jq \
           --raw-output \
-          '[]."mToken"."activity-record-unknown-id"' |
+          '.[]."mToken"."activity-record-unknown-id"' |
         sed \
           "s/^t//g")
     )
@@ -218,7 +218,7 @@ _root_get() {
         "${_windows_json}" |
         jq \
           --raw-output \
-          '[]."mToken"."id"')
+          '.[]."mToken"."id"')
     )
     _index=0
     for _task_id in "${_tasks_ids[@]}"; do

@@ -446,9 +446,8 @@ _root_get() {
                 "${_msg[*]}"
             else
               _filter_history=(
-                '.[] |'
-                  'select('
-                    '."task-id"=="'${_task_id#t}'") |'
+                'select('
+                  '."task-id"=="'${_task_id#t}'") |'
                 '."history"'
               )
               echo \

@@ -133,7 +133,11 @@ _root_get() {
     _infos_flag \
     _jq_filter=() \
     _line=() \
+    _lines=() \
     _msg=() \
+    _open \
+    _open_enabled \
+    _opened=() \
     _package \
     _package_enabled \
     _packages=() \
@@ -181,6 +185,10 @@ _root_get() {
     fi
     if [[ "${_field}" == "process" ]]; then
       _process_enabled="true"
+      _infos_flag="true"
+    fi
+    if [[ "${_field}" == "open" ]]; then
+      _open_enabled="true"
       _infos_flag="true"
     fi
   done
@@ -251,6 +259,13 @@ _root_get() {
           --raw-output \
           '.[]."mToken"."id"')
     )
+    _opened+=( $(
+      echo \
+        "${_windows_json}" |
+        jq \
+          --raw-output \
+          '.[]."mAppDied"')
+    )
     _index=0
     for _task_id in "${_tasks_ids[@]}"; do
       _token="${_tokens_ids[${_index}]}"
@@ -268,7 +283,7 @@ _root_get() {
             "${_activities_json}" |
             jq \
               "${_filter_description[*]}")"
-        if [[ "${_description_enabled}" == "" ]]; then
+        if [[ "${_description_enabled}" = "true" ]]; then
           _filter_description=(
             "${_jq_filter[*]} |"
             '."history".[]."taskDescription"'
@@ -282,7 +297,7 @@ _root_get() {
             "${_description}"
           )
         fi
-        if [[ "${_package_enabled}" == "" ]]; then
+        if [[ "${_package_enabled}" == "true" ]]; then
           _filter_package=(
             "${_jq_filter[*]} |"
             '."history".[]."packageName"'
@@ -296,7 +311,7 @@ _root_get() {
             "${_package}"
           )
         fi
-        if [[ "${_process_enabled}" == "" ]]; then
+        if [[ "${_process_enabled}" == "true" ]]; then
           _filter_process=(
             "${_jq_filter[*]} |"
             '."history".[]."processName"'
@@ -367,21 +382,17 @@ _root_get() {
         done
       elif [[ "${_field}" == "open" ]]; then
         _line+=(
-          "${_index}"
+          "${_opened[${_index}]}"
         )
       fi
     done
+    _lines+=(
+      "${_line[*]}"
+    )
   done
-  # for _field in "${_template_title[@]}"; do
-  #   if [[ "${_field}" == "description" ]]; then
-  #     _description_extract
-  #   fi
-  # done
-  # if [[ "${_title_format}" == "  " ]]; then
-  #   package
-  # fi
-  # echo \
-  #   "${_activity}"
+  printf \
+    '%s\n' \
+    "${_lines[@]}"
 }
 
 _windows_info_get() {

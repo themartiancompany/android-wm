@@ -160,6 +160,7 @@ _root_get() {
       )
       _msg_info \
         "${_msg[*]}"
+      break
     fi
   done
   if [[ "${_infos_flag}" == "true" ]]; then

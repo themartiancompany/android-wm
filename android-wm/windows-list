@@ -90,12 +90,8 @@ _root_get() {
     _template_title=() \
     _windows_json \
     _windows_info_opts=()
-  _windows_info_opts+=(
-    # Silent mode,
-    # runs faster as it
-    # suppresses warnings.
-    -q
-  )
+  _activities_json=""
+  _windows_json=""
   # _sdk="$(
   #   sdk-version)"
   # _msg=(
@@ -157,16 +153,53 @@ _root_get() {
     if [[ "${_field}" == "app" || \
           "${_field}" == "description" ]]; then
       _infos_flag="true"
+      _msg=(
+        "Required an advanced field,"
+        "getting windows and activities"
+        "information."
+      )
+      _msg_info \
+        "${_msg[*]}"
     fi
   done
   if [[ "${_infos_flag}" == "true" ]]; then
+    # Silent mode,
+    # runs faster as it
+    # suppresses warnings.
+    _activities_info_opts+=(
+      -q
+    )
+    _windows_info_opts+=(
+      -q
+    )
+    _msg=(
+      "Running 'windows-info'."
+    )
+    _msg_info \
+      "${_msg[*]}"
     _windows_json="$(
       windows-info \
         "${_windows_info_opts[@]}")"
+    _msg=(
+      "Running 'activities-info'."
+    )
+    _msg_info \
+      "${_msg[*]}"
     _activities_json="$(
       activities-info \
         "${_activities_info_opts[@]}")"
   fi
+  if [[ "${_windows_json}" == "" ]]; then
+    echo \
+      "${_windows_json}" |
+      jq \
+        '.'
+  fi
+  # for _field in "${_template_title[@]}"; do
+  #   if [[ "${_field}" == "description" ]]; then
+  #     _description_extract
+  #   fi
+  # done
   # if [[ "${_title_format}" == "  " ]]; then
   #   package
   # fi

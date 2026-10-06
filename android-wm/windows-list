@@ -84,10 +84,18 @@ _root_get() {
     _output_format="${2}" \
     _title_format="${3}" \
     _activities_info_opts=() \
+    _app \
+    _app_enabled \
+    _description \
+    _description_enabled \
+    _filter_description=() \
+    _history_entry \
     _index \
     _infos_flag \
     _jq_filter=() \
     _msg=() \
+    _process \
+    _process_enabled \
     _task_id \
     _tasks_ids=() \
     _token \
@@ -153,23 +161,33 @@ _root_get() {
     ${_output_template}
   )
   _infos_flag="false"
+  _app_enabled="false"
+  _description_enabled="false"
+  _process_enabled="false"
   for _field \
     in "${_template[@]}" \
        "${_template_title[@]}"; do
-    if [[ "${_field}" == "app" || \
-          "${_field}" == "description" ]]; then
+    if [[ "${_field}" == "app" ]]; then
+      _app_enabled="true"
       _infos_flag="true"
-      _msg=(
-        "Required an advanced field,"
-        "getting windows and activities"
-        "information."
-      )
-      _msg_info \
-        "${_msg[*]}"
-      break
+    fi
+    if [[ "${_field}" == "description" ]]; then
+      _description_enabled="true"
+      _infos_flag="true"
+    fi
+    if [[ "${_field}" == "process" ]]; then
+      _process_enabled="true"
+      _infos_flag="true"
     fi
   done
   if [[ "${_infos_flag}" == "true" ]]; then
+    _msg=(
+      "Required an advanced field,"
+      "getting windows and activities"
+      "information."
+    )
+    _msg_info \
+      "${_msg[*]}"
     # Silent mode,
     # runs faster as it
     # suppresses warnings.
@@ -196,7 +214,16 @@ _root_get() {
       activities-info \
         "${_activities_info_opts[@]}")"
   fi
-  if [[ "${_windows_json}" != "" ]]; then
+  if [[ "${_windows_json}" == "" ]]; then
+    _msg=(
+      "No activities running"
+      "or error running"
+      "'windows-info'."
+    )
+    _msg_error \
+      "${_msg[*]}" \
+      1
+  else
     _activities=( $(
       echo \
         "${_windows_json}" |
@@ -225,11 +252,6 @@ _root_get() {
       _token="${_tokens_ids[${_index}]}"
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
-        _jq_filter_mm=(
-          '.[] |'
-            'select('
-              '."task-id"=="'${_task_id#t}'")'
-        )
         _jq_filter=(
           '.[] |'
             'select('
@@ -237,13 +259,29 @@ _root_get() {
                 'select('
                   '."history".[]."object-id"=="'${_token}'")'
         )
+        _filter_description=(
+          "${_jq_filter[*]} |"
+          '."history".[]."taskDescription"'
+        )
         echo \
           "${_jq_filter[*]}"
-        _description="$(
+        _history_entry="$(
           echo \
             "${_activities_json}" |
             jq \
-              "${_jq_filter[*]}")"
+              "${_filter_description[*]}")"
+        if [[ "${_title_format}" == "" ]]; then
+        fi
+        _description="$(
+          echo \
+            "${_history_entry}" |
+            jq \
+              "${_filter_description}")"
+        _process="$(
+          echo \
+            "${_history_entry}" |
+            jq \
+              "${_filter_process}")"
         echo \
           "Got description" \
           "'${_description}'."

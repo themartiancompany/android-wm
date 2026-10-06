@@ -365,7 +365,8 @@ _root_get() {
     "descriptions '${#_descriptions[@]}'."
   for _index \
     in $(seq \
-           "${_windows_amount}"); do
+           0 \
+           $(( _windows_amount - 1)) ); do
     _msg=(
       "Processing window '${_index}'."
     )

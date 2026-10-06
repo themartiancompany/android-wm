@@ -78,82 +78,80 @@ _global_variables() {
   quiet=""
 }
 
+_windows_get() {
+  local \
+    _dumpsys \
+    _cmd=() \
+    _msg=()
+  _cmd=(
+    "/system/bin/dumpsys"
+      "window"
+      "windows"
+  )
+  _msg=(
+    "Running '${_cmd[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _dumpsys="$(
+    su \
+      -c \
+      "${_cmd[*]}")"
+  _windows="$(
+    echo \
+      "${_dupmsys}" |
+      grep \
+        "  Window #" |
+        sort \
+          -V)"
+  _windows_amount="$(
+    echo \
+      "${_windows}" |
+      wc \
+        -l)"
+}
+
 _root_get() {
   local \
     _output_template="${1}" \
     _output_format="${2}" \
     _title_format="${3}" \
+    _activities=() \
     _activities_info_opts=() \
     _app \
     _app_enabled \
     _description \
+    _descriptions=() \
     _description_enabled \
+    _field \
+    _field_title \
     _filter_description=() \
+    _filter_package=() \
+    _filter_process=() \
     _history_entry \
     _index \
     _infos_flag \
     _jq_filter=() \
     _msg=() \
+    _package \
+    _package_enabled \
+    _packages=() \
     _process \
     _process_enabled \
+    _processes=() \
     _task_id \
     _tasks_ids=() \
     _token \
     _tokens_ids=() \
     _template=() \
     _template_title=() \
+    _windows \
+    _windows_amount \
     _windows_json \
     _windows_info_opts=()
   _activities_json=""
   _windows_json=""
-  # _sdk="$(
-  #   sdk-version)"
-  # _msg=(
-  #   "Detected SDK version '${_sdk}'."
-  # )
-  # _msg_info \
-  #   "${_msg[*]}"
-  # if (( 32 < "${_sdk}" )); then
-  #   _cmd=(
-  #     "/system/bin/dumpsys"
-  #       "window"
-  #       "windows"
-  #   )
-  #   # _cmd=(
-  #   #   "/system/bin/dumpsys"
-  #   #     "activity"
-  #   #     "activities"
-  #   # )
-  # elif (( "${_sdk}" < 28 )); then
-  #   _cmd=(
-  #     "/system/bin/dumpsys"
-  #       "window"
-  #       "windows"
-  #   )
-  # else
-  #   _cmd=(
-  #     "/system/bin/dumpsys"
-  #       "window"
-  #       "windows"
-  #   )
-  # fi
-  # _msg=(
-  #   "Running '${_cmd[*]}'."
-  # )
-  # _msg_info \
-  #   "${_msg[*]}"
-  # _activities="$(
-  #   su \
-  #     -c \
-  #     "${_cmd[*]}")"
-  # _activity="$(
-  #   echo \
-  #     "${_activities}" |
-  #     grep \
-  #       "  Window #" |
-  #       sort \
-  #         -V)"
-  # _number="${_activity#  Window \#}"
+  _windows_get
   _template_title=(
     ${_title_format}
   )
@@ -163,6 +161,7 @@ _root_get() {
   _infos_flag="false"
   _app_enabled="false"
   _description_enabled="false"
+  _package_enabled="false"
   _process_enabled="false"
   for _field \
     in "${_template[@]}" \
@@ -173,6 +172,10 @@ _root_get() {
     fi
     if [[ "${_field}" == "description" ]]; then
       _description_enabled="true"
+      _infos_flag="true"
+    fi
+    if [[ "${_field}" == "package" ]]; then
+      _package_enabled="true"
       _infos_flag="true"
     fi
     if [[ "${_field}" == "process" ]]; then
@@ -224,14 +227,14 @@ _root_get() {
       "${_msg[*]}" \
       1
   else
-    _activities=( $(
+    _activities+=( $(
       echo \
         "${_windows_json}" |
         jq \
           --raw-output \
           '.[]."activity"')
     )
-    _tasks_ids=( $(
+    _tasks_ids+=( $(
       echo \
         "${_windows_json}" |
         jq \
@@ -240,7 +243,7 @@ _root_get() {
         sed \
           "s/^t//g")
     )
-    _tokens_ids=( $(
+    _tokens_ids+=( $(
       echo \
         "${_windows_json}" |
         jq \
@@ -259,35 +262,53 @@ _root_get() {
                 'select('
                   '."history".[]."object-id"=="'${_token}'")'
         )
-        _filter_description=(
-          "${_jq_filter[*]} |"
-          '."history".[]."taskDescription"'
-        )
-        echo \
-          "${_jq_filter[*]}"
         _history_entry="$(
           echo \
             "${_activities_json}" |
             jq \
               "${_filter_description[*]}")"
-        if [[ "${_title_format}" == "" ]]; then
+        if [[ "${_description_enabled}" == "" ]]; then
+          _filter_description=(
+            "${_jq_filter[*]} |"
+            '."history".[]."taskDescription"'
+          )
+          _description="$(
+            echo \
+              "${_history_entry}" |
+              jq \
+                "${_filter_description}")"
+          _descriptions+=(
+            "${_description}"
+          )
         fi
-        _description="$(
-          echo \
-            "${_history_entry}" |
-            jq \
-              "${_filter_description}")"
-        _process="$(
-          echo \
-            "${_history_entry}" |
-            jq \
-              "${_filter_process}")"
-        echo \
-          "Got description" \
-          "'${_description}'."
-        _descriptions+=(
-          "${_task_id#t}"
-        )
+        if [[ "${_package_enabled}" == "" ]]; then
+          _filter_package=(
+            "${_jq_filter[*]} |"
+            '."history".[]."packageName"'
+          )
+          _package="$(
+            echo \
+              "${_history_entry}" |
+              jq \
+                "${_filter_package}")"
+          _packages+=(
+            "${_package}"
+          )
+        fi
+        if [[ "${_process_enabled}" == "" ]]; then
+          _filter_process=(
+            "${_jq_filter[*]} |"
+            '."history".[]."processName"'
+          )
+          _process="$(
+            echo \
+              "${_history_entry}" |
+              jq \
+                "${_filter_process}")"
+          _processes+=(
+            "${_process}"
+          )
+        fi
       else
         _msg=(
           "Unknown value '${_task_id}'"
@@ -295,14 +316,57 @@ _root_get() {
         )
         _msg_info \
           "${_msg[*]}"
-        _descriptions+=(
-          ""
-        )
+        if [[ "${_description_enabled}" == "" ]]; then
+          _description=""
+          _descriptions+=(
+            "${_description}"
+          )
+        fi
+        if [[ "${_package_enabled}" == "" ]]; then
+          _package=""
+          _processes+=(
+            "${_package}"
+          )
+        fi
+        if [[ "${_process_enabled}" == "" ]]; then
+          _process=""
+          _processes+=(
+            "${_process}"
+          )
+        fi
       fi
       _index=$((
         _index + 1))
     done
   fi
+  for _index \
+    in $(seq \
+           "${_windows_amount}"); do
+    _line=()
+    for _field in "${_template[@]}"; do
+      if [[ "${_field}" == "position" ]]; then
+        _line+=(
+          "${_index}"
+        )
+      elif [[ "${_field}" == "title" ]]; then
+        for _field_title in "${_template_title[@]}"; do
+          if [[ "${_field_title}" == "description" ]]; then
+            _line+=(
+              "${_descriptions[${_index}]}"
+            )
+          elif [[ "${_field_title}" == "process" ]]; then
+            _line+=(
+              "${_processes[${_index}]}"
+            )
+          elif [[ "${_field_title}" == "package" ]]; then
+            _line+=(
+              "${_packages[${_index}]}"
+            )
+          fi
+        done
+      fi
+    done
+  done
   # for _field in "${_template_title[@]}"; do
   #   if [[ "${_field}" == "description" ]]; then
   #     _description_extract
@@ -482,14 +546,6 @@ Usage:
            See '-t' option for details onto
            what's shown in this field.
 
-         package:
-           It displays the window's application
-           package name.
-
-         app:
-           It displays the window's application
-           label.
-
        Default: '${output_template}'
 
      -t <title-format>
@@ -501,11 +557,19 @@ Usage:
            It displays the window description.
 
          app:
-           It displays the application label
-           when no title has been assigned.
+           It displays the window application label
+           when no description has been assigned.
 
          package:
-           It displays the application package
+           It displays the window application package
+           name.
+
+         process:
+           It displays the window application process
+           name.
+
+         activity:
+           It displays the activity name
            name.
 
        Default: '${title_format}'

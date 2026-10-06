@@ -86,7 +86,7 @@ _root_get() {
     _activities_info_opts=() \
     _index \
     _infos_flag \
-    _jq_filter \
+    _jq_filter=() \
     _msg=() \
     _task_id \
     _tasks_ids=() \

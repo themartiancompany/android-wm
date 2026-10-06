@@ -236,7 +236,7 @@ _root_get() {
           echo \
             "${_activities_json}" |
             jq \
-              "${_jq_filter}")"
+              "${_jq_filter[*]}")"
         echo \
           "${_description}"
         _descriptions+=(

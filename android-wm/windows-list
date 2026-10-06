@@ -84,8 +84,14 @@ _root_get() {
     _output_format="${2}" \
     _title_format="${3}" \
     _activities_info_opts=() \
+    _index \
     _infos_flag \
+    _jq_filter \
     _msg=() \
+    _task_id \
+    _tasks_ids=() \
+    _token \
+    _tokens_ids=() \
     _template=() \
     _template_title=() \
     _windows_json \
@@ -207,14 +213,32 @@ _root_get() {
         sed \
           "s/^t//g")
     )
+    _tokens_ids=( $(
+      echo \
+        "${_windows_json}" |
+        jq \
+          --raw-output \
+          '[]."mToken"."id"')
+    )
+    _index=0
     for _task_id in "${_tasks_ids[@]}"; do
+      _token="${_tokens_ids[${_index}]}"
       if [[ "${_task_id}" != "null" && \
             "${_task_id}" == "t"* ]]; then
+        _jq_filter=(
+          '.[] |'
+            'select('
+              '."task-id"=="'${_task_id#t}'") |'
+                'select('
+                  '"id"=="'${_token}'")'
+        )
         _description="$(
           echo \
             "${_activities_json}" |
             jq \
-            '.[] | select(."task-id"=="'${_task_id#t}'") | '
+              "${_jq_filter}")"
+        echo \
+          "${_description}"
         _descriptions+=(
           "${_task_id#t}"
         )
@@ -229,6 +253,8 @@ _root_get() {
           ""
         )
       fi
+      _index=$((
+        _index + 1))
     done
   fi
   # for _field in "${_template_title[@]}"; do

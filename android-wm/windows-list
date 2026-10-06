@@ -317,8 +317,7 @@ Usage:
 
      -m <mode>
 
-       How to retrieve the
-       windows list.
+       How to retrieve the windows list.
        It can be 'root'.
        Default: ${get_mode}
 

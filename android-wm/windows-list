@@ -397,9 +397,10 @@ _root_get() {
         _filter_tasks=(
           '.[].history |'
             'if type=="array" then'
-              'yes'
+              '"yes"'
             'else'
-              'no'
+              '"no"'
+            'end'
         )
         _taskeds=( $(
           echo \

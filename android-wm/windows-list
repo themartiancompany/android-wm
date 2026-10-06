@@ -232,6 +232,8 @@ _root_get() {
                 'select('
                   '."id"=="'${_token}'")'
         )
+        echo \
+          "${_jq_filter[*]}"
         _description="$(
           echo \
             "${_activities_json}" |

@@ -41,14 +41,18 @@ _sourced \
 source \
   "${_crash_bash}"
 
-_root_requirements() {
-  _check_cmd \
-    "awk" \
-    "gawk"
+_requirements() {
   _check_cmd \
     "grep"
   _check_cmd \
-    "su"
+    "sort" \
+    "coreutils"
+}
+
+_root_requirements() {
+  _check_cmd \
+    "su" \
+    "sudo"
 }
 
 # shellcheck disable=SC2034
@@ -108,13 +112,16 @@ _root_get() {
       "${_cmd[*]}")"
   _activity="$(
     echo \
-      "${_activities}" | \
+      "${_activities}" |
       grep \
-        "  Window #" | \
+        "  Window #" |
         sort \
           -V)"
   echo \
     "${_activity}"
+}
+
+_windows_info_get() {
 }
 
 _windows_list() {
@@ -135,7 +142,7 @@ _auto_detect_mode() {
   if [[ "${_os}" == "Android" ]]; then
     _root_requirements
     echo \
-      "root"
+      "windows_info"
   elif [[ "${_os}" == "GNU/Linux" ]]; then
     _msg=(
       "Not implemented."
@@ -211,6 +218,7 @@ ENDUSAGETEXT
 
 _globals
 _global_variables
+_requirements
 # shellcheck disable=SC2004
 # shellcheck disable=SC2034
 while \

@@ -275,7 +275,7 @@ _root_get() {
     )
     _index=0
     for _token in "${_token_ids[@]}"; do
-      _task_id="${_task_ids[${_index}]}"
+      _task_id="${_tasks_ids[${_index}]}"
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
         _jq_filter=(

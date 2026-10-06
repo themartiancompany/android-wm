@@ -538,6 +538,8 @@ _root_get() {
               --raw-output \
               "${_filter_non_sub_tasks[*]}")
         )
+        echo \
+          "Non subtaskeds: '${_non_sub_taskeds[*]}'."
         _index_task=0
         for _task in "${_taskeds[@]}"; do
           _non_sub_task="${_non_sub_taskeds[${_index_task}]}"

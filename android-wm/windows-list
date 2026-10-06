@@ -366,6 +366,11 @@ _root_get() {
   for _index \
     in $(seq \
            "${_windows_amount}"); do
+    _msg=(
+      "Processing window '${_index}'."
+    )
+    _msg_info \
+      "${_msg[*]}"
     _line=()
     for _field in "${_template[@]}"; do
       if [[ "${_field}" == "position" ]]; then

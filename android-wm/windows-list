@@ -323,12 +323,13 @@ _root_get() {
     _filter_tasks=() \
     _history_entry \
     _index \
-    _index_sub_task \
+    _index_task \
     _infos_flag \
     _jq_filter=() \
     _line=() \
     _lines=() \
     _msg=() \
+    _non_sub_taskeds=() \
     _open \
     _open_enabled \
     _opened=() \
@@ -464,11 +465,6 @@ _root_get() {
           '"novalue"'
         'end'
     )
-    echo \
-      "${_windows_json}" |
-      jq \
-        --raw-output \
-        "${_dead_filter[*]}"
     _dead+=( $(
       echo \
         "${_windows_json}" |
@@ -508,15 +504,10 @@ _root_get() {
               "${_filter_subtasks[*]}")
         )
         _msg=(
-          "Checking sub-tasks."
+          "Checking tasks."
         )
         _msg_info \
           "${_msg[*]}"
-        for _sub_task in "${_subtaskeds[@]}"; do
-          if [[ "${_sub_task}" != "null" ]]; then
-            _sub_task_parse
-          fi
-        done
         _filter_tasks=(
           '.[].history |'
             'if type=="array" then'
@@ -525,22 +516,47 @@ _root_get() {
               '"false"'
             'end'
         )
-        _taskeds=( $(
+        _tasks_with_history=( $(
           echo \
             "${_activities_json}" |
             jq \
               --raw-output \
               "${_filter_tasks[*]}")
         )
+        _filter_non_sub_tasks=(
+          '.[].tasks |'
+            'if type=="array" then'
+              '"false"'
+            'else'
+              '"true"'
+            'end'
+        )
+        _non_sub_taskeds=( $(
+          echo \
+            "${_activities_json}" |
+            jq \
+              --raw-output \
+              "${_filter_non_sub_tasks[*]}")
+        )
+        _index_task=0
+        for _task in "${_taskeds[@]}"; do
+          _non_sub_task="${_non_sub_taskeds[${_index_task}]}"
+          if [[ "${_non_sub_task}" == "true" && \
+                "${_task}" == "true" ]]; then
+            _task_parse
+          fi 
+          _index_task=$((
+            _index_task + 1))
+        done
         _msg=(
-          "Checking tasks."
+          "Checking sub-tasks."
         )
         _msg_info \
           "${_msg[*]}"
-        for _task in "${_taskeds[@]}"; do
-          if [[ "${_task}" == "true" ]]; then
-            _task_parse
-          fi 
+        for _sub_task in "${_subtaskeds[@]}"; do
+          if [[ "${_sub_task}" != "null" ]]; then
+            _sub_task_parse
+          fi
         done
       else
         _msg=(

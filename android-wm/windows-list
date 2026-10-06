@@ -181,6 +181,7 @@ _show_config() {
   _msg_info "${app_name} configuration"
   _msg_info "     Got activity at date:   ${get_date}"
   _msg_info "                 Get mode:   ${get_mode}"
+  _msg_info "            Output format:   ${output_format}"
 }
 
 # Show help usage, with an exit status.
@@ -203,6 +204,16 @@ Usage:
     [options]
 
   options:
+
+     -m <mode>            How to retrieve the
+                          windows list.
+                          It can be 'root'.
+                          Default: ${get_mode}
+
+     -o <output-format>   Output format of
+                          the windows list.
+                          Default: '${output_format}'
+                          
 
      -h                   This message.
      -c                   Enable color output.

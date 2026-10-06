@@ -458,7 +458,7 @@ _root_get() {
               '"mAppDied") then'
           '."mAppDied"'
         'else'
-          'false'
+          'true'
         'end'
     )
     _opened+=( $(

@@ -281,9 +281,9 @@ _root_get() {
         _jq_filter=(
           '.[] |'
             'select('
-              '."history".[]."object-id"=="'${_token}'")' # "|"
-              #   'select('
-              #     '."task-id"=="'${_task_id#t}'") |'
+              '."history".[]."object-id"=="'${_token}'") |'
+                'select('
+                  '."task-id"=="'${_task_id#t}'")'
         )
         _filter_history_entry=(
           "${_jq_filter[*]} |"

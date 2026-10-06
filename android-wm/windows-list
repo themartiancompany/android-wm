@@ -274,16 +274,16 @@ _root_get() {
           '.[]."mAppDied"')
     )
     _index=0
-    for _task_id in "${_tasks_ids[@]}"; do
-      _token="${_tokens_ids[${_index}]}"
+    for _token in "${_token_ids[@]}"; do
+      _task_id="${_task_ids[${_index}]}"
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
         _jq_filter=(
           '.[] |'
             'select('
-              '."task-id"=="'${_task_id#t}'") |'
-                'select('
-                  '."history".[]."object-id"=="'${_token}'")'
+              '."history".[]."object-id"=="'${_token}'")' # "|"
+              #   'select('
+              #     '."task-id"=="'${_task_id#t}'") |'
         )
         _filter_history_entry=(
           "${_jq_filter[*]} |"

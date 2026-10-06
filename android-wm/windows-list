@@ -413,7 +413,7 @@ _root_get() {
           if [[ "${_task}" != "null" ]]; then
             _task_filter=(
               '.[] |'
-                'select(."object-id" == "'${_task#t}'")'
+                'select(."task-id" == "'${_task#t}'")'
             )
             echo "${_task_filter[*]}"
             echo \

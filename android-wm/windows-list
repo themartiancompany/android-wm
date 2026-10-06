@@ -85,7 +85,15 @@ _root_get() {
     _title_format="${3}" \
     _cmd \
     _msg=() \
-    _template=()
+    _template=() \
+    _windows_json \
+    _windows_info_opts=()
+  _windows_info_opts+=(
+    # Silent mode,
+    # runs faster as it
+    # suppresses warnings.
+    -q
+  )
   # _sdk="$(
   #   sdk-version)"
   # _msg=(
@@ -134,13 +142,25 @@ _root_get() {
   #       sort \
   #         -V)"
   # _number="${_activity#  Window \#}"
+  _windows_json="$(
+    windows-info \
+      "${_windows_info_opts[@]}")"
+  _title_template=(
+    ${_title_format}
+  )
   _template+=(
     ${_output_template}
   )
-  if [[ "${_title_format}" == "" ]]; then
-  fi
-  echo \
-    "${_activity}"
+  # for _field \
+  #   in "${_template[@]}"; do
+  #   if [[ "${_field}" == "" ]]; then
+  #   fi
+  # done
+  # if [[ "${_title_format}" == "  " ]]; then
+  #   package
+  # fi
+  # echo \
+  #   "${_activity}"
 }
 
 _windows_info_get() {

@@ -344,6 +344,11 @@ _root_get() {
         _msg_info \
           "${_msg[*]}"
         if [[ "${_description_enabled}" == "" ]]; then
+          _msg=(
+            "Adding empty description."
+          )
+          _msg_info \
+            "${_msg[*]}"
           _description=""
           _descriptions+=(
             "${_description}"

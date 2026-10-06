@@ -428,7 +428,7 @@ _root_get() {
                   "${_filter_task[*]}")"
             echo "${_task_item}"
             _has_history_filter=(
-              ".history"
+              '."history"'
             )
             _has_history="$(
               echo \
@@ -459,14 +459,18 @@ _root_get() {
                 jq \
                   --raw-output \
                   "${_filter_history[*]}"
+              echo "hi"
               _history_entry="$(
                 echo \
                   "${_task_item}" |
                   jq \
                     --raw-output \
                     "${_filter_history[*]}")"
+              echo "hihi"
+              _history_entry="$(
               if [[ "${_description_enabled}" = "true" ]]; then
                 echo "${_filter_history[*]}"
+                echo "${_history_entry}"
                 _filter_description=(
                   '.[]."taskDescription"'
                 )

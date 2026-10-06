@@ -328,12 +328,6 @@ _root_get() {
               _msg_info \
                 "${_msg[*]}"
             else
-              _filter_history=(
-                "${_jq_filter[*]} |"
-                  'select('
-                    '."task-id"=="'${_sub_task#t}'") |'
-                      '."tasks"."history"'
-              )
               _has_history="$(
                 echo \
                   "${_activities_json}" |
@@ -342,18 +336,21 @@ _root_get() {
                     '.[]."tasks"."history"')"
               if [[ "${_has_history}" != "null" ]]; then
                 echo \
-                  "${_activities_json}" |
-                  jq \
-                    --raw-output \
-                    '.[]."tasks"."history"'
+                  "${_has_history}"
+                _filter_history=(
+                    '."tasks"."history" |'
+                    'select('
+                      '."task-id"=="'${_sub_task#t}'") |'
+                        '."tasks"."history"'
+                )
+                _history_entry="$(
+                  echo \
+                    "${_has_history}" |
+                    jq \
+                      --raw-output \
+                      "${_filter_history[*]}")"
                 if [[ "${_description_enabled}" = "true" ]]; then
                   echo "${_filter_history[*]}"
-                  _history_entry="$(
-                    echo \
-                      "${_activities_json}" |
-                      jq \
-                        --raw-output \
-                        "${_filter_history[*]}")"
                   _filter_description=(
                     '.[]."taskDescription"'
                   )
@@ -368,12 +365,6 @@ _root_get() {
                   )
                 fi
                 if [[ "${_package_enabled}" == "true" ]]; then
-                  _history_entry="$(
-                    echo \
-                      "${_activities_json}" |
-                      jq \
-                        --raw-output \
-                        "${_filter_history[*]}")"
                   _filter_package=(
                     '.[]."packageName"'
                   )
@@ -388,12 +379,6 @@ _root_get() {
                   )
                 fi
                 if [[ "${_process_enabled}" == "true" ]]; then
-                  _history_entry="$(
-                    echo \
-                      "${_activities_json}" |
-                      jq \
-                        --raw-output \
-                        "${_filter_history[*]}")"
                   _filter_process=(
                     '.[]."processName"'
                   )

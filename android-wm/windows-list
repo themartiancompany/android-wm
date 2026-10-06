@@ -361,6 +361,8 @@ _root_get() {
         _index + 1))
     done
   fi
+  echo \
+    "descriptions '${#_descriptions[@]}'."
   for _index \
     in $(seq \
            "${_windows_amount}"); do

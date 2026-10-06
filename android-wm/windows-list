@@ -395,7 +395,7 @@ _root_get() {
           fi
         done
         _filter_tasks=(
-          '.[]."history"."object-id"'
+          '.[]."history".[]."object-id"'
         )
         _taskeds=( $(
           echo \

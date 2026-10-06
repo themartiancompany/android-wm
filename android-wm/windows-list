@@ -329,7 +329,7 @@ _root_get() {
                 "${_activities_json}" |
                 jq \
                   --raw-output \
-                  "${_jq_filter[*]}"
+                  '.[].tasks'
                   # "${_filter_history[*]}"
               if [[ "${_description_enabled}" = "true" ]]; then
                 echo "${_filter_history[*]}"

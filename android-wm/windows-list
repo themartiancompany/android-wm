@@ -124,15 +124,15 @@ _sub_task_parse() {
             '"tasks") then'
         '."tasks"'
       'else'
-        '"[]"'
+        '[]'
       'end |'
-      'select(."object-id" == "'${_sub_task}'")'
+      '.[] | select(."object-id" == "'${_sub_task}'")'
   )
   echo \
     "${_activities_json}" |
     jq \
       --raw-output \
-      '.[] | if has("tasks") then "ciao" else "ciaone" end'
+      '.[]'
   _sub_task_item="$(
     echo \
       "${_activities_json}" |

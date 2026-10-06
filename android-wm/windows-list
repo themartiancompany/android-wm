@@ -325,6 +325,12 @@ _root_get() {
                     '."task-id"=="'${_sub_task#t}'") |'
                       '."tasks"."history"'
               )
+              echo \
+                "${_activities_json}" |
+                jq \
+                  --raw-output \
+                  "${_jq_filter[*]}"
+                  # "${_filter_history[*]}"
               if [[ "${_description_enabled}" = "true" ]]; then
                 echo "${_filter_history[*]}"
                 _history_entry="$(

@@ -281,9 +281,7 @@ _root_get() {
         _jq_filter=(
           '.[] |'
             'select('
-              '."history".[]."object-id"=="'${_token}'") |'
-                'select('
-                  '."task-id"=="'${_task_id#t}'")'
+              '."history".[]."object-id"=="'${_token}'")'
         )
         _filter_history_entry=(
           "${_jq_filter[*]} |"
@@ -296,12 +294,14 @@ _root_get() {
               "${_filter_history_entry[*]}")"
         if [[ "${_description_enabled}" = "true" ]]; then
           _filter_description=(
-            "${_filter_history_entry[*]} |"
-            '.[]."taskDescription"'
+            "${_jq_filter[*]} |"
+              'select('
+                '."task-id"=="'${_task_id#t}'") |'
+            '."history".[]."taskDescription"'
           )
           _description="$(
             echo \
-              "${_history_entry}" |
+              "${_activities_json}" |
               jq \
                 "${_filter_description[*]}")"
           _descriptions+=(
@@ -310,12 +310,14 @@ _root_get() {
         fi
         if [[ "${_package_enabled}" == "true" ]]; then
           _filter_package=(
-            "${_filter_history_entry[*]} |"
-            '.[]."packageName"'
+            "${_jq_filter[*]} |"
+              'select('
+                '."task-id"=="'${_task_id#t}'") |'
+            '."history".[]."packageName"'
           )
           _package="$(
             echo \
-              "${_history_entry}" |
+              "${_activities_json}" |
               jq \
                 "${_filter_package[*]}")"
           _packages+=(
@@ -324,12 +326,14 @@ _root_get() {
         fi
         if [[ "${_process_enabled}" == "true" ]]; then
           _filter_process=(
-            "${_filter_history_entry[*]} |"
-            '.[]."processName"'
+            "${_jq_filter[*]} |"
+              'select('
+                '."task-id"=="'${_task_id#t}'") |'
+            '."history".[]."processName"'
           )
           _process="$(
             echo \
-              "${_history_entry}" |
+              "${_activities_json}" |
               jq \
                 "${_filter_process[*]}")"
           _processes+=(

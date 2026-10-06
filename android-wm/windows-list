@@ -289,6 +289,7 @@ _root_get() {
           echo \
             "${_activities_json}" |
             jq \
+              --raw-output \
               "${_filter_subtasks[*]}")
         )
         _msg=(
@@ -315,6 +316,7 @@ _root_get() {
                 echo \
                   "${_activities_json}" |
                   jq \
+                    --raw-output \
                     "${_filter_history[*]}")"
               _filter_description=(
                 '.[]."taskDescription"'
@@ -323,6 +325,7 @@ _root_get() {
                 echo \
                   "${_history_entry}" |
                   jq \
+                    --raw-output \
                     "${_filter_description[*]}")"
               _descriptions+=(
                 "${_description}"
@@ -333,6 +336,7 @@ _root_get() {
                 echo \
                   "${_activities_json}" |
                   jq \
+                    --raw-output \
                     "${_filter_history[*]}")"
               _filter_package=(
                 '.[]."packageName"'
@@ -341,6 +345,7 @@ _root_get() {
                 echo \
                   "${_history_entry}" |
                   jq \
+                    --raw-output \
                     "${_filter_package[*]}")"
               _packages+=(
                 "${_package}"
@@ -351,6 +356,7 @@ _root_get() {
                 echo \
                   "${_activities_json}" |
                   jq \
+                    --raw-output \
                     "${_filter_history[*]}")"
               _filter_process=(
                 '.[]."processName"'
@@ -359,6 +365,7 @@ _root_get() {
                 echo \
                   "${_history_entry}" |
                   jq \
+                    --raw-output \
                     "${_filter_process[*]}")"
               _processes+=(
                 "${_process}"
@@ -373,6 +380,7 @@ _root_get() {
           echo \
             "${_activities_json}" |
             jq \
+              --raw-output \
               "${_filter_tasks[*]}")
         )
         _msg=(
@@ -399,6 +407,7 @@ _root_get() {
                 echo \
                   "${_activities_json}" |
                   jq \
+                    --raw-output \
                     "${_filter_history[*]}")"
               _filter_description=(
                 '.[]."taskDescription"'
@@ -407,6 +416,7 @@ _root_get() {
                 echo \
                   "${_history_entry}" |
                   jq \
+                    --raw-output \
                     "${_filter_description[*]}")"
               _descriptions+=(
                 "${_description}"
@@ -417,6 +427,7 @@ _root_get() {
                 echo \
                   "${_activities_json}" |
                   jq \
+                    --raw-otput \
                     "${_filter_history[*]}")"
               _filter_package=(
                 '.[]."packageName"'
@@ -425,6 +436,7 @@ _root_get() {
                 echo \
                   "${_history_entry}" |
                   jq \
+                    --raw-output \
                     "${_filter_package[*]}")"
               _packages+=(
                 "${_package}"
@@ -435,6 +447,7 @@ _root_get() {
                 echo \
                   "${_activities_json}" |
                   jq \
+                    --raw-output \
                     "${_filter_history[*]}")"
               _filter_process=(
                 '.[]."processName"'
@@ -443,6 +456,7 @@ _root_get() {
                 echo \
                   "${_history_entry}" |
                   jq \
+                    --raw-output \
                     "${_filter_process[*]}")"
               _processes+=(
                 "${_process}"

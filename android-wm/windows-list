@@ -225,6 +225,11 @@ _root_get() {
       _token="${_tokens_ids[${_index}]}"
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
+        _jq_filter_mm=(
+          '.[] |'
+            'select('
+              '."task-id"=="'${_task_id#t}'")'
+        )
         _jq_filter=(
           '.[] |'
             'select('
@@ -238,7 +243,7 @@ _root_get() {
           echo \
             "${_activities_json}" |
             jq \
-              "${_jq_filter[*]}")"
+              "${_jq_filter_mm[*]}")"
         echo \
           "Got description" \
           "'${_description}'."

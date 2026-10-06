@@ -238,7 +238,8 @@ _root_get() {
             jq \
               "${_jq_filter[*]}")"
         echo \
-          "${_description}"
+          "Got description" \
+          "'${_description}'."
         _descriptions+=(
           "${_task_id#t}"
         )

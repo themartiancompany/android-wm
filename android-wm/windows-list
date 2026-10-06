@@ -135,8 +135,11 @@ _root_get() {
     _filter_history_entry=() \
     _filter_package=() \
     _filter_process=() \
+    _filter_subtasks=() \
+    _filter_tasks=() \
     _history_entry \
     _index \
+    _index_sub_task \
     _infos_flag \
     _jq_filter=() \
     _line=() \
@@ -153,6 +156,7 @@ _root_get() {
     _processes=() \
     _task_id \
     _tasks_ids=() \
+    _taskeds=() \
     _token \
     _tokens_ids=() \
     _template=() \
@@ -278,72 +282,174 @@ _root_get() {
       _task_id="${_tasks_ids[${_index}]}"
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
-        _jq_filter=(
-          '.[] |'
-            'select('
-              '."history".[]."object-id"=="'${_token}'")'
+        _filter_subtasks=(
+          '.[]."tasks"."object-id"'
         )
-        _filter_history=(
-          "${_jq_filter[*]} |"
-            'select('
-              '."task-id"=="'${_task_id#t}'") |'
-              '."history"'
+        _subtaskeds=( $(
+          echo \
+            "${_activities_json}" |
+            jq \
+              "${_filter_subtasks[*]}")
         )
-        if [[ "${_description_enabled}" = "true" ]]; then
-          echo "${_filter_history[*]}"
-          _history_entry="$(
-            echo \
-              "${_activities_json}" |
-              jq \
-                "${_filter_history[*]}")"
-          _filter_description=(
-            '.[]."taskDescription"'
-          )
-          _description="$(
-            echo \
-              "${_history_entry}" |
-              jq \
-                "${_filter_description[*]}")"
-          _descriptions+=(
-            "${_description}"
-          )
-        fi
-        if [[ "${_package_enabled}" == "true" ]]; then
-          _history_entry="$(
-            echo \
-              "${_activities_json}" |
-              jq \
-                "${_filter_history[*]}")"
-          _filter_package=(
-            '.[]."packageName"'
-          )
-          _package="$(
-            echo \
-              "${_history_entry}" |
-              jq \
-                "${_filter_package[*]}")"
-          _packages+=(
-            "${_package}"
-          )
-        fi
-        if [[ "${_process_enabled}" == "true" ]]; then
-          _history_entry="$(
-            echo \
-              "${_activities_json}" |
-              jq \
-                "${_filter_history[*]}")"
-          _filter_process=(
-            '.[]."processName"'
-          )
-          _process="$(
-            echo \
-              "${_history_entry}" |
-              jq \
-                "${_filter_process[*]}")"
-          _processes+=(
-            "${_process}"
-          )
-        fi
+        _msg=(
+          "Checking sub-tasks."
+        )
+        _msg_info \
+          "${_msg[*]}"
+        for _sub_task in "${_subtaskeds[@]}"; do
+          if [[ "${_sub_task}" != "null" ]]; then
+            _jq_filter=(
+              '.[] |'
+                'select('
+                  '."tasks"."history".[]."object-id"=="'${_token}'")'
+            )
+            _filter_history=(
+              "${_jq_filter[*]} |"
+                'select('
+                  '."task-id"=="'${_sub_task#t}'") |'
+                    '."tasks"."history"'
+            )
+            if [[ "${_description_enabled}" = "true" ]]; then
+              echo "${_filter_history[*]}"
+              _history_entry="$(
+                echo \
+                  "${_activities_json}" |
+                  jq \
+                    "${_filter_history[*]}")"
+              _filter_description=(
+                '.[]."taskDescription"'
+              )
+              _description="$(
+                echo \
+                  "${_history_entry}" |
+                  jq \
+                    "${_filter_description[*]}")"
+              _descriptions+=(
+                "${_description}"
+              )
+            fi
+            if [[ "${_package_enabled}" == "true" ]]; then
+              _history_entry="$(
+                echo \
+                  "${_activities_json}" |
+                  jq \
+                    "${_filter_history[*]}")"
+              _filter_package=(
+                '.[]."packageName"'
+              )
+              _package="$(
+                echo \
+                  "${_history_entry}" |
+                  jq \
+                    "${_filter_package[*]}")"
+              _packages+=(
+                "${_package}"
+              )
+            fi
+            if [[ "${_process_enabled}" == "true" ]]; then
+              _history_entry="$(
+                echo \
+                  "${_activities_json}" |
+                  jq \
+                    "${_filter_history[*]}")"
+              _filter_process=(
+                '.[]."processName"'
+              )
+              _process="$(
+                echo \
+                  "${_history_entry}" |
+                  jq \
+                    "${_filter_process[*]}")"
+              _processes+=(
+                "${_process}"
+              )
+            fi
+          fi 
+        done
+        _filter_tasks=(
+          '.[]."history"'
+        )
+        _taskeds=( $(
+          echo \
+            "${_activities_json}" |
+            jq \
+              "${_filter_tasks[*]}")
+        )
+        _msg=(
+          "Checking tasks."
+        )
+        _msg_info \
+          "${_msg[*]}"
+        for _task in "${_taskeds[@]}"; do
+          if [[ "${_task}" != "null" ]]; then
+            _jq_filter=(
+              '.[] |'
+                'select('
+                  '."history".[]."object-id"=="'${_token}'")'
+            )
+            _filter_history=(
+              "${_jq_filter[*]} |"
+                'select('
+                  '."history"."task-id"=="'${_task_id#t}'") |'
+                    '."history"'
+            )
+            if [[ "${_description_enabled}" = "true" ]]; then
+              echo "${_filter_history[*]}"
+              _history_entry="$(
+                echo \
+                  "${_activities_json}" |
+                  jq \
+                    "${_filter_history[*]}")"
+              _filter_description=(
+                '.[]."taskDescription"'
+              )
+              _description="$(
+                echo \
+                  "${_history_entry}" |
+                  jq \
+                    "${_filter_description[*]}")"
+              _descriptions+=(
+                "${_description}"
+              )
+            fi
+            if [[ "${_package_enabled}" == "true" ]]; then
+              _history_entry="$(
+                echo \
+                  "${_activities_json}" |
+                  jq \
+                    "${_filter_history[*]}")"
+              _filter_package=(
+                '.[]."packageName"'
+              )
+              _package="$(
+                echo \
+                  "${_history_entry}" |
+                  jq \
+                    "${_filter_package[*]}")"
+              _packages+=(
+                "${_package}"
+              )
+            fi
+            if [[ "${_process_enabled}" == "true" ]]; then
+              _history_entry="$(
+                echo \
+                  "${_activities_json}" |
+                  jq \
+                    "${_filter_history[*]}")"
+              _filter_process=(
+                '.[]."processName"'
+              )
+              _process="$(
+                echo \
+                  "${_history_entry}" |
+                  jq \
+                    "${_filter_process[*]}")"
+              _processes+=(
+                "${_process}"
+              )
+            fi
+          fi 
+        done
       else
         _msg=(
           "Unknown value '${_task_id}'"

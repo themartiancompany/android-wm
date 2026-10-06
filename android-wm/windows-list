@@ -290,6 +290,7 @@ _root_get() {
               '."history"'
         )
         if [[ "${_description_enabled}" = "true" ]]; then
+          echo "${_filter_history[*]}"
           _history_entry="$(
             echo \
               "${_activities_json}" |

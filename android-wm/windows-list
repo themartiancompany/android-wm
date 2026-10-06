@@ -326,44 +326,45 @@ Usage:
 
        Template for the windows list.
        Valid field for the template are:
-       - position:
+
+         position:
            Window position in sorting
            order, by default last focus.
-       - open:
+
+         open:
            It reports whether the activity
            connected to the window has
            been paused.
-       - title:
+
+         title:
            It displays the window title.
            See '-t' option for details onto
            what's shown in this field.
-       - package:
+
+         package:
            It displays the window's application
            package name.
-       - app:
+
+         app:
            It displays the window's application
            label.
+
        Default: '${output_template}'
 
      -t <title-format>
 
-       What the 'title' field
-       should resolve to;
-       it can be:
+       What the 'title' field should resolve to.
+       It can be:
 
-       - description:
-           It displays the
-           window description.
+         description:
+           It displays the window description.
 
-       - app:
-           It displays the
-           application label
-           when no title has been
-           assigned.
+         app:
+           It displays the application label
+           when no title has been assigned.
 
-       - package:
-           It displays the
-           application package
+         package:
+           It displays the application package
            name.
 
        Default: '${title_format}'

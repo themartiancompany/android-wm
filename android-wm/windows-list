@@ -397,9 +397,9 @@ _root_get() {
         _filter_tasks=(
           '.[].history |'
             'if type=="array" then'
-              '"yes"'
+              '"true"'
             'else'
-              '"no"'
+              '"false"'
             'end'
         )
         _taskeds=( $(
@@ -415,23 +415,17 @@ _root_get() {
         _msg_info \
           "${_msg[*]}"
         for _task in "${_taskeds[@]}"; do
-          if [[ "${_task}" == "yes" ]]; then
-            _task_filter=(
+          if [[ "${_task}" == "true" ]]; then
+            _filter_task=(
               '.[] |'
                 'select(."task-id" == "'${_task_id#t}'")'
             )
-            echo "${_task_filter[*]}"
-            echo \
-              "${_activities_json}" |
-              jq \
-                --raw-output \
-                "${_task_filter[*]}"
             _task_item="$(
               echo \
                 "${_activities_json}" |
                 jq \
                   --raw-output \
-                  "${_task_filter[*]}")"
+                  "${_filter_task[*]}")"
             echo "${_task_item}"
             _has_history_filter=(
               ".history"
@@ -451,17 +445,23 @@ _root_get() {
               _msg_info \
                 "${_msg[*]}"
             else
-              echo \
-                "${_has_history}"
               _filter_history=(
                 '.[] |'
                   'select('
-                    '."task-id"=="'${_task_id#t}'") |'
-                      '."history"'
+                    '."task-id"=="'${_task_id#t}'")'
               )
+              echo \
+                "${_filter_history[*]}"
+              echo \
+                "${_task_item}"
+              echo \
+                "${_task_item}" |
+                jq \
+                  --raw-output \
+                  "${_filter_history[*]}"
               _history_entry="$(
                 echo \
-                  "${_has_history}" |
+                  "${_task_item}" |
                   jq \
                     --raw-output \
                     "${_filter_history[*]}")"

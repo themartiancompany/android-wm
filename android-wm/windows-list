@@ -298,8 +298,7 @@ _root_get() {
         _msg_info \
           "${_msg[*]}"
         for _sub_task in "${_subtaskeds[@]}"; do
-          if [[ "${_sub_task}" != "null" &&
-                "${_sub_task}" ]]; then
+          if [[ "${_sub_task}" != "null" ]]; then
             _has_history="$(
               echo \
                 "${_activities_json}" |

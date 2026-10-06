@@ -318,7 +318,7 @@ _root_get() {
                 "${_sub_task_item}" |
                 jq \
                   --raw-output \
-                  '."history"')"
+                  "${_has_history_filter[*]}")"
             if [[ "${_has_history}" == "null" ]]; then
               _msg=(
                 "Window with task '${_task_id}'"
@@ -335,8 +335,6 @@ _root_get() {
                     --raw-output \
                     '.[]."tasks"."history"')"
               if [[ "${_has_history}" != "null" ]]; then
-                echo \
-                  "${_has_history}"
                 _filter_history=(
                     '."tasks"."history" |'
                     'select('
@@ -413,6 +411,92 @@ _root_get() {
           "${_msg[*]}"
         for _task in "${_taskeds[@]}"; do
           if [[ "${_task}" != "null" ]]; then
+            _task_filter=(
+              '.[] |'
+                'select(."object-id" == "'${_task}'")'
+            )
+            _task_item="$(
+              echo \
+                "${_activities_json}" |
+                jq \
+                  --raw-output \
+                  "${_task_filter[*]}")"
+            echo "${_task_item}"
+            _has_history_filter=(
+              ".history"
+            )
+            _has_history="$(
+              echo \
+                "${_task_item}" |
+                jq \
+                  --raw-output \
+                  "${_has_history_filter[*]}")"
+            if [[ "${_has_history}" == "null" ]]; then
+              _msg=(
+                "Window with task '${_task_id}'"
+                "has no activity"
+                "history."
+              )
+              _msg_info \
+                "${_msg[*]}"
+            else
+              echo \
+                "${_has_history}"
+              _filter_history=(
+                  'select('
+                    '."task-id"=="'${_task#t}'") |'
+                      '."history"'
+              )
+              _history_entry="$(
+                echo \
+                  "${_has_history}" |
+                  jq \
+                    --raw-output \
+                    "${_filter_history[*]}")"
+              if [[ "${_description_enabled}" = "true" ]]; then
+                echo "${_filter_history[*]}"
+                _filter_description=(
+                  '.[]."taskDescription"'
+                )
+                _description="$(
+                  echo \
+                    "${_history_entry}" |
+                    jq \
+                      --raw-output \
+                      "${_filter_description[*]}")"
+                _descriptions+=(
+                  "${_description}"
+                )
+              fi
+              if [[ "${_package_enabled}" == "true" ]]; then
+                _filter_package=(
+                  '.[]."packageName"'
+                )
+                _package="$(
+                  echo \
+                    "${_history_entry}" |
+                    jq \
+                      --raw-output \
+                      "${_filter_package[*]}")"
+                _packages+=(
+                  "${_package}"
+                )
+              fi
+              if [[ "${_process_enabled}" == "true" ]]; then
+                _filter_process=(
+                  '.[]."processName"'
+                )
+                _process="$(
+                  echo \
+                    "${_history_entry}" |
+                    jq \
+                      --raw-output \
+                      "${_filter_process[*]}")"
+                _processes+=(
+                  "${_process}"
+                )
+              fi
+            fi
             _jq_filter=(
               '.[] |'
                 'select('

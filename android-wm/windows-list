@@ -41,6 +41,18 @@ _sourced \
 source \
   "${_crash_bash}"
 
+_description_requirements() {
+  _check_cmd \
+    "activities-info" \
+    "android-activity-utils"
+}
+
+_label_requirements() {
+  _check_cmd \
+    "app-name" \
+    "android-app-utils"
+}
+
 _requirements() {
   _check_cmd \
     "grep"
@@ -59,6 +71,9 @@ _root_requirements() {
 _global_variables() {
   get_date=""
   get_mode=""
+  output_template=""
+  title_format=""
+  output_format=""
   color=""
   quiet=""
 }
@@ -67,58 +82,63 @@ _root_get() {
   local \
     _output_template="${1}" \
     _output_format="${2}" \
-    _activities \
-    _activity \
+    _title_format="${3}" \
     _cmd \
     _msg=() \
-    _sdk
-  _sdk="$(
-    sdk-version)"
-  _msg=(
-    "Detected SDK version '${_sdk}'."
+    _template=()
+  # _sdk="$(
+  #   sdk-version)"
+  # _msg=(
+  #   "Detected SDK version '${_sdk}'."
+  # )
+  # _msg_info \
+  #   "${_msg[*]}"
+  # if (( 32 < "${_sdk}" )); then
+  #   _cmd=(
+  #     "/system/bin/dumpsys"
+  #       "window"
+  #       "windows"
+  #   )
+  #   # _cmd=(
+  #   #   "/system/bin/dumpsys"
+  #   #     "activity"
+  #   #     "activities"
+  #   # )
+  # elif (( "${_sdk}" < 28 )); then
+  #   _cmd=(
+  #     "/system/bin/dumpsys"
+  #       "window"
+  #       "windows"
+  #   )
+  # else
+  #   _cmd=(
+  #     "/system/bin/dumpsys"
+  #       "window"
+  #       "windows"
+  #   )
+  # fi
+  # _msg=(
+  #   "Running '${_cmd[*]}'."
+  # )
+  # _msg_info \
+  #   "${_msg[*]}"
+  # _activities="$(
+  #   su \
+  #     -c \
+  #     "${_cmd[*]}")"
+  # _activity="$(
+  #   echo \
+  #     "${_activities}" |
+  #     grep \
+  #       "  Window #" |
+  #       sort \
+  #         -V)"
+  # _number="${_activity#  Window \#}"
+  _template+=(
+    ${_output_template}
   )
-  _msg_info \
-    "${_msg[*]}"
-  if (( 32 < "${_sdk}" )); then
-    _cmd=(
-      "/system/bin/dumpsys"
-        "window"
-        "windows"
-    )
-    # _cmd=(
-    #   "/system/bin/dumpsys"
-    #     "activity"
-    #     "activities"
-    # )
-  elif (( "${_sdk}" < 28 )); then
-    _cmd=(
-      "/system/bin/dumpsys"
-        "window"
-        "windows"
-    )
-  else
-    _cmd=(
-      "/system/bin/dumpsys"
-        "window"
-        "windows"
-    )
+  if [[ "${_title_format}" == "" ]]; then
   fi
-  _msg=(
-    "Running '${_cmd[*]}'."
-  )
-  _msg_info \
-    "${_msg[*]}"
-  _activities="$(
-    su \
-      -c \
-      "${_cmd[*]}")"
-  _activity="$(
-    echo \
-      "${_activities}" |
-      grep \
-        "  Window #" |
-        sort \
-          -V)"
   echo \
     "${_activity}"
 }
@@ -132,12 +152,17 @@ _windows_list() {
     _mode="${1}" \
     _output_template="${2}" \
     _output_format="${3}" \
+    _title_format="${4}" \
     _cmd=() \
     _activities \
     _args=()
+    shift \
+      4
   if [[ "${_mode}" == "root" ]]; then
     _args+=(
-      ""
+      "${_output_template}"
+      "${_output_format}"
+      "${_title_format}"
     )
   fi
   "_${_mode}_get"
@@ -175,6 +200,19 @@ _output_template_auto_detect() {
     "title"
 }
 
+_title_format_check() {
+  if [[ " ${title_format} " == *" app "* || \
+        " ${output_template} " == *" app "* ]]; then
+    _label_requirements
+  fi
+  if [[ " ${title_format} " == *" description "* || \
+        " ${output_template} " == *" description "* || \
+        " ${title_format} " == *" package "* || \
+        " ${output_template} " == *" package "* ]]; then
+    _description_requirements
+  fi
+}
+
 _set_overrides() {
   if [[ -v override_color ]]; then
     color="${override_color}"
@@ -194,6 +232,18 @@ _set_overrides() {
     "get" \
     "mode" \
     "$(_auto_detect_mode)"
+  _set_override \
+    "output" \
+    "template" \
+    "position open title"
+  _set_override \
+    "title" \
+    "format" \
+    "description app"
+  _set_override \
+    "output" \
+    "format" \
+    "plain"
 }
 
 # Shows configuration options.
@@ -201,8 +251,9 @@ _show_config() {
   _msg_info "${app_name} configuration"
   _msg_info "     Got activity at date:   ${get_date}"
   _msg_info "                 Get mode:   ${get_mode}"
+  _msg_info "          Output template:   ${output_template}"
+  _msg_info "             Title format:   ${title_format}"
   _msg_info "            Output format:   ${output_format}"
-  _msg_info "            Output fields:   ${output_fields}"
 }
 
 # Show help usage, with an exit status.
@@ -238,9 +289,13 @@ Usage:
 
        Template for the windows list.
        Valid field for the template are:
-       - window-number:
-           Window position in last focused
-           sorting.
+       - position:
+           Window position in sorting
+           order, by default last focus.
+       - open:
+           It reports whether the activity
+           connected to the window has
+           been paused.
        - title:
            It displays the window title.
            See '-t' option for details onto
@@ -248,7 +303,7 @@ Usage:
        - package:
            It displays the window's application
            package name.
-       - label:
+       - app:
            It displays the window's application
            label.
        Default: '${output_template}'
@@ -258,13 +313,22 @@ Usage:
        What the 'title' field
        should resolve to;
        it can be:
+
+       - description:
+           It displays the
+           window description.
+
+       - app:
+           It displays the
+           application label
+           when no title has been
+           assigned.
+
        - package:
            It displays the
            application package
            name.
-       - label:
-           It displays the
-           application label.
+
        Default: '${title_format}'
 
      -o <output-format>
@@ -299,7 +363,7 @@ _requirements
 # shellcheck disable=SC2034
 while \
   getopts \
-    'm:f:o:cvh?' \
+    'm:f:o:l:cvh?' \
     arg; do
   case \
     "${arg}" in
@@ -307,6 +371,8 @@ while \
       override_get_mode="${OPTARG}" ;;
     f)
       override_output_template="${OPTARG}" ;;
+    l)
+      override_title_format="${OPTARG}" ;;
     o)
       override_output_format="${OPTARG}" ;;
     c)
@@ -338,6 +404,7 @@ app_opts=(
   "${get_mode}"
   "${output_template}"
   "${output_format}"
+  "${title_format}"
 )
 _show_config
 _windows_list \

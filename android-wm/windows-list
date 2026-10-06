@@ -468,6 +468,10 @@ _root_get() {
           --raw-output \
           "${_opened_filter[*]}")
     )
+    echo "Opened:"
+    printf \
+      '%s\n' \
+      "${_opened[@]}"
     _index=0
     for _token in "${_tokens_ids[@]}"; do
       _task_id="${_tasks_ids[${_index}]}"
@@ -534,12 +538,6 @@ _root_get() {
           _description=""
           _descriptions+=(
             "${_description}"
-          )
-        fi
-        if [[ "${_open_enabled}" == "" ]]; then
-          _open=""
-          _opened+=(
-            "${_process}"
           )
         fi
         if [[ "${_package_enabled}" == "" ]]; then

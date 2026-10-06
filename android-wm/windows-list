@@ -458,7 +458,7 @@ _root_get() {
               '"mAppDied") then'
           '."mAppDied"'
         'else'
-          'novalue'
+          '"novalue"'
         'end'
     )
     _dead+=( $(

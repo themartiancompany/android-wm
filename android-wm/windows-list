@@ -293,6 +293,7 @@ _root_get() {
             jq \
               "${_filter_history_entry[*]}")"
         if [[ "${_description_enabled}" = "true" ]]; then
+          echo "ciao"
           _filter_description=(
             "${_jq_filter[*]} |"
               'select('

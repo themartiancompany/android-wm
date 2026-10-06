@@ -120,7 +120,13 @@ _windows_get() {
 _sub_task_parse() {
   _sub_task_filter=(
     '.[] |'
-      'select(."tasks"."object-id" == "'${_sub_task}'")'
+      'if has('
+            '"tasks") then'
+        '."tasks"'
+      'else'
+        '"[]"'
+      'end |'
+      'select(."object-id" == "'${_sub_task}'")'
   )
   _sub_task_item="$(
     echo \

@@ -500,7 +500,14 @@ _root_get() {
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
         _filter_subtasks=(
-          '.[]."tasks".[]."object-id"'
+          '.[] |'
+            'if has('
+                  '"tasks") then'
+              '"true"'
+              '."tasks".[]."object-id"'
+            'else'
+              'null'
+            'end'
         )
         _subtaskeds=( $(
           echo \

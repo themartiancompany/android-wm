@@ -274,8 +274,7 @@ _root_get() {
           '.[]."mAppDied"')
     )
     _index=0
-    for _token in "${_token_ids[@]}"; do
-      echo "Ciaone"
+    for _token in "${_tokens_ids[@]}"; do
       _task_id="${_tasks_ids[${_index}]}"
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
@@ -294,7 +293,6 @@ _root_get() {
             jq \
               "${_filter_history_entry[*]}")"
         if [[ "${_description_enabled}" = "true" ]]; then
-          echo "ciao"
           _filter_description=(
             "${_jq_filter[*]} |"
               'select('

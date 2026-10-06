@@ -65,6 +65,8 @@ _global_variables() {
 
 _root_get() {
   local \
+    _output_template="${1}" \
+    _output_format="${2}" \
     _activities \
     _activity \
     _cmd \
@@ -122,13 +124,22 @@ _root_get() {
 }
 
 _windows_info_get() {
+  true
 }
 
 _windows_list() {
   local \
     _mode="${1}" \
+    _output_template="${2}" \
+    _output_format="${3}" \
     _cmd=() \
-    _activities
+    _activities \
+    _args=()
+  if [[ "${_mode}" == "root" ]]; then
+    _args+=(
+      ""
+    )
+  fi
   "_${_mode}_get"
 }
 
@@ -142,7 +153,7 @@ _auto_detect_mode() {
   if [[ "${_os}" == "Android" ]]; then
     _root_requirements
     echo \
-      "windows_info"
+      "root"
   elif [[ "${_os}" == "GNU/Linux" ]]; then
     _msg=(
       "Not implemented."
@@ -153,6 +164,15 @@ _auto_detect_mode() {
       "${_msg[*]}" \
       1
   fi
+}
+
+_output_template_auto_detect() {
+  local \
+    _template=()
+  _template=(
+    "window"
+    "open"
+    "title"
 }
 
 _set_overrides() {
@@ -182,12 +202,14 @@ _show_config() {
   _msg_info "     Got activity at date:   ${get_date}"
   _msg_info "                 Get mode:   ${get_mode}"
   _msg_info "            Output format:   ${output_format}"
+  _msg_info "            Output fields:   ${output_fields}"
 }
 
 # Show help usage, with an exit status.
 # $1: exit status number.
 _usage() {
   local \
+    _exit_code="${1}" \
     _usage_text
   IFS='' \
     read \
@@ -205,26 +227,69 @@ Usage:
 
   options:
 
-     -m <mode>            How to retrieve the
-                          windows list.
-                          It can be 'root'.
-                          Default: ${get_mode}
+     -m <mode>
 
-     -o <output-format>   Output format of
-                          the windows list.
-                          Default: '${output_format}'
-                          
+       How to retrieve the
+       windows list.
+       It can be 'root'.
+       Default: ${get_mode}
 
-     -h                   This message.
-     -c                   Enable color output.
-     -v                   Enable verbose output
+     -f <template>
+
+       Template for the windows list.
+       Valid field for the template are:
+       - window-number:
+           Window position in last focused
+           sorting.
+       - title:
+           It displays the window title.
+           See '-t' option for details onto
+           what's shown in this field.
+       - package:
+           It displays the window's application
+           package name.
+       - label:
+           It displays the window's application
+           label.
+       Default: '${output_template}'
+
+     -t <title-format>
+
+       What the 'title' field
+       should resolve to;
+       it can be:
+       - package:
+           It displays the
+           application package
+           name.
+       - label:
+           It displays the
+           application label.
+       Default: '${title_format}'
+
+     -o <output-format>
+
+       Output format of the windows list.
+       Default: '${output_format}'
+
+     -h
+
+       This message.
+
+     -c
+
+       Enable color output.
+
+     -v
+
+       Enable verbose output
 
 ENDUSAGETEXT
   _printf \
     '%s\n' \
     "${_usage_text}"
   exit \
-    "${1}"
+    "${_exit_code}"
 }
 
 _globals
@@ -234,14 +299,16 @@ _requirements
 # shellcheck disable=SC2034
 while \
   getopts \
-    'm:a:cvh?' \
+    'm:f:o:cvh?' \
     arg; do
   case \
     "${arg}" in
     m)
       override_get_mode="${OPTARG}" ;;
-    a)
-      override_sdk_version="${OPTARG}" ;;
+    f)
+      override_output_template="${OPTARG}" ;;
+    o)
+      override_output_format="${OPTARG}" ;;
     c)
       override_color="y" ;;
     v)
@@ -269,6 +336,8 @@ shift \
 _set_overrides
 app_opts=(
   "${get_mode}"
+  "${output_template}"
+  "${output_format}"
 )
 _show_config
 _windows_list \

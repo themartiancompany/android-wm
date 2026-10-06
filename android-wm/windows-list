@@ -259,6 +259,11 @@ _root_get() {
           --raw-output \
           '.[]."mToken"."id"')
     )
+    echo \
+      "${_windows_json}" |
+      jq \
+        --raw-output \
+        '.[]."mAppDied"'
     _opened+=( $(
       echo \
         "${_windows_json}" |
@@ -384,6 +389,13 @@ _root_get() {
         _line+=(
           "${_opened[${_index}]}"
         )
+      else
+        _msg=(
+          "Unknown field '${_field}'."
+        )
+        _msg_error \
+          "${_msg[*]}" \
+          1
       fi
     done
     _lines+=(

@@ -450,15 +450,15 @@ _root_get() {
                   '."task-id"=="'${_task_id#t}'") |'
                 '."history"'
               )
-              echo \
-                "${_filter_history[*]}"
-              echo \
-                "${_task_item}"
-              echo \
-                "${_task_item}" |
-                jq \
-                  --raw-output \
-                  "${_filter_history[*]}"
+              # echo \
+              #   "${_filter_history[*]}"
+              # echo \
+              #   "${_task_item}"
+              # echo \
+              #   "${_task_item}" |
+              #   jq \
+              #     --raw-output \
+              #     "${_filter_history[*]}"
               echo "hi"
               _history_entry="$(
                 echo \
@@ -467,7 +467,6 @@ _root_get() {
                     --raw-output \
                     "${_filter_history[*]}")"
               echo "hihi"
-              _history_entry="$(
               if [[ "${_description_enabled}" = "true" ]]; then
                 echo "${_filter_history[*]}"
                 echo "${_history_entry}"

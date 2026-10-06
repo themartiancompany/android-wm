@@ -395,7 +395,7 @@ _root_get() {
           fi
         done
         _filter_tasks=(
-          '.[]."history".[]."object-id"'
+          '.[].history'
         )
         _taskeds=( $(
           echo \
@@ -411,9 +411,14 @@ _root_get() {
           "${_msg[*]}"
         for _task in "${_taskeds[@]}"; do
           if [[ "${_task}" != "null" ]]; then
+            _task_id="$(
+              echo \
+                "${_task}" |
+                jq \
+                  '."task-id"')"
             _task_filter=(
               '.[] |'
-                'select(."task-id" == "'${_task#t}'")'
+                'select(."task-id" == "'${_task_id#t}'")'
             )
             echo "${_task_filter[*]}"
             echo \

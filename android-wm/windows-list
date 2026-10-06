@@ -415,6 +415,11 @@ _root_get() {
               '.[] |'
                 'select(."object-id" == "'${_task#t}'")'
             )
+            echo \
+              "${_activities_json}" |
+              jq \
+                --raw-output \
+                "${_task_filter[*]}"
             _task_item="$(
               echo \
                 "${_activities_json}" |

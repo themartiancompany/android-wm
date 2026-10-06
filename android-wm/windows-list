@@ -194,7 +194,7 @@ _root_get() {
     echo \
       "${_windows_json}" |
       jq \
-        '.[].mToken.activity-record-unknown-id'
+        '[].mToken.activity-record-unknown-id'
   fi
   # for _field in "${_template_title[@]}"; do
   #   if [[ "${_field}" == "description" ]]; then

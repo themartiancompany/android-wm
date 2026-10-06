@@ -454,6 +454,7 @@ _root_get() {
               echo \
                 "${_has_history}"
               _filter_history=(
+                '.[] |'
                   'select('
                     '."task-id"=="'${_task#t}'") |'
                       '."history"'

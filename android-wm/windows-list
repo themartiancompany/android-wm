@@ -308,6 +308,8 @@ _root_get() {
     _activities_info_opts=() \
     _app \
     _app_enabled \
+    _dead=() \
+    _dead_filter=() \
     _description \
     _descriptions=() \
     _description_enabled \
@@ -336,6 +338,7 @@ _root_get() {
     _process \
     _process_enabled \
     _processes=() \
+    _status \
     _task_id \
     _tasks_ids=() \
     _taskeds=() \
@@ -461,12 +464,17 @@ _root_get() {
           '"novalue"'
         'end'
     )
+    echo \
+      "${_windows_json}" |
+      jq \
+        --raw-output \
+        "${_dead_filter[*]}"
     _dead+=( $(
       echo \
         "${_windows_json}" |
         jq \
           --raw-output \
-          "${_opened_filter[*]}")
+          "${_dead_filter[*]}")
     )
     for _status in "${_dead[@]}"; do
       if [[ "${_status}" == "novalue" ]]; then

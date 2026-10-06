@@ -157,13 +157,13 @@ _sub_task_parse() {
         "${_activities_json}" |
         jq \
           --raw-output \
-          '.[]."tasks"."history"')"
+          '.[]."tasks".[]."history"')"
     if [[ "${_has_history}" != "null" ]]; then
       _filter_history=(
-          '."tasks"."history" |'
+          '."tasks".[]."history" |'
           'select('
             '."task-id"=="'${_sub_task#t}'") |'
-              '."tasks"."history"'
+              '."tasks".[]."history"'
       )
       _history_entry="$(
         echo \
@@ -500,7 +500,7 @@ _root_get() {
       if [[ "${_task_id}" != "null" || \
             "${_task_id}" == "t"* ]]; then
         _filter_subtasks=(
-          '.[]."tasks"."object-id"'
+          '.[]."tasks".[]."object-id"'
         )
         _subtaskeds=( $(
           echo \

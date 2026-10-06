@@ -452,12 +452,21 @@ _root_get() {
           --raw-output \
           '.[]."mToken"."id"')
     )
+    _opened_filter=(
+      '.[] |'
+        'if has('
+              '"mAppDied") then'
+          '."mAppDied"'
+        'else'
+          'false'
+        'end'
+    )
     _opened+=( $(
       echo \
         "${_windows_json}" |
         jq \
           --raw-output \
-          '.[]."mAppDied"')
+          "${_opened_filter[*]}")
     )
     _index=0
     for _token in "${_tokens_ids[@]}"; do

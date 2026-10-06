@@ -132,6 +132,7 @@ _root_get() {
     _index \
     _infos_flag \
     _jq_filter=() \
+    _line=() \
     _msg=() \
     _package \
     _package_enabled \
@@ -364,6 +365,10 @@ _root_get() {
             )
           fi
         done
+      elif [[ "${_field}" == "open" ]]; then
+        _line+=(
+          "${_index}"
+        )
       fi
     done
   done

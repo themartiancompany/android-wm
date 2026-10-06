@@ -395,7 +395,11 @@ _root_get() {
           fi
         done
         _filter_tasks=(
-          '.[].history'
+          '.[].history |'
+            'if type=="array" then'
+              'yes'
+            'else'
+              'no'
         )
         _taskeds=( $(
           echo \
@@ -410,7 +414,7 @@ _root_get() {
         _msg_info \
           "${_msg[*]}"
         for _task in "${_taskeds[@]}"; do
-          if [[ "${_task}" != "null" ]]; then
+          if [[ "${_task}" == "yes" ]]; then
             echo \
               "${_task}"
             echo \

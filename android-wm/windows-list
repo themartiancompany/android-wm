@@ -292,7 +292,7 @@ _root_get() {
             echo \
               "${_history_entry}" |
               jq \
-                "${_filter_description}")"
+                "${_filter_description[*]}")"
           _descriptions+=(
             "${_description}"
           )
@@ -307,7 +307,7 @@ _root_get() {
             echo \
               "${_history_entry}" |
               jq \
-                "${_filter_package}")"
+                "${_filter_package[*]}")"
           _packages+=(
             "${_package}"
           )
@@ -321,7 +321,7 @@ _root_get() {
             echo \
               "${_history_entry}" |
               jq \
-                "${_filter_process}")"
+                "${_filter_process[*]}")"
           _processes+=(
             "${_process}"
           )

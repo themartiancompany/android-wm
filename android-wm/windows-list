@@ -190,7 +190,7 @@ _root_get() {
       activities-info \
         "${_activities_info_opts[@]}")"
   fi
-  if [[ "${_windows_json}" == "" ]]; then
+  if [[ "${_windows_json}" != "" ]]; then
     echo \
       "${_windows_json}" |
       jq \

@@ -109,6 +109,12 @@ _windows_get() {
       "${_windows}" |
       wc \
         -l)"
+  _msg=(
+    "Found '${_windows_amount}'"
+    "windows."
+  )
+  _msg_info \
+    "${_msg[*]}"
 }
 
 _root_get() {
@@ -302,7 +308,6 @@ _root_get() {
             "${_description}"
           )
         fi
-        echo "hi"
         if [[ "${_package_enabled}" == "true" ]]; then
           _filter_package=(
             "${_filter_history_entry[*]} |"

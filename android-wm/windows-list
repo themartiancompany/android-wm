@@ -299,12 +299,26 @@ _root_get() {
           "${_msg[*]}"
         for _sub_task in "${_subtaskeds[@]}"; do
           if [[ "${_sub_task}" != "null" ]]; then
-            _has_history="$(
+            _sub_task_filter=(
+              '.[] |'
+                'select(."tasks"."object-id" == "'${_sub_task}'")'
+            )
+            _sub_task_item="$(
               echo \
                 "${_activities_json}" |
                 jq \
                   --raw-output \
-                  '.[]."tasks"."history"')"
+                  "${_sub_task_filter[*]}")"
+            echo "${_sub_task_item}"
+            _has_history_filter=(
+              ".history"
+            )
+            _has_history="$(
+              echo \
+                "${_sub_task_item}" |
+                jq \
+                  --raw-output \
+                  '."history"')"
             if [[ "${_has_history}" == "null" ]]; then
               _msg=(
                 "Window with task '${_task_id}'"
@@ -314,11 +328,6 @@ _root_get() {
               _msg_info \
                 "${_msg[*]}"
             else
-              _jq_filter=(
-                '.[] |'
-                  'select('
-                    '."tasks"."history".[]."object-id"=="'${_token}'")'
-              )
               _filter_history=(
                 "${_jq_filter[*]} |"
                   'select('

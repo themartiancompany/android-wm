@@ -191,10 +191,45 @@ _root_get() {
         "${_activities_info_opts[@]}")"
   fi
   if [[ "${_windows_json}" != "" ]]; then
-    echo \
-      "${_windows_json}" |
-      jq \
-        '[].mToken.activity-record-unknown-id'
+    _activities=( $(
+      echo \
+        "${_windows_json}" |
+        jq \
+          --raw-output \
+          '[]."activity"')
+    )
+    _tasks_ids=( $(
+      echo \
+        "${_windows_json}" |
+        jq \
+          --raw-output \
+          '[]."mToken"."activity-record-unknown-id"' |
+        sed \
+          "s/^t//g")
+    )
+    for _task_id in "${_tasks_ids[@]}"; do
+      if [[ "${_task_id}" != "null" && \
+            "${_task_id}" == "t"* ]]; then
+        _description="$(
+          echo \
+            "${_activities_json}" |
+            jq \
+            '.[] | select(."task-id"=="'${_task_id#t}'") | '
+        _descriptions+=(
+          "${_task_id#t}"
+        )
+      else
+        _msg=(
+          "Unknown value '${_task_id}'"
+          "for task id."
+        )
+        _msg_info \
+          "${_msg[*]}"
+        _descriptions+=(
+          ""
+        )
+      fi
+    done
   fi
   # for _field in "${_template_title[@]}"; do
   #   if [[ "${_field}" == "description" ]]; then

@@ -83,9 +83,11 @@ _root_get() {
     _output_template="${1}" \
     _output_format="${2}" \
     _title_format="${3}" \
-    _cmd \
+    _activities_info_opts=() \
+    _infos_flag \
     _msg=() \
     _template=() \
+    _template_title=() \
     _windows_json \
     _windows_info_opts=()
   _windows_info_opts+=(
@@ -142,20 +144,29 @@ _root_get() {
   #       sort \
   #         -V)"
   # _number="${_activity#  Window \#}"
-  _windows_json="$(
-    windows-info \
-      "${_windows_info_opts[@]}")"
-  _title_template=(
+  _template_title=(
     ${_title_format}
   )
   _template+=(
     ${_output_template}
   )
-  # for _field \
-  #   in "${_template[@]}"; do
-  #   if [[ "${_field}" == "" ]]; then
-  #   fi
-  # done
+  _infos_flag="false"
+  for _field \
+    in "${_template[@]}" \
+       "${_template_title[@]}"; do
+    if [[ "${_field}" == "app" || \
+          "${_field}" == "description" ]]; then
+      _infos_flag="true"
+    fi
+  done
+  if [[ "${_infos_flag}" == "true" ]]; then
+    _windows_json="$(
+      windows-info \
+        "${_windows_info_opts[@]}")"
+    _activities_json="$(
+      activities-info \
+        "${_activities_info_opts[@]}")"
+  fi
   # if [[ "${_title_format}" == "  " ]]; then
   #   package
   # fi

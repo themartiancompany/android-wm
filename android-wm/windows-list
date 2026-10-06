@@ -166,7 +166,6 @@ _sub_task_parse() {
             --raw-output \
             "${_filter_history[*]}")"
       if [[ "${_description_enabled}" = "true" ]]; then
-        echo "${_filter_history[*]}"
         _filter_description=(
           '.[]."taskDescription"'
         )
@@ -234,7 +233,8 @@ _task_parse() {
       jq \
         --raw-output \
         "${_has_history_filter[*]}")"
-  if [[ "${_has_history}" == "null" ]]; then
+  if [[ "${_has_history}" == "null" || \
+        "${_has_history}" == "[]" ]]; then
     _msg=(
       "Window with task '${_task_id}'"
       "has no activity"

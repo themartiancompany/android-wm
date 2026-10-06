@@ -126,6 +126,7 @@ _root_get() {
     _field \
     _field_title \
     _filter_description=() \
+    _filter_history_entry=() \
     _filter_package=() \
     _filter_process=() \
     _history_entry \
@@ -278,17 +279,19 @@ _root_get() {
                 'select('
                   '."history".[]."object-id"=="'${_token}'")'
         )
+        _filter_history_entry=(
+          "${_jq_filter[*]} |"
+            '."history"'
+        )
         _history_entry="$(
           echo \
             "${_activities_json}" |
             jq \
-              "${_filter_description[*]}")"
-        echo \
-          "${_history_entry}"
+              "${_filter_history_entry[*]}")"
         if [[ "${_description_enabled}" = "true" ]]; then
           _filter_description=(
-            "${_jq_filter[*]} |"
-            '."history".[]."taskDescription"'
+            "${_filter_history_entry[*]} |"
+            '.[]."taskDescription"'
           )
           _description="$(
             echo \
@@ -302,8 +305,8 @@ _root_get() {
         echo "hi"
         if [[ "${_package_enabled}" == "true" ]]; then
           _filter_package=(
-            "${_jq_filter[*]} |"
-            '."history".[]."packageName"'
+            "${_filter_history_entry[*]} |"
+            '.[]."packageName"'
           )
           _package="$(
             echo \
@@ -316,8 +319,8 @@ _root_get() {
         fi
         if [[ "${_process_enabled}" == "true" ]]; then
           _filter_process=(
-            "${_jq_filter[*]} |"
-            '."history".[]."processName"'
+            "${_filter_history_entry[*]} |"
+            '.[]."processName"'
           )
           _process="$(
             echo \

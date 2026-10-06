@@ -416,18 +416,6 @@ _root_get() {
           "${_msg[*]}"
         for _task in "${_taskeds[@]}"; do
           if [[ "${_task}" == "yes" ]]; then
-            echo \
-              "${_task}"
-            echo \
-              "${_task}" |
-              jq \
-                --raw-output \
-                '."task-id"'
-            _task_id="$(
-              echo \
-                "${_task}" |
-                jq \
-                  '."task-id"')"
             _task_filter=(
               '.[] |'
                 'select(."task-id" == "'${_task_id#t}'")'

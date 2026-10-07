@@ -126,8 +126,14 @@ _sub_task_parse() {
       'else'
         '[]'
       'end |'
-      '.[] | select(."object-id" == "'${_sub_task}'")'
+        '.[] |'
+          'select(."object-id" == "'${_sub_task}'")'
   )
+  echo \
+    "${_activities_json}" |
+    jq \
+      --raw-output \
+      ".[]"
   echo \
     "${_activities_json}" |
     jq \

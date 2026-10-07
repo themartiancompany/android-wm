@@ -545,9 +545,9 @@ _root_get() {
           '.[] |'
             'if has('
                   '"tasks") then'
-              '"true"'
-            'else'
               '"false"'
+            'else'
+              '"true"'
             'end'
         )
         _non_sub_taskeds=( $(

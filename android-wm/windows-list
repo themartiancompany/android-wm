@@ -343,13 +343,15 @@ _task_parse() {
         "${_history_entry}" |
         jq \
           --raw-output \
-          '.[] | if has("object-id") then . else [{"object-id": ""}] end'
+          '.[] | if has("object-id") then . else [{"object-id": ""}] end | .[] | select(."object-id" == "'${_token}'")'
       _description="$(
         echo \
           "${_history_entry}" |
           jq \
             --raw-output \
             "${_filter_description[*]}")"
+      echo \
+        "${_description}"
       if [[ "${_description}" != "" && \
             "${_description}" != "null" ]]; then
         if (( ${#_descriptions[@]} < $(( _index + 1 )) )); then

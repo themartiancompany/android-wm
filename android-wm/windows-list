@@ -292,7 +292,7 @@ _task_parse() {
       jq \
         --raw-output \
         "${_filter_task[*]}")"
-  echo "${_task_item}"
+  # echo "${_task_item}"
   _has_history_filter=(
     '."history"'
   )
@@ -343,7 +343,7 @@ _task_parse() {
         "${_history_entry}" |
         jq \
           --raw-output \
-          '.[] | if has("object-id") then . else [{"object-id": ""}] end | .[] | select(."object-id" == "'${_token}'")'
+          '.[] | if has("object-id") then . else [{"object-id": ""}] end | .[]'
       _description="$(
         echo \
           "${_history_entry}" |

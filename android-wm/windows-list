@@ -145,7 +145,7 @@ _sub_task_parse() {
       jq \
         --raw-output \
         "${_sub_task_filter[*]}")"
-  # echo "${_sub_task_item}"
+  echo "${_sub_task_item}"
   _has_history_filter=(
     'if has('
           '."history") then'

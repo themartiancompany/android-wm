@@ -205,7 +205,8 @@ _sub_task_parse() {
           _msg=(
             "Present '${#_descriptions[@]}' descriptions."
             "Adding description '${_description}'"
-            "for window '${_index}'."
+            "for window '${_index}'"
+            "from sub-task '${_sub_task}'."
           )
           _msg_info \
             "${_msg[*]}"

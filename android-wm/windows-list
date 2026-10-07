@@ -895,9 +895,9 @@ _root_get() {
       "${_msg[*]}"
     _line=()
     echo \
-      "packages ${_packages[*]}"
+      "packages ${#_packages[*]}"
     echo \
-      "processes ${_processes[*]}"
+      "processes ${#_processes[*]}"
     for _field in "${_template[@]}"; do
       if [[ "${_field}" == "position" ]]; then
         _line+=(
@@ -905,8 +905,6 @@ _root_get() {
         )
       elif [[ "${_field}" == "title" ]]; then
         for _field_title in "${_template_title[@]}"; do
-          echo \
-            "${_field_title}"
           if [[ "${_field_title}" == "description" ]]; then
             _title+=(
               "${_descriptions[${_index}]}"

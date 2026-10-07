@@ -202,6 +202,8 @@ _sub_task_parse() {
         _msg=(
           "Description for window '${_index}'"
           "has probably multiple null labels."
+          "Total descriptions up so far:"
+          "'${#_descriptions[@]}'."
         )
         _msg_info \
           "${_msg[*]}"

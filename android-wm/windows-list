@@ -583,7 +583,7 @@ _root_get() {
               '"false"'
             'end'
         )
-        _tasks_with_history=( $(
+        _taskeds=( $(
           echo \
             "${_activities_json}" |
             jq \

@@ -237,11 +237,20 @@ _sub_task_parse() {
           _msg_info \
             "${_msg[*]}"
         fi
-    fi
+      fi
     fi
     if [[ "${_package_enabled}" == "true" ]]; then
       _filter_package=(
-        '.[]."packageName"'
+        'if has('
+          '"object-id") then'
+          '.'
+        'else'
+          '[ { "object-id": "" } ]'
+        'end |'
+          '.[] |'
+          'select('
+            '."object-id" == "'${_token}'") |'
+            '."packageName"'
       )
       _package="$(
         echo \
@@ -249,13 +258,59 @@ _sub_task_parse() {
           jq \
             --raw-output \
             "${_filter_package[*]}")"
-      _packages+=(
-        "${_package}"
-      )
+      if [[ "${_package}" != "" && \
+            "${_package}" != "null" ]]; then
+        if (( ${#_packages[@]} < $(( _index + 1 )) )); then
+          _msg=(
+            "Present '${#_packages[@]}' packages."
+            "Adding package '${_package}'"
+            "for window '${_index}'"
+            "from sub-task '${_sub_task}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+          _packages+=(
+            "${_package}"
+          )
+        fi
+      else
+        if (( ${#_packages[@]} < $(( _index + 1 )) )); then
+          _msg=(
+            "Present '${#_packages[@]}' package names."
+            "Adding package '${_package}'"
+            "for window '${_index}'"
+            "from sub-task '${_sub_task}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+          _packages+=(
+            "${_packages}"
+          )
+        else
+          _msg=(
+            "Packages for window '${_index}'"
+            "has probably multiple null labels"
+            "with non-empty package names."
+            "Total packages up so far:"
+            "'${#_packages[@]}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+        fi
+      fi
     fi
     if [[ "${_process_enabled}" == "true" ]]; then
       _filter_process=(
-        '.[]."processName"'
+        'if has('
+          '"object-id") then'
+          '.'
+        'else'
+          '[ { "object-id": "" } ]'
+        'end |'
+          '.[] |'
+          'select('
+            '."object-id" == "'${_token}'") |'
+            '."processName"'
       )
       _process="$(
         echo \
@@ -263,11 +318,47 @@ _sub_task_parse() {
           jq \
             --raw-output \
             "${_filter_process[*]}")"
-      _processes+=(
-        "${_process}"
-      )
+      if [[ "${_process}" != "" && \
+            "${_process}" != "null" ]]; then
+        if (( ${#_processes[@]} < $(( _index + 1 )) )); then
+          _msg=(
+            "Present '${#_processes[@]}' processes."
+            "Adding process '${_process}'"
+            "for window '${_index}'"
+            "from sub-task '${_sub_task}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+          _processes+=(
+            "${_processes}"
+          )
+        fi
+      else
+        if (( ${#_processes[@]} < $(( _index + 1 )) )); then
+          _msg=(
+            "Present '${#_processes[@]}' process names."
+            "Adding process '${_process}'"
+            "for window '${_index}'"
+            "from sub-task '${_sub_task}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+          _processes+=(
+            "${_process}"
+          )
+        else
+          _msg=(
+            "Processes for window '${_index}'"
+            "has probably multiple null labels"
+            "with non-empty package names."
+            "Total packages up so far:"
+            "'${#_processes[@]}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+        fi
+      fi
     fi
-    # fi
   fi
   true
 }
@@ -372,7 +463,7 @@ _task_parse() {
         fi
       else
         _msg=(
-          "Ciao."
+          "Null description, skipping."
         )
         _msg_info \
           "${_msg[*]}"

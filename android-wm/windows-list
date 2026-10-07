@@ -566,8 +566,6 @@ _root_get() {
           --raw-output \
           '.[]."mToken"."id"')
     )
-    echo \
-      "tokens ids '${#_tokens_ids[@]}'"
     _dead_filter=(
       '.[] |'
         'if has('
@@ -596,10 +594,6 @@ _root_get() {
         "${_open}"
       )
     done
-    echo "Opened:"
-    printf \
-      '%s\n' \
-      "${_opened[@]}"
     _index=0
     for _token in "${_tokens_ids[@]}"; do
       _task_id="${_tasks_ids[${_index}]}"
@@ -672,9 +666,12 @@ _root_get() {
                 "${_task}" == "true" ]]; then
             _task_parse
           else
-            echo \
-              "non_sub_task '${_non_sub_task}'" \
-              "_task '${_task}'"
+            _msg=(
+              "Task '${_task}'"
+              "has sub-tasks, not parsing."
+            )
+            _msg_info \
+              "${_msg[*]}"
           fi 
           _index_task=$((
             _index_task + 1))
@@ -728,10 +725,6 @@ _root_get() {
         _index + 1))
     done
   fi
-  echo \
-    "descriptions '${#_descriptions[@]}'."
-  echo \
-    "opened '${#_opened[@]}'."
   for _index \
     in $(seq \
            0 \
@@ -750,23 +743,38 @@ _root_get() {
       elif [[ "${_field}" == "title" ]]; then
         for _field_title in "${_template_title[@]}"; do
           if [[ "${_field_title}" == "description" ]]; then
-            _line+=(
+            _title+=(
               "${_descriptions[${_index}]}"
             )
+          elif [[ "${_field_title}" == "activity" ]]; then
+            _title+=(
+              "${_activities[${_index}]}"
+            )
           elif [[ "${_field_title}" == "process" ]]; then
-            _line+=(
+            _title+=(
               "${_processes[${_index}]}"
             )
           elif [[ "${_field_title}" == "package" ]]; then
-            _line+=(
+            _title+=(
               "${_packages[${_index}]}"
+            )
+          elif [[ "${_field_title}" == "app" ]]; then
+            _app="$(
+              app-name \
+                "${_packages[${_index}]}")"
+            _title+=(
+              "${_app}"
             )
           fi
         done
       elif [[ "${_field}" == "open" ]]; then
-        _line+=(
-          "${_opened[${_index}]}"
-        )
+        if [[ "${_opened[${_index}]}" == "true" ]]; then
+          _text="[X]"
+        elif [[ "${_opened[${_index}]}" == "false" ]]; then
+          _text="[ ]"
+          _line+=(
+            "${_text}"
+          )
       else
         _msg=(
           "Unknown field '${_field}'."
@@ -775,9 +783,14 @@ _root_get() {
           "${_msg[*]}" \
           1
       fi
+      _line_string="$(
+        printf \
+          '%s - ' \
+          "${_line[*]}")"
+      _line_string="${_line_string% \- }"
     done
     _lines+=(
-      "${_line[*]}"
+      "${_line_string}"
     )
   done
   printf \

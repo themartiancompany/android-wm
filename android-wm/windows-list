@@ -903,8 +903,9 @@ _root_get() {
           "${_index}"
         )
       elif [[ "${_field}" == "title" ]]; then
-        echo "${_template_title[*]}"
         for _field_title in "${_template_title[@]}"; do
+          echo \
+            "${_field_title}"
           if [[ "${_field_title}" == "description" ]]; then
             _title+=(
               "${_descriptions[${_index}]}"

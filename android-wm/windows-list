@@ -599,16 +599,6 @@ _root_get() {
               --raw-output \
               "${_filter_tasks[*]}")
         )
-        _msg=(
-          "Checking sub-tasks."
-        )
-        _msg_info \
-          "${_msg[*]}"
-        for _sub_task in "${_subtaskeds[@]}"; do
-          if [[ "${_sub_task}" != "null" ]]; then
-            _sub_task_parse
-          fi
-        done
         _filter_non_sub_tasks=(
           '.[] |'
             'if has('
@@ -643,6 +633,16 @@ _root_get() {
           fi 
           _index_task=$((
             _index_task + 1))
+        done
+        _msg=(
+          "Checking sub-tasks."
+        )
+        _msg_info \
+          "${_msg[*]}"
+        for _sub_task in "${_subtaskeds[@]}"; do
+          if [[ "${_sub_task}" != "null" ]]; then
+            _sub_task_parse
+          fi
         done
       else
         _msg=(

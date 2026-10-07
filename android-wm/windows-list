@@ -343,7 +343,7 @@ _task_parse() {
         "${_history_entry}" |
         jq \
           --raw-output \
-          '.[]'
+          '.[] | if has("object-id") then . else [{"object-id": ""}] end'
       _description="$(
         echo \
           "${_history_entry}" |

@@ -219,7 +219,8 @@ _sub_task_parse() {
           _msg=(
             "Present '${#_descriptions[@]}' descriptions."
             "Adding description '${_description}'"
-            "for window '${_index}'."
+            "for window '${_index}'"
+            "from sub-task '${_sub_task}'."
           )
           _msg_info \
             "${_msg[*]}"
@@ -324,7 +325,17 @@ _task_parse() {
           "${_filter_history[*]}")"
     if [[ "${_description_enabled}" = "true" ]]; then
       _filter_description=(
-        '.[]."taskDescription"'
+        '.[] |'
+        'if has('
+          '"object-id") then'
+          '.'
+        'else'
+          '[ { "object-id": "" } ]'
+        'end |'
+          '.[] |'
+          'select('
+            '."object-id" == "'${_token}'") |'
+            '."taskDescription"'
       )
       _description="$(
         echo \

@@ -118,6 +118,12 @@ _windows_get() {
 }
 
 _sub_task_parse() {
+  local \
+    _msg=()
+  _msg=(
+    "Parsing sub-task"
+
+  )
   _sub_task_filter=(
     '.[] |'
       'if has('
@@ -652,10 +658,13 @@ _root_get() {
         )
         _msg_info \
           "${_msg[*]}"
+        _index_sub_task=0
         for _sub_task in "${_subtaskeds[@]}"; do
           if [[ "${_sub_task}" != "null" ]]; then
             _sub_task_parse
           fi
+          _index_sub_task=$((
+            _index_sub_task + 1))
         done
       else
         _msg=(

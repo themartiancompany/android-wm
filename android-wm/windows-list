@@ -775,6 +775,7 @@ _root_get() {
           _line+=(
             "${_text}"
           )
+        fi
       else
         _msg=(
           "Unknown field '${_field}'."

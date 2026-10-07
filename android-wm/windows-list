@@ -132,7 +132,7 @@ _sub_task_parse() {
     "${_activities_json}" |
     jq \
       --raw-output \
-      '.[]'
+      "${_sub_task_filter[*]}"
   _sub_task_item="$(
     echo \
       "${_activities_json}" |
@@ -557,8 +557,11 @@ _root_get() {
               --raw-output \
               "${_filter_non_sub_tasks[*]}")
         )
-        echo \
+        _msg=(
           "Non subtaskeds: '${_non_sub_taskeds[*]}'."
+        )
+        _msg_info \
+          "${_msg[*]}"
         _index_task=0
         for _task in "${_taskeds[@]}"; do
           _non_sub_task="${_non_sub_taskeds[${_index_task}]}"

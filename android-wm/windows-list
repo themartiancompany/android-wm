@@ -534,11 +534,6 @@ _root_get() {
               '"false"'
             'end'
         )
-        echo \
-          "${_activities_json}" |
-          jq \
-            --raw-output \
-            "${_filter_tasks[*]}"
         _tasks_with_history=( $(
           echo \
             "${_activities_json}" |
@@ -547,7 +542,7 @@ _root_get() {
               "${_filter_tasks[*]}")
         )
         _filter_non_sub_tasks=(
-          '.[].tasks |'
+          '.[] |'
             'if has('
                   '"tasks") then'
               '"true"'

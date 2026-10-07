@@ -509,7 +509,6 @@ _root_get() {
             'if has('
                   '"tasks") then'
               '"true"'
-              '."tasks".[]."object-id"'
             'else'
               'null'
             'end'
@@ -543,10 +542,11 @@ _root_get() {
         )
         _filter_non_sub_tasks=(
           '.[].tasks |'
-            'if type=="array" then'
-              '"false"'
-            'else'
+            'if has('
+                  '"tasks") then'
               '"true"'
+            'else'
+              '"false"'
             'end'
         )
         _non_sub_taskeds=( $(

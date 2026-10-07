@@ -133,7 +133,7 @@ _sub_task_parse() {
     "${_activities_json}" |
     jq \
       --raw-output \
-      '.[] | if has("tasks") then ."tasks" else [{"object":""}]'
+      '.[] | if has("tasks") then ."tasks" else [{"object":""}] end'
   echo \
     "${_activities_json}" |
     jq \

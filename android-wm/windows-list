@@ -160,10 +160,11 @@ _sub_task_parse() {
   else
     echo \
       "${_has_history}"
+    echo "${_sub_task#t}"
     _filter_history=(
         '.[] |'
         'select('
-          '."task-id"=="'${_sub_task#t}'")'
+          '."task-id" == "'${_sub_task#t}'")'
     )
     _history_entry="$(
       echo \
@@ -173,7 +174,11 @@ _sub_task_parse() {
           "${_filter_history[*]}")"
     if [[ "${_description_enabled}" = "true" ]]; then
       _filter_description=(
-        '.[]."taskDescription"'
+        'if has('
+          '"object-id") then'
+          '.[]."taskDescription"'
+        'else'
+          '""'
       )
       _description="$(
         echo \
@@ -181,9 +186,17 @@ _sub_task_parse() {
           jq \
             --raw-output \
             "${_filter_description[*]}")"
-      _descriptions+=(
-        "${_description}"
-      )
+      if [[ "${_description}" != "" ]]; then
+        _msg=(
+          "Adding description '${_description}'"
+          "for window '${_index}'."
+        )
+        _msg_info \
+          "${_msg[*]}"
+        _descriptions+=(
+          "${_description}"
+        )
+      fi
     fi
     if [[ "${_package_enabled}" == "true" ]]; then
       _filter_package=(

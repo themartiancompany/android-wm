@@ -176,10 +176,14 @@ _sub_task_parse() {
       _filter_description=(
         'if has('
           '"object-id") then'
-          '.[]."taskDescription"'
+          '.'
         'else'
-          '""'
-        'end'
+          '[ { "object-id": "" } ]'
+        'end |'
+          '.[] |'
+          'select('
+            '."object-id" == "'${_token}'") |'
+            '."taskDescription"'
       )
       _description="$(
         echo \
@@ -187,27 +191,31 @@ _sub_task_parse() {
           jq \
             --raw-output \
             "${_filter_description[*]}")"
-      if [[ "${_description}" != "" ]] && \
-        (( $(( _index )) < "${#_descriptions[@]}" + 1 )); then
-        _msg=(
-          "Adding description '${_description}'"
-          "for window '${_index}'."
-        )
-        _msg_info \
-          "${_msg[*]}"
-        _descriptions+=(
-          "${_description}"
-        )
+      if [[ "${_description}" != "" && \
+            "${_description}" != "null" ]]; then
+        if (( $(( _index )) < "${#_descriptions[@]}" + 1 )); then
+          _msg=(
+            "Adding description '${_description}'"
+            "for window '${_index}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+          _descriptions+=(
+            "${_description}"
+          )
+        fi
       else
-        _msg=(
-          "Description for window '${_index}'"
-          "has probably multiple null labels."
-          "Total descriptions up so far:"
-          "'${#_descriptions[@]}'."
-        )
-        _msg_info \
-          "${_msg[*]}"
-      fi
+        if (( ${#_descriptions[@]} < $(( _index + 1 )) )); then
+          _msg=(
+            "Description for window '${_index}'"
+            "has probably multiple null labels."
+            "Total descriptions up so far:"
+            "'${#_descriptions[@]}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+        fi
+    fi
     fi
     if [[ "${_package_enabled}" == "true" ]]; then
       _filter_package=(

@@ -869,7 +869,7 @@ _root_get() {
         fi
         if [[ "${_package_enabled}" == "true" ]]; then
           _package=""
-          _processes+=(
+          _packages+=(
             "${_package}"
           )
         fi

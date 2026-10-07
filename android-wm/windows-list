@@ -274,29 +274,34 @@ _sub_task_parse() {
           )
         fi
       else
-        if (( ${#_packages[@]} < $(( _index + 1 )) )); then
-          _msg=(
-            "Present '${#_packages[@]}' package names."
-            "Adding package '${_package}'"
-            "for window '${_index}'"
-            "from sub-task '${_sub_task}'."
-          )
-          _msg_info \
-            "${_msg[*]}"
-          _packages+=(
-            "${_packages}"
-          )
-        else
-          _msg=(
-            "Packages for window '${_index}'"
-            "has probably multiple null labels"
-            "with non-empty package names."
-            "Total packages up so far:"
-            "'${#_packages[@]}'."
-          )
-          _msg_info \
-            "${_msg[*]}"
-        fi
+        _msg=(
+          "Do not add empty package names."
+        )
+        _msg_info \
+          "${_msg[*]}"
+        # if (( ${#_packages[@]} < $(( _index + 1 )) )); then
+        #   _msg=(
+        #     "Present '${#_packages[@]}' package names."
+        #     "Adding package '${_package}'"
+        #     "for window '${_index}'"
+        #     "from sub-task '${_sub_task}'."
+        #   )
+        #   _msg_info \
+        #     "${_msg[*]}"
+        #   _packages+=(
+        #     "${_packages}"
+        #   )
+        # else
+        #   _msg=(
+        #     "Packages for window '${_index}'"
+        #     "has probably multiple null labels"
+        #     "with non-empty package names."
+        #     "Total packages up so far:"
+        #     "'${#_packages[@]}'."
+        #   )
+        #   _msg_info \
+        #     "${_msg[*]}"
+        # fi
       fi
     fi
     if [[ "${_process_enabled}" == "true" ]]; then

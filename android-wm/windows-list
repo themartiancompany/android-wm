@@ -263,6 +263,15 @@ _sub_task_parse() {
 }
 
 _task_parse() {
+  local \
+    _msg=()
+  _msg=(
+    "Parsing task"
+    "${_index} with task ID"
+    "'${_task_id#t}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
   _filter_task=(
     '.[] |'
       'select(."task-id" == "'${_task_id#t}'")'
@@ -328,6 +337,7 @@ _task_parse() {
         )
         else
           _msg=(
+            "Present '${#_descriptions[@]}' descriptions."
             "Window '${_index}' already has"
             "description '${_descriptions[${_index}]}'."
           )

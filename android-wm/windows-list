@@ -521,10 +521,12 @@ _root_get() {
           '.[] |'
             'if has('
                   '"tasks") then'
-              '"true"'
+              '."tasks"'
             'else'
-              'null'
-            'end'
+              '[ { "object-id":'
+                     'null } ]'
+            'end |'
+              '.[]."object-id"'
         )
         _subtaskeds=( $(
           echo \

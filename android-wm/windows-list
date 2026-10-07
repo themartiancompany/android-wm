@@ -208,6 +208,7 @@ _sub_task_parse() {
       else
         if (( ${#_descriptions[@]} < $(( _index + 1 )) )); then
           _msg=(
+            "Present '${#_descriptions[@]}' descriptions."
             "Adding description '${_description}'"
             "for window '${_index}'."
           )

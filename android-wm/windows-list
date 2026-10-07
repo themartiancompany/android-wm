@@ -615,6 +615,10 @@ _root_get() {
           if [[ "${_non_sub_task}" == "true" && \
                 "${_task}" == "true" ]]; then
             _task_parse
+          else
+            echo \
+              "non_sub_task '${_non_sub_task}'" \
+              "_task '${_task}'"
           fi 
           _index_task=$((
             _index_task + 1))

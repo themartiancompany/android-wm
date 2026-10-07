@@ -638,7 +638,8 @@ _root_get() {
       else
         _msg=(
           "Unknown value '${_task_id}'"
-          "for task id at position '${_index}'."
+          "for task id with token"
+          "'${_token}' at position '${_index}'."
         )
         _msg_info \
           "${_msg[*]}"

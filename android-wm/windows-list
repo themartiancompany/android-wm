@@ -187,7 +187,8 @@ _sub_task_parse() {
           jq \
             --raw-output \
             "${_filter_description[*]}")"
-      if [[ "${_description}" != "" ]]; then
+      if [[ "${_description}" != "" ]] && \
+        (( $(( _index )) < "${#_descriptions[@]}" )); then
         _msg=(
           "Adding description '${_description}'"
           "for window '${_index}'."
@@ -197,6 +198,13 @@ _sub_task_parse() {
         _descriptions+=(
           "${_description}"
         )
+      else
+        _msg=(
+          "Description for window '${_index}'"
+          "has probably multiple null labels."
+        )
+        _msg_info \
+          "${_msg[*]}"
       fi
     fi
     if [[ "${_package_enabled}" == "true" ]]; then

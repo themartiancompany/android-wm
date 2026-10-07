@@ -129,23 +129,23 @@ _sub_task_parse() {
         '.[] |'
           'select(."object-id" == "'${_sub_task}'")'
   )
-  echo \
-    "${_activities_json}" |
-    jq \
-      --raw-output \
-      '.[] | if has("tasks") then ."tasks" else [{"object-id":""}] end | .[] | select(."object-id" == "'${_sub_task}'")'
-  echo \
-    "${_activities_json}" |
-    jq \
-      --raw-output \
-      "${_sub_task_filter[*]}"
+  # echo \
+  #   "${_activities_json}" |
+  #   jq \
+  #     --raw-output \
+  #     '.[] | if has("tasks") then ."tasks" else [{"object-id":""}] end | .[] | select(."object-id" == "'${_sub_task}'")'
+  # echo \
+  #   "${_activities_json}" |
+  #   jq \
+  #     --raw-output \
+  #     "${_sub_task_filter[*]}"
   _sub_task_item="$(
-  echo \
-    "${_activities_json}" |
-    jq \
-      --raw-output \
-      "${_sub_task_filter[*]}")"
-  echo "${_sub_task_item}"
+    echo \
+      "${_activities_json}" |
+      jq \
+        --raw-output \
+        "${_sub_task_filter[*]}")"
+  # echo "${_sub_task_item}"
   _has_history_filter=(
     'if has('
           '."history") then'
@@ -154,18 +154,18 @@ _sub_task_parse() {
       '"null"'
     'end'
   )
-  echo \
-    "${_sub_task_item}" |
-    jq \
-      --raw-output \
-      "${_has_history_filter[*]}"
+  # echo \
+  #   "${_sub_task_item}" |
+  #   jq \
+  #     --raw-output \
+  #     "${_has_history_filter[*]}"
   _has_history="$(
     echo \
       "${_sub_task_item}" |
       jq \
         --raw-output \
         "${_has_history_filter[*]}")"
-  echo "${_has_history}"
+  # echo "${_has_history}"
   if [[ "${_has_history}" == "null" ]]; then
     _msg=(
       "Window with task '${_task_id}'"
@@ -175,6 +175,8 @@ _sub_task_parse() {
     _msg_info \
       "${_msg[*]}"
   else
+    echo \
+      "${_has_history}"
     # _has_history="$(
     #   echo \
     #     "${_activities_json}" |

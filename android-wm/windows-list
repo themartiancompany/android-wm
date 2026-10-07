@@ -891,7 +891,21 @@ _root_get() {
           )
         fi
         if [[ "${_package_enabled}" == "true" ]]; then
-          _package=""
+          _package_filter=(
+            ''
+          )
+    _tokens_ids+=( $(
+      echo \
+        "${_windows_json}" |
+        jq \
+          --raw-output \
+          '.[]."mToken"."id"')
+          _package="$(
+            echo \
+              "${_activities_json}" |
+              jq \
+                --raw-output \
+                  '')"
           _packages+=(
             "${_package}"
           )

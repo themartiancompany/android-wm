@@ -922,9 +922,19 @@ _root_get() {
               "${_packages[${_index}]}"
             )
           elif [[ "${_field_title}" == "app" ]]; then
-            _app="$(
-              app-name \
-                "${_packages[${_index}]}")"
+            _package="${_packages[${_index}]}"
+            if [[ "${_package}" != "" ]]; then
+              _app="$(
+                app-name \
+                  "${_packages[${_index}]}")"
+            else
+              _msg=(
+                "Package name can't be empty."
+              )
+              _msg_error \
+                "${_msg[*]}" \
+                1
+            fi
             _title+=(
               "${_app}"
             )

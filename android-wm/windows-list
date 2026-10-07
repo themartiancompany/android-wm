@@ -324,8 +324,8 @@ _task_parse() {
           --raw-output \
           "${_filter_history[*]}")"
     if [[ "${_description_enabled}" = "true" ]]; then
-      echo \
-        "${_history_entry}"
+      # echo \
+      #   "${_history_entry}"
       _filter_description=(
         '.[] |'
         'if has('
@@ -339,6 +339,11 @@ _task_parse() {
             '."object-id" == "'${_token}'") |'
             '."taskDescription"'
       )
+      echo \
+        "${_history_entry}" |
+        jq \
+          --raw-output \
+          '.[]'
       _description="$(
         echo \
           "${_history_entry}" |

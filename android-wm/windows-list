@@ -207,6 +207,16 @@ _sub_task_parse() {
       else
         if (( ${#_descriptions[@]} < $(( _index + 1 )) )); then
           _msg=(
+            "Adding description '${_description}'"
+            "for window '${_index}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+          _descriptions+=(
+            "${_description}"
+          )
+        else
+          _msg=(
             "Description for window '${_index}'"
             "has probably multiple null labels."
             "Total descriptions up so far:"

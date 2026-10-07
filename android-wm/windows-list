@@ -145,16 +145,17 @@ _sub_task_parse() {
       jq \
         --raw-output \
         "${_sub_task_filter[*]}")"
+  echo "${_sub_task_item}"
   _has_history_filter=(
     ".history"
   )
-  echo "hi"
   _has_history="$(
     echo \
       "${_sub_task_item}" |
       jq \
         --raw-output \
         "${_has_history_filter[*]}")"
+  echo "${_hi}"
   if [[ "${_has_history}" == "null" ]]; then
     _msg=(
       "Window with task '${_task_id}'"

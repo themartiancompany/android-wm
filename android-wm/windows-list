@@ -350,7 +350,8 @@ _task_parse() {
           jq \
             --raw-output \
             "${_filter_description[*]}")"
-      if [[ "${_description}" != "" ]]; then
+      if [[ "${_description}" != "" && \
+            "${_description}" != "null" ]]; then
         if (( ${#_descriptions[@]} < $(( _index + 1 )) )); then
           _msg=(
             "Present '${#_descriptions[@]}' descriptions."
@@ -371,6 +372,12 @@ _task_parse() {
           _msg_info \
             "${_msg[*]}"
         fi
+      else
+        _msg=(
+          "Ciao."
+        )
+        _msg_info \
+          "${_msg[*]}"
       fi
     fi
     if [[ "${_package_enabled}" == "true" ]]; then

@@ -313,16 +313,24 @@ _task_parse() {
             --raw-output \
             "${_filter_description[*]}")"
       if [[ "${_description}" != "" ]]; then
+        if (( $(( _index )) < "${#_descriptions[@]}" + 1 )); then
+          _msg=(
+            "Adding description '${_description}'"
+            "for window '${_index}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+        _descriptions+=(
+          "${_description}"
+        )
+      else
         _msg=(
-          "Adding description '${_description}'"
-          "for window '${_index}'."
+          "Window '${_index}' already has"
+          "description '${_descriptions[${_index}]}'."
         )
         _msg_info \
           "${_msg[*]}"
       fi
-      _descriptions+=(
-        "${_description}"
-      )
     fi
     if [[ "${_package_enabled}" == "true" ]]; then
       _filter_package=(

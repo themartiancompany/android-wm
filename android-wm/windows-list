@@ -148,7 +148,7 @@ _sub_task_parse() {
   echo "${_sub_task_item}"
   _has_history_filter=(
     'if has('
-          '."history") then'
+          '"history") then'
       '."history"'
     'else'
       '"null"'

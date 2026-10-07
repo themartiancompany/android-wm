@@ -513,7 +513,7 @@ _root_get() {
           '.[]."mToken"."id"')
     )
     echo \
-      "tokens ids ${_tokens_ids[@]}"
+      "tokens ids '${_tokens_ids[*]}'"
     _dead_filter=(
       '.[] |'
         'if has('

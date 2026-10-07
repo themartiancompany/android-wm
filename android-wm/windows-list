@@ -122,8 +122,10 @@ _sub_task_parse() {
     _msg=()
   _msg=(
     "Parsing sub-task"
-
+    "with id '${_sub_task}'."
   )
+  _msg_info \
+    "${_msg[*]}"
   _sub_task_filter=(
     '.[] |'
       'if has('

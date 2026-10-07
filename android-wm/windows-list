@@ -315,8 +315,9 @@ _task_parse() {
             --raw-output \
             "${_filter_description[*]}")"
       if [[ "${_description}" != "" ]]; then
-        if (( $(( _index )) < "${#_descriptions[@]}" + 1 )); then
+        if (( ${#_descriptions[@]} < $(( _index + 1 )) )); then
           _msg=(
+            "Present '${#_descriptions[@]}' descriptions."
             "Adding description '${_description}'"
             "for window '${_index}'."
           )

@@ -2419,6 +2419,7 @@ _dumpsys_json_encode() {
       fi
     fi
   done
+  _window_json_get
   _windows_jq_arg="[$(
     IFS=","; \
     echo \

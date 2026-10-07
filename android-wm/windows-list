@@ -140,20 +140,25 @@ _sub_task_parse() {
       --raw-output \
       "${_sub_task_filter[*]}"
   _sub_task_item="$(
-    echo \
-      "${_activities_json}" |
-      jq \
-        --raw-output \
-        "${_sub_task_filter[*]}")"
+  echo \
+    "${_activities_json}" |
+    jq \
+      --raw-output \
+      "${_sub_task_filter[*]}")"
   echo "${_sub_task_item}"
   _has_history_filter=(
-    ".history"
+    'if has('
+          '."history") then'
+      '."history"'
+    'else'
+      '"null"'
+    'end'
   )
-    echo \
-      "${_sub_task_item}" |
-      jq \
-        --raw-output \
-        "${_has_history_filter[*]}"
+  echo \
+    "${_sub_task_item}" |
+    jq \
+      --raw-output \
+      "${_has_history_filter[*]}"
   _has_history="$(
     echo \
       "${_sub_task_item}" |
@@ -170,68 +175,68 @@ _sub_task_parse() {
     _msg_info \
       "${_msg[*]}"
   else
-    _has_history="$(
+    # _has_history="$(
+    #   echo \
+    #     "${_activities_json}" |
+    #     jq \
+    #       --raw-output \
+    #       '.[]."tasks".[]."history"')"
+    # if [[ "${_has_history}" != "null" ]]; then
+    _filter_history=(
+        # '."tasks".[]."history" |'
+        '.[] |'
+        'select('
+          '."task-id"=="'${_sub_task#t}'")'
+    )
+    _history_entry="$(
       echo \
-        "${_activities_json}" |
+        "${_has_history}" |
         jq \
           --raw-output \
-          '.[]."tasks".[]."history"')"
-    if [[ "${_has_history}" != "null" ]]; then
-      _filter_history=(
-          '."tasks".[]."history" |'
-          'select('
-            '."task-id"=="'${_sub_task#t}'") |'
-              '."tasks".[]."history"'
+          "${_filter_history[*]}")"
+    if [[ "${_description_enabled}" = "true" ]]; then
+      _filter_description=(
+        '.[]."taskDescription"'
       )
-      _history_entry="$(
+      _description="$(
         echo \
-          "${_has_history}" |
+          "${_history_entry}" |
           jq \
             --raw-output \
-            "${_filter_history[*]}")"
-      if [[ "${_description_enabled}" = "true" ]]; then
-        _filter_description=(
-          '.[]."taskDescription"'
-        )
-        _description="$(
-          echo \
-            "${_history_entry}" |
-            jq \
-              --raw-output \
-              "${_filter_description[*]}")"
-        _descriptions+=(
-          "${_description}"
-        )
-      fi
-      if [[ "${_package_enabled}" == "true" ]]; then
-        _filter_package=(
-          '.[]."packageName"'
-        )
-        _package="$(
-          echo \
-            "${_history_entry}" |
-            jq \
-              --raw-output \
-              "${_filter_package[*]}")"
-        _packages+=(
-          "${_package}"
-        )
-      fi
-      if [[ "${_process_enabled}" == "true" ]]; then
-        _filter_process=(
-          '.[]."processName"'
-        )
-        _process="$(
-          echo \
-            "${_history_entry}" |
-            jq \
-              --raw-output \
-              "${_filter_process[*]}")"
-        _processes+=(
-          "${_process}"
-        )
-      fi
+            "${_filter_description[*]}")"
+      _descriptions+=(
+        "${_description}"
+      )
     fi
+    if [[ "${_package_enabled}" == "true" ]]; then
+      _filter_package=(
+        '.[]."packageName"'
+      )
+      _package="$(
+        echo \
+          "${_history_entry}" |
+          jq \
+            --raw-output \
+            "${_filter_package[*]}")"
+      _packages+=(
+        "${_package}"
+      )
+    fi
+    if [[ "${_process_enabled}" == "true" ]]; then
+      _filter_process=(
+        '.[]."processName"'
+      )
+      _process="$(
+        echo \
+          "${_history_entry}" |
+          jq \
+            --raw-output \
+            "${_filter_process[*]}")"
+      _processes+=(
+        "${_process}"
+      )
+    fi
+    # fi
   fi
   true
 }

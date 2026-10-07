@@ -179,6 +179,7 @@ _sub_task_parse() {
           '.[]."taskDescription"'
         'else'
           '""'
+        'end'
       )
       _description="$(
         echo \

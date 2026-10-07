@@ -459,7 +459,8 @@ _task_parse() {
         fi
       else
         _msg=(
-          "Null description, skipping."
+          "Null task description for window"
+          "'${_index}', skipping."
         )
         _msg_info \
           "${_msg[*]}"
@@ -505,10 +506,27 @@ _task_parse() {
         fi
       else
         _msg=(
-          "Null package, skipping."
+          "Null task description for window"
+          "'${_index}', skipping."
         )
         _msg_info \
           "${_msg[*]}"
+        # _filter_package=(
+        #   '.[] |'
+        #     'select('
+        #       'has('
+        #         '"object-id")) |'
+        #       'select('
+        #         '."object-id" == "'${_token}'") |'
+        #         '."packageName"'
+        # )
+        # _package="$(
+          echo \
+            "${_history_entry}" |
+            jq \
+              --raw-output \
+              '.[] | select(has("object-id")) |select(."object-id" == "'${_token}'")'
+                # "${_filter_package[*]}"
       fi
     fi
     if [[ "${_process_enabled}" == "true" ]]; then

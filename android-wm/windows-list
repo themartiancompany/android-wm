@@ -586,7 +586,7 @@ _root_get() {
         )
         _msg_info \
           "${_msg[*]}"
-        if [[ "${_description_enabled}" == "" ]]; then
+        if [[ "${_description_enabled}" == "true" ]]; then
           _msg=(
             "Adding empty description."
           )
@@ -597,13 +597,13 @@ _root_get() {
             "${_description}"
           )
         fi
-        if [[ "${_package_enabled}" == "" ]]; then
+        if [[ "${_package_enabled}" == "true" ]]; then
           _package=""
           _processes+=(
             "${_package}"
           )
         fi
-        if [[ "${_process_enabled}" == "" ]]; then
+        if [[ "${_process_enabled}" == "true" ]]; then
           _process=""
           _processes+=(
             "${_process}"

@@ -526,8 +526,9 @@ _root_get() {
         _msg_info \
           "${_msg[*]}"
         _filter_tasks=(
-          '.[].history |'
-            'if type=="array" then'
+          '.[] |'
+            'if has('
+                  '"history") then'
               '"true"'
             'else'
               '"false"'

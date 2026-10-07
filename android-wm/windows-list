@@ -638,6 +638,7 @@ _root_get() {
        "${_template_title[@]}"; do
     if [[ "${_field}" == "app" ]]; then
       _app_enabled="true"
+      _package_enabled="true"
       _infos_flag="true"
     fi
     if [[ "${_field}" == "description" ]]; then

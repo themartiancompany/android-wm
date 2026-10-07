@@ -193,7 +193,7 @@ _sub_task_parse() {
             "${_filter_description[*]}")"
       if [[ "${_description}" != "" && \
             "${_description}" != "null" ]]; then
-        if (( $(( _index )) < "${#_descriptions[@]}" + 1 )); then
+        if (( ${#_descriptions[@]} < $(( _index + 1 )) )); then
           _msg=(
             "Adding description '${_description}'"
             "for window '${_index}'."

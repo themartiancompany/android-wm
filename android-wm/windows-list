@@ -312,6 +312,14 @@ _task_parse() {
           jq \
             --raw-output \
             "${_filter_description[*]}")"
+      if [[ "${_description}" != "" ]]; then
+        _msg=(
+          "Adding description '${_description}'"
+          "for window '${_index}'."
+        )
+        _msg_info \
+          "${_msg[*]}"
+      fi
       _descriptions+=(
         "${_description}"
       )

@@ -108,6 +108,9 @@ install-scripts:
 	  "$(_PROJECT)/$(_PROJECT)" \
 	  "$(BIN_DIR)/$(_PROJECT)"
 	$(_INSTALL_EXE) \
+	  "$(_PROJECT)/window-select" \
+	  "$(BIN_DIR)/window-select"
+	$(_INSTALL_EXE) \
 	  "$(_PROJECT)/windows-info" \
 	  "$(BIN_DIR)/windows-info"
 	$(_INSTALL_EXE) \
@@ -139,6 +142,7 @@ uninstall-scripts:
 	  -vrf \
 	  "$(BIN_DIR)/alt-tab" \
 	  "$(BIN_DIR)/$(_PROJECT)" \
+	  "$(BIN_DIR)/window-select"
 	  "$(BIN_DIR)/windows-info" \
 	  "$(BIN_DIR)/windows-list"
 

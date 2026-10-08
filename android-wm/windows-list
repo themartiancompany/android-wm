@@ -976,6 +976,11 @@ _root_get() {
               _app="$(
                 app-name \
                   "${_packages[${_index}]}")"
+            elif [[ "${_package}" == "null" ]]; then
+              _msg=(
+                "Null application name, skipping."
+              )
+              _app="${_package}"
             else
               _msg=(
                 "Package name can't be empty."

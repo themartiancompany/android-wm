@@ -892,7 +892,13 @@ _root_get() {
         fi
         if [[ "${_package_enabled}" == "true" ]]; then
           _package_filter=(
-            '.['${_index}']'
+            '.['${_index}'] |'
+            'if has('
+                  '"tasks") then'
+              '."tasks"."history".[0].packageName'
+            'else'
+              '."history".[0].packageName'
+            'end'
           )
           _package="$(
             echo \

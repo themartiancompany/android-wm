@@ -665,6 +665,7 @@ _root_get() {
     _description_enabled \
     _field \
     _field_title \
+    _filter_activity=() \
     _filter_description=() \
     _filter_history_entry=() \
     _filter_package=() \
@@ -972,11 +973,15 @@ _root_get() {
             )
             _msg_info \
               "${_msg[*]}"
+            _activity_filter=(
+              '.['${_index}'] |'
+                '."activity"'
+            )
             _activity="$(
               echo \
                 "${_windows_json}" |
                 jq \
-                  '.['${_index}']')"
+                  "${_activity_filter[*]}")"
             _package="${_activity%%\/*}"
           fi
           _msg=(

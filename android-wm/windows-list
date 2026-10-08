@@ -290,12 +290,12 @@ _sub_task_parse() {
                 # "${_filter_package[*]}"
         _msg=(
           "Null task package for window"
-          "'${_index}', replacing with"
+          "'${_index}', deriving from"
           "activity name '${_activity}'."
         )
         _msg_info \
           "${_msg[*]}"
-        _package="${_activity}"
+        _package="${_activity%%\/*}"
         if (( ${#_packages[@]} < $(( _index + 1 )) )); then
           _msg=(
             "Present '${#_packages[*]}' package names."

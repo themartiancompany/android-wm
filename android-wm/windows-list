@@ -1054,6 +1054,9 @@ _root_get() {
             )
           fi
         done
+        _line+=(
+          "${_title}"
+        )
       elif [[ "${_field}" == "open" ]]; then
         if [[ "${_opened[${_index}]}" == "true" ]]; then
           _text="[X]"

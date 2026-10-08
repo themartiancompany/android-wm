@@ -1021,7 +1021,7 @@ _root_get() {
       "${_msg[*]}"
     _line=()
     for _field in "${_template[@]}"; do
-      if [[ "${_field}" == "position" ]]; then
+      if [[ "${_field}" == "focus" ]]; then
         _line+=(
           "${_index}"
         )
@@ -1142,7 +1142,7 @@ _root_get() {
       "${_msg[*]}"
     _line_string="$(
       printf \
-        '%s\t\t' \
+        '%s\t' \
         "${_line[@]}")"
     _line_string="${_line_string%\t}"
     _msg=(
@@ -1156,7 +1156,7 @@ _root_get() {
   done
   if [[ "${_output_format}" == "plain" ]]; then
     printf \
-      '%s\t\t' \
+      '%s\t' \
       "${_template[@]}"
     printf \
       '\n'
@@ -1268,7 +1268,7 @@ _set_overrides() {
   _set_override \
     "output" \
     "template" \
-    "position open title"
+    "focus open title"
   _set_override \
     "title" \
     "format" \
@@ -1323,7 +1323,7 @@ Usage:
        Template for the windows list.
        Valid field for the template are:
 
-         position:
+         focus:
            Window position in sorting
            order, by default last focus.
 

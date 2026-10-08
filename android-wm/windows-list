@@ -1142,7 +1142,7 @@ _root_get() {
       "${_msg[*]}"
     _line_string="$(
       printf \
-        '%s\t' \
+        '%s\t\t' \
         "${_line[@]}")"
     _line_string="${_line_string%\t}"
     _msg=(
@@ -1156,7 +1156,7 @@ _root_get() {
   done
   if [[ "${_output_format}" == "plain" ]]; then
       printf \
-        '%s\t' \
+        '%s\t\t' \
         "${_output_template[@]}"
     echo
     printf \

@@ -1062,15 +1062,27 @@ _root_get() {
             if [[ "${_package}" != "" && \
                   "${_package}" != "null" && \
                   " ${_package} " == " "*"."*" " ]]; then
-              _msg=(
-                "Parsing application label"
-                "for package '${_package}'."
-              )
-              _msg_info \
-                "${_msg[*]}"
-              _app="$(
-                app-name \
-                  "${_packages[${_index}]}")"
+              if [[ "${_package}" == "com.android.systemui."* ]]; then
+                _msg=(
+                  "Package '${_package}' seems to be"
+                  "a system interface sub-component,"
+                  "showing the package derived from"
+                  "the activity as it is."
+                )
+                _msg_info \
+                  "${_msg[*]}"
+                _app="${_package}"
+              else
+                _msg=(
+                  "Parsing application label"
+                  "for package '${_package}'."
+                )
+                _msg_info \
+                  "${_msg[*]}"
+                _app="$(
+                  app-name \
+                    "${_package}")"
+              fi
             elif [[ " ${_package} " != " "*"."*" " ]]; then
               _msg=(
                 "Package name '${_package}' contains no"

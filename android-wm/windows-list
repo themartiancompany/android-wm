@@ -526,10 +526,11 @@ _task_parse() {
         _msg=(
           "Null task package for window"
           "'${_index}', replacing with"
-          "activity name."
+          "activity name '${_activity}'."
         )
         _msg_info \
           "${_msg[*]}"
+        _package="${_activity}"
       fi
     fi
     if [[ "${_process_enabled}" == "true" ]]; then

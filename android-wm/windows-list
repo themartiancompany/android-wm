@@ -1006,6 +1006,7 @@ _root_get() {
           "${_index}"
         )
       elif [[ "${_field}" == "title" ]]; then
+        _title=()
         for _field_title in "${_template_title[@]}"; do
           if [[ "${_field_title}" == "description" ]]; then
             _title+=(
@@ -1075,11 +1076,21 @@ _root_get() {
           1
       fi
     done
+    _msg=(
+      "Got line array '${_line[*]}'."
+    )
+    _msg_info \
+      "${_msg[*]}"
     _line_string="$(
       printf \
         '%s - ' \
-        "${_line[*]}")"
+        "${_line[@]}")"
     _line_string="${_line_string% \- }"
+    _msg=(
+      "Got line string '${_line_string}'."
+    )
+    _msg_info \
+      "${_msg[*]}"
     _lines+=(
       "${_line_string}"
     )

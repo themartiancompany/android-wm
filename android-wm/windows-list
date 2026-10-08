@@ -1043,9 +1043,12 @@ _root_get() {
         _title=()
         for _field_title in "${_template_title[@]}"; do
           if [[ "${_field_title}" == "description" ]]; then
-            _title+=(
-              "${_descriptions[${_index}]}"
-            )
+            _description="${_descriptions[${_index}]}"
+            if [[ "${_description}" != "" ]]; then
+              _title+=(
+                "${_descriptions[${_index}]}"
+              )
+            fi
           elif [[ "${_field_title}" == "activity" ]]; then
             _title+=(
               "${_activities[${_index}]}"

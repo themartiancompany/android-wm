@@ -927,6 +927,10 @@ _root_get() {
         _index + 1))
     done
   fi
+  echo \
+    "packages ${#_packages[*]}"
+  echo \
+    "processes ${#_processes[*]}"
   for _index \
     in $(seq \
            0 \
@@ -937,10 +941,6 @@ _root_get() {
     _msg_info \
       "${_msg[*]}"
     _line=()
-    echo \
-      "packages ${#_packages[*]}"
-    echo \
-      "processes ${#_processes[*]}"
     for _field in "${_template[@]}"; do
       if [[ "${_field}" == "position" ]]; then
         _line+=(
@@ -967,6 +967,12 @@ _root_get() {
           elif [[ "${_field_title}" == "app" ]]; then
             _package="${_packages[${_index}]}"
             if [[ "${_package}" != "" ]]; then
+              _msg=(
+                "Parsing application label"
+                "for package '${_package}'."
+              )
+              _msg_info \
+                "${_msg[*]}"
               _app="$(
                 app-name \
                   "${_packages[${_index}]}")"

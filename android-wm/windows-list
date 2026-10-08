@@ -518,7 +518,7 @@ _task_parse() {
         # )
         _activity="$(
           echo \
-            "${_windows_info}" |
+            "${_windows_json}" |
             jq \
               --raw-output \
               '.['${_index}']."activity"')"

@@ -1093,7 +1093,7 @@ _root_get() {
       "${_msg[*]}"
     _line_string="$(
       printf \
-        '%s - ' \
+        '\t%s' \
         "${_line[@]}")"
     _line_string="${_line_string% - }"
     _msg=(
@@ -1105,9 +1105,15 @@ _root_get() {
       "${_line_string}"
     )
   done
-  printf \
-    '%s\n' \
-    "${_lines[@]}"
+  if [[ "${_output_format}" == "plain" ]]; then
+    printf \
+      '%s\n' \
+      "${_lines[@]}"
+  elif [[ "${_output_format}" == "json" ]]; then
+    _msg=(
+      "Just a moment."
+    )
+  fi
 }
 
 _windows_info_get() {

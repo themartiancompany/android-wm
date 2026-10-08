@@ -1119,9 +1119,9 @@ _root_get() {
           printf \
             '%s -' \
             "${_title[@]}")"
-
+        _title_string="${_title_string% - }"
         _line+=(
-          "${_title[*]}"
+          "${_title_string}"
         )
       else
         _msg=(

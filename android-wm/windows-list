@@ -565,7 +565,7 @@ _task_parse() {
         )
         _msg_info \
           "${_msg[*]}"
-        _package="${_activity}"
+        _package="${_activity%%\/*}"
         if (( ${#_packages[@]} < $(( _index + 1 )) )); then
           _msg=(
             "Present '${#_packages[*]}' package names."

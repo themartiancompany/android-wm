@@ -1005,6 +1005,20 @@ _root_get() {
         _line+=(
           "${_index}"
         )
+      elif [[ "${_field}" == "open" ]]; then
+        if [[ "${_opened[${_index}]}" == "true" ]]; then
+          _text="[X]"
+        elif [[ "${_opened[${_index}]}" == "false" ]]; then
+          _text="[ ]"
+        fi
+        _line+=(
+          "${_text}"
+        )
+        _msg=(
+          "Window '${_index}' is open: '${_text}'."
+        )
+        _msg_info \
+          "${_msg[*]}"
       elif [[ "${_field}" == "title" ]]; then
         _title=()
         for _field_title in "${_template_title[@]}"; do
@@ -1063,15 +1077,6 @@ _root_get() {
         _line+=(
           "${_title[*]}"
         )
-      elif [[ "${_field}" == "open" ]]; then
-        if [[ "${_opened[${_index}]}" == "true" ]]; then
-          _text="[X]"
-        elif [[ "${_opened[${_index}]}" == "false" ]]; then
-          _text="[ ]"
-          _line+=(
-            "${_text}"
-          )
-        fi
       else
         _msg=(
           "Unknown field '${_field}'."

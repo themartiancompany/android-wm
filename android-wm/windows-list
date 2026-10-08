@@ -1155,10 +1155,10 @@ _root_get() {
     )
   done
   if [[ "${_output_format}" == "plain" ]]; then
-      printf \
-        '%s\t\t' \
-        "${_output_template[@]}"
-    echo
+    printf \
+      '%s\t\t' \
+      "${_output_template[@]}" \
+      '\n'
     printf \
       '%s\n' \
       "${_lines[@]}"

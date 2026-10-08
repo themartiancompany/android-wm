@@ -1055,8 +1055,13 @@ _root_get() {
             )
           fi
         done
+        _msg=(
+          "Got window title '${_title[*]}'."
+        )
+        _msg_info \
+          "${_msg[*]}"
         _line+=(
-          "${_title}"
+          "${_title[*]}"
         )
       elif [[ "${_field}" == "open" ]]; then
         if [[ "${_opened[${_index}]}" == "true" ]]; then
@@ -1085,7 +1090,7 @@ _root_get() {
       printf \
         '%s - ' \
         "${_line[@]}")"
-    _line_string="${_line_string% \- }"
+    _line_string="${_line_string% - }"
     _msg=(
       "Got line string '${_line_string}'."
     )

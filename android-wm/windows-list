@@ -275,7 +275,9 @@ _sub_task_parse() {
         fi
       else
         _msg=(
-          "Do not add empty package names."
+          "Detected no package name"
+          "for window '${_index}' in"
+          "sub-task '${_sub_task}'."
         )
         _msg_info \
           "${_msg[*]}"
@@ -355,8 +357,8 @@ _sub_task_parse() {
           _msg=(
             "Processes for window '${_index}'"
             "has probably multiple null labels"
-            "with non-empty package names."
-            "Total packages up so far:"
+            "with non-empty process names."
+            "Total processes up so far:"
             "'${#_processes[@]}'."
           )
           _msg_info \
@@ -505,12 +507,6 @@ _task_parse() {
             "${_msg[*]}"
         fi
       else
-        _msg=(
-          "Null task description for window"
-          "'${_index}', skipping."
-        )
-        _msg_info \
-          "${_msg[*]}"
         # _filter_package=(
         #   '.[] |'
         #     'select('
@@ -520,13 +516,20 @@ _task_parse() {
         #         '."object-id" == "'${_token}'") |'
         #         '."packageName"'
         # )
-        # _package="$(
+        _activity="$(
           echo \
-            "${_history_entry}" |
+            "${_windows_info}" |
             jq \
               --raw-output \
-              '.[] | select(has("object-id")) |select(."object-id" == "'${_token}'")'
+              '.['${_index}']."activity"')"
                 # "${_filter_package[*]}"
+        _msg=(
+          "Null task package for window"
+          "'${_index}', replacing with"
+          "activity name."
+        )
+        _msg_info \
+          "${_msg[*]}"
       fi
     fi
     if [[ "${_process_enabled}" == "true" ]]; then

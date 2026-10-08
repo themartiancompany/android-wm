@@ -895,7 +895,7 @@ _root_get() {
             '.['${_index}'] |'
             'if has('
                   '"tasks") then'
-              '."tasks"."history".[0].packageName'
+              '."tasks".[0]."history".[0].packageName'
             'else'
               '."history".[0].packageName'
             'end'

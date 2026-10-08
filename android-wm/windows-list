@@ -1159,7 +1159,9 @@ _root_get() {
       printf \
         '%s\t' \
         "${_output_template[@]}")"
-    _template="${_template%\t}\n"
+    _template="${_template%\t}"
+    echo \
+      "${_template}"
     printf \
       '%s\n' \
       "${_lines[@]}"

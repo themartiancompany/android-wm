@@ -1117,7 +1117,7 @@ _root_get() {
           "${_msg[*]}"
         _title_string="$(
           printf \
-            '%s -' \
+            '%s - ' \
             "${_title[@]}")"
         _title_string="${_title_string% - }"
         _line+=(

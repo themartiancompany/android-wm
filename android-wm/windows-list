@@ -965,6 +965,20 @@ _root_get() {
               jq \
                 --raw-output \
                   "${_package_filter[*]}")"
+          if [[ "${_package}" == "null" ]]; then
+            _msg=(
+              "Retrieving package name from"
+              "activity name."
+            )
+            _msg_info \
+              "${_msg[*]}"
+            _activity="$(
+              echo \
+                "${_windows_json}" |
+                jq \
+                  '.['${_index}']')"
+            _package="${_activity%%\/*}"
+          fi
           _msg=(
             "Package for task '${_index}'"
             "is '${_package}'."
@@ -1074,6 +1088,11 @@ _root_get() {
         )
         _msg_info \
           "${_msg[*]}"
+        _title_string="$(
+          printf \
+            '%s -' \
+            "${_title[@]}")"
+
         _line+=(
           "${_title[*]}"
         )

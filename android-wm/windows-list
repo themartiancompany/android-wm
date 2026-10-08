@@ -531,6 +531,26 @@ _task_parse() {
         _msg_info \
           "${_msg[*]}"
         _package="${_activity}"
+        if (( ${#_packages[@]} < $(( _index + 1 )) )); then
+          _msg=(
+            "Present '${#_packages[*]}' package names."
+            "Adding package '${_package}'"
+            "for window '${_index}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+        _packages+=(
+          "${_package}"
+        )
+        else
+          _msg=(
+            "Present '${#_packages[*]}' package names."
+            "Window '${_index}' already has"
+            "package '${_packages[${_index}]}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
+        fi
       fi
     fi
     if [[ "${_process_enabled}" == "true" ]]; then

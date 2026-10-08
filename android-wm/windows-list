@@ -1071,12 +1071,12 @@ _root_get() {
           "${_msg[*]}" \
           1
       fi
-      _line_string="$(
-        printf \
-          '%s - ' \
-          "${_line[*]}")"
-      _line_string="${_line_string% \- }"
     done
+    _line_string="$(
+      printf \
+        '%s - ' \
+        "${_line[*]}")"
+    _line_string="${_line_string% \- }"
     _lines+=(
       "${_line_string}"
     )

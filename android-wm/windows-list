@@ -1157,7 +1157,8 @@ _root_get() {
   if [[ "${_output_format}" == "plain" ]]; then
     printf \
       '%s\t\t' \
-      "${_output_template[@]}" \
+      "${_template[@]}"
+    printf \
       '\n'
     printf \
       '%s\n' \

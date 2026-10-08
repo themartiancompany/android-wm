@@ -900,6 +900,12 @@ _root_get() {
               jq \
                 --raw-output \
                   "${_package_filter[*]}")"
+          _msg=(
+            "Package for task '${_index}'"
+            "is '${_package}'."
+          )
+          _msg_info \
+            "${_msg[*]}"
           _packages+=(
             "${_package}"
           )

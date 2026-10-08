@@ -1060,7 +1060,8 @@ _root_get() {
           elif [[ "${_field_title}" == "app" ]]; then
             _package="${_packages[${_index}]}"
             if [[ "${_package}" != "" && \
-                  "${_package}" != "null" ]]; then
+                  "${_package}" != "null" && \
+                  " ${_package} " == " "*"."*" " ]]; then
               _msg=(
                 "Parsing application label"
                 "for package '${_package}'."
@@ -1070,6 +1071,14 @@ _root_get() {
               _app="$(
                 app-name \
                   "${_packages[${_index}]}")"
+            elif [[ " ${_package} " != " "*"."*" " ]]; then
+              _msg=(
+                "Package name '${_package}' contains no"
+                "dots, so it's probably a system component."
+              )
+              _msg_info \
+                "${_msg[*]}"
+              _app="${_package}"
             elif [[ "${_package}" == "null" ]]; then
               _msg=(
                 "Null application name, skipping."

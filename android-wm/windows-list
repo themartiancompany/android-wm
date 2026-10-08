@@ -1093,9 +1093,9 @@ _root_get() {
       "${_msg[*]}"
     _line_string="$(
       printf \
-        '\t%s' \
+        '%s\t' \
         "${_line[@]}")"
-    _line_string="${_line_string% - }"
+    _line_string="${_line_string%\t}"
     _msg=(
       "Got line string '${_line_string}'."
     )

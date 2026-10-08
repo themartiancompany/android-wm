@@ -966,7 +966,8 @@ _root_get() {
             )
           elif [[ "${_field_title}" == "app" ]]; then
             _package="${_packages[${_index}]}"
-            if [[ "${_package}" != "" ]]; then
+            if [[ "${_package}" != "" && \
+                  "${_package}" == "null" ]]; then
               _msg=(
                 "Parsing application label"
                 "for package '${_package}'."

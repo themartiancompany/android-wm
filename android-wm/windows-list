@@ -1158,8 +1158,14 @@ _root_get() {
       "${_lines[@]}"
   elif [[ "${_output_format}" == "json" ]]; then
     _msg=(
-      "Just a moment."
+      "Do you really need output"
+      "in JSON format?"
+      "If so, consider sending"
+      "me some money or writing"
+      "it yourself."
     )
+    _msg_info \
+      "${_msg[*]}"
   fi
 }
 

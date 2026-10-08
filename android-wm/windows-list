@@ -1156,6 +1156,9 @@ _root_get() {
   done
   if [[ "${_output_format}" == "plain" ]]; then
     printf \
+      '%s\t' \
+      "${_output_template[@]}"
+    printf \
       '%s\n' \
       "${_lines[@]}"
   elif [[ "${_output_format}" == "json" ]]; then

@@ -1357,14 +1357,15 @@ _global_json_get() {
     )
   _msg=(
     "Running jq with options"
-    "'${_jq_opts}"
+    "'${_jq_opts[@]}"
     "${_global_encode_opts[@]}"
   )
   _msg_info \
     "${_msg[*]}"
   fi
   jq \
-    "${_global_opts[@]}" \
+    "${_jq_opts[@]}" \
+    "${_global_encode_opts[@]}" \
     '$ARGS.named'
 }
 

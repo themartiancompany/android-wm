@@ -1332,6 +1332,55 @@ _window_json_get() {
   _window=""
 }
 
+_global_json_get() {
+  local \
+    _flags=() \
+    _flags_jq_arg \
+    _flags_encode_opts=() \
+    _msg=()
+  _flags+=(
+    "$@"
+  )
+  _msg=(
+    "Getting global JSON."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _global_encode_opts+=(
+    --arg
+      "mGlobalConfiguration"
+        "${_global_configuration}"
+  )
+  _flags_jq_arg="[$(
+    IFS=","; \
+    echo \
+      "${_flags[*]}")]"
+  _flags_encode_opts+=(
+    --argjson
+      "flags"
+        "${_flags_jq_arg}"
+  )
+  _msg=(
+    "Running jq with options"
+    "'${_jq_opts[*]}"
+    "${_flags_encode_opts[*]}'."
+  )
+  _msg_info \
+    "${_msg[*]}"
+  _flags_json="$(
+    jq \
+      "${_jq_opts[@]}" \
+      "${_flags_encode_opts[@]}" \
+      '$ARGS.named.flags')"
+  _msg=(
+    "Flags JSON: ${_flags_json}"
+  )
+  _msg_info \
+    "${_msg[*]}"
+}
+
+
+
 _values_clean() {
   _activity_check=""
   _activity_record_opened=""
@@ -1723,6 +1772,8 @@ _dumpsys_json_encode() {
     _msg=() \
     _wanim \
     _window \
+    _window_focus_id \
+    _window_focus_type \
     _window_grouping_token \
     _window_removal_allowed \
     _window_removal_allowed_word \
@@ -2069,7 +2120,7 @@ _dumpsys_json_encode() {
             elif [[ "${_word}" == "type="* ]]; then
               _insets_frame_provider_type="${_word#type=}"
             elif [[ "${_word}" == "source="* ]]; then
-              _nsets_frame_provider_source="${_word%source=}"
+              _insets_frame_provider_source="${_word%source=}"
             elif [[ "${_word}" == "insetsSize="* ]]; then
               _insets_opened="true"
               _insets_word="${_word#insetsSize=}"
@@ -2121,49 +2172,6 @@ _dumpsys_json_encode() {
           "${_msg[*]}" \
           1
       fi
-    elif [[ "${_line_string}" == "    mCurrentFocus="* ]]; then
-      for _word in "${_line[@]}"; do
-        if [[ "${_word}" == "mCurrentFocus="* ]]; then
-          if [[ "${_word}" != "mCurrentFocus="* ]]; then
-            _window_focus_type="${_word#mCurrentFocus=}"
-            _window_focus_type="${_window_focus_type%\{*}"
-            _msg=(
-              "Current focus window type"
-              "'${_window_focus_type}'."
-            )
-            _msg_info \
-              "${_msg[*]}"
-          fi
-        elif [[ "${_word}" == "type="* ]]; then
-          _insets_frame_provider_type="${_word#type=}"
-        elif [[ "${_word}" == "source="* ]]; then
-          _nsets_frame_provider_source="${_word%source=}"
-        elif [[ "${_word}" == "insetsSize="* ]]; then
-          _insets_opened="true"
-          _insets_word="${_word#insetsSize=}"
-          _insets_type="${_insets_word%\{*}"
-          _insets_param="${_insets_word#${_insets_type}\{}"
-          _insets_params+=(
-            "${_insets_param}"
-          )
-        elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
-          _window_grouping_token="${_word%\}}"
-        else
-          _msg=(
-            "Unknown property '${_word}'"
-            "for 'WindowToken' object."
-            "Line:"
-          )
-          _msg_error \
-            "${_msg[*]}" \
-            0
-          echo \
-            "${_line_string}" \
-            1>&2
-          exit \
-            1
-        fi
-      done
     elif [[ "${_line_string}" == "      paramsForRotation="* ]]; then
         _msg=(
           "Parsing parameters for rotation attributes first line."
@@ -2499,10 +2507,17 @@ _dumpsys_json_encode() {
   )
   _msg_info \
     "${_msg[*]}"
-  jq \
-    "${_jq_opts[@]}" \
-    "${_windows_encode_opts[@]}" \
-    '$ARGS.named.windows'
+  _global_json_get
+  # _jq_opts+=(
+  #   --argjson
+  #     "mGlobalConfiguration"
+  #       "${_global_configuration}"
+  # )
+  # jq \
+  #   "${_jq_opts[@]}" \
+  #   "${_windows_encode_opts[@]}" \
+  #   '$ARGS.named'
+    # '$ARGS.named.windows'
 }
 
 _full_configuration_string_parse() {
@@ -2668,6 +2683,7 @@ _show_config() {
 # $1: exit status number.
 _usage() {
   local \
+    _exit_code="${1}" \
     _usage_text
   IFS='' \
     read \
@@ -2690,6 +2706,8 @@ Usage:
                     using 'dumpsys window windows'.
                     Default: ${get_mode}
      -f <field>     To request a specific output field.
+                    Check Android documentation (ahah)
+                    for a full list.
                     Default: ${output_field[*]}
      -o <format>    Output format.
                     It can be 'json' or 'plain'.
@@ -2707,16 +2725,13 @@ Usage:
      -c             Enable color output.
      -v             Enable verbose output
 
-  fields:
-
-     mCurrentFocus
 
 ENDUSAGETEXT
   _printf \
     '%s\n' \
     "${_usage_text}"
   exit \
-    "${1}"
+    "${_exit_code}"
 }
 
 _globals

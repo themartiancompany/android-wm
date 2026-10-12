@@ -84,10 +84,14 @@ _root_get() {
     "$@"
   )
   _permissions_error_start=(
-    "Permission Denial: can't dump ActivityManager from from pid="
+    "Permission Denial:"
+    "can't dump ActivityManager"
+    "from from pid="
   )
   _permissions_error_end=(
-    "due to missing android.permission.PACKAGE_USAGE_STATS permission"
+    "due to missing"
+    "android.permission.PACKAGE_USAGE_STATS"
+    "permission"
   )
   _sdk="$(
     sdk-version)"

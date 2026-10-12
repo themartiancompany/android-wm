@@ -1349,6 +1349,13 @@ _global_json_get() {
           "${_global_configuration}"
     )
   fi
+  if [[ "${_blur_enabled}" != "" ]]; then
+    _global_encode_opts+=(
+      --arg
+        "mBlurEnabled"
+          "${_blur_enabled}"
+    )
+  fi
   if [[ "${_windows_jq_arg}" != "" ]]; then
     _global_encode_opts+=(
       --argjson
@@ -1624,6 +1631,7 @@ _dumpsys_json_encode() {
     _base_layer_word \
     _behavior \
     _behavior_word \
+    _blur_enabled \
     _client \
     _client_word \
     _draw_state \
@@ -2486,6 +2494,8 @@ _dumpsys_json_encode() {
     # ' providedInsets=InsetsFrameProvider: {type=ITYPE_NAVIGATION_BAR, source=SOURCE_FRAME, insetsSize=Insets{left=0, top=0, right=0, bottom=0}}
     elif [[ "${_line_string}" == "  mGlobalConfiguration="* ]]; then
       _global_configuration="${_line_string#  mGlobalConfiguration=}"
+    elif [[ "${_line_string}" == "  mBlurEnabled="* ]]; then
+      _blur_enabled="${_line_string#  mBlurEnabled=}"
     else
       _msg=(
         "Window '${_index}',"

@@ -71,12 +71,18 @@ _root_get() {
     _output_format="${1}" \
     _strict_mode="${2}" \
     _silent_mode="${3}" \
+    _output_fields=() \
     _dumpsys \
     _cmd=() \
     _msg=() \
     _permissions_error_start=() \
     _permissions_error_end=() \
     _sdk
+  shift \
+    3
+  _output_fields+=(
+    "$@"
+  )
   _permissions_error_start=(
     "Permission Denial: can't dump ActivityManager from from pid="
   )
@@ -128,7 +134,8 @@ _root_get() {
       1
   fi
   "_dumpsys_${_output_format}_encode" \
-    "${_dumpsys}"
+    "${_dumpsys}" \
+    "${_output_fields[@]}"
 }
 
 _dumpsys_plain_encode() {
@@ -1534,6 +1541,8 @@ _insets_parse() {
   fi
 }
 
+
+
 # NOTE:
 #   Parsing of the fields
 #   using '*_word' variables
@@ -1548,6 +1557,7 @@ _insets_parse() {
 _dumpsys_json_encode() {
   local \
     _dumpsys="${1}" \
+    _output_fields=() \
     _dumpsys_window_windows=() \
     _id \
     _activity \
@@ -1721,6 +1731,11 @@ _dumpsys_json_encode() {
     _word \
     _word_index \
     _word_index_end
+  shift \
+    2
+  _output_fields=(
+    "$@"
+  )
   _jq_opts+=(
     -n
   )
@@ -2105,15 +2120,16 @@ _dumpsys_json_encode() {
     elif [[ "${_line_string}" == "    mCurrentFocus="* ]]; then
       for _word in "${_line[@]}"; do
         if [[ "${_word}" == "mCurrentFocus="* ]]; then
-        if [[ "${_insets_opened}" == "true" ]]; then
-          _insets_param="${_word}"
-          if [[ "${_insets_param}" != "${_insets_param%\}}" ]]; then
-            _insets_param="${_insets_param%\}}"
-            _insets_opened="false"
+          if [[ "${_word}" != "mCurrentFocus="* ]]; then
+            _window_focus_type="${_word#mCurrentFocus=}"
+            _window_focus_type="${_window_focus_type%\{*}"
+            _msg=(
+              "Current focus window type"
+              "'${_window_focus_type}'."
+            )
+            _msg_info \
+              "${_msg[*]}"
           fi
-          _insets_params+=(
-            "${_insets_param}"
-          )
         elif [[ "${_word}" == "type="* ]]; then
           _insets_frame_provider_type="${_word#type=}"
         elif [[ "${_word}" == "source="* ]]; then
@@ -2543,11 +2559,18 @@ _windows_info() {
     _get_mode="${1}" \
     _output_format="${2}" \
     _strict_mode="${3}" \
-    _silent_mode="${4}"
+    _silent_mode="${4}" \
+    _output_fields=()
+  shift \
+    4
+  _output_fields+=(
+    "$@"
+  )
   "_${_get_mode}_get" \
     "${_output_format}" \
     "${_silent_mode}" \
-    "${_strict_mode}"
+    "${_strict_mode}" \
+    "${_output_fields[@]}"
 }
 
 _auto_detect_mode() {

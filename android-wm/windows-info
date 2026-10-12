@@ -58,6 +58,7 @@ _root_requirements() {
 _global_variables() {
   get_date=""
   output_format=""
+  output_fields=()
   get_mode=""
   strict_mode=""
   silent_mode=""
@@ -2101,6 +2102,48 @@ _dumpsys_json_encode() {
           "${_msg[*]}" \
           1
       fi
+    elif [[ "${_line_string}" == "    mCurrentFocus="* ]]; then
+      for _word in "${_line[@]}"; do
+        if [[ "${_word}" == "mCurrentFocus="* ]]; then
+        if [[ "${_insets_opened}" == "true" ]]; then
+          _insets_param="${_word}"
+          if [[ "${_insets_param}" != "${_insets_param%\}}" ]]; then
+            _insets_param="${_insets_param%\}}"
+            _insets_opened="false"
+          fi
+          _insets_params+=(
+            "${_insets_param}"
+          )
+        elif [[ "${_word}" == "type="* ]]; then
+          _insets_frame_provider_type="${_word#type=}"
+        elif [[ "${_word}" == "source="* ]]; then
+          _nsets_frame_provider_source="${_word%source=}"
+        elif [[ "${_word}" == "insetsSize="* ]]; then
+          _insets_opened="true"
+          _insets_word="${_word#insetsSize=}"
+          _insets_type="${_insets_word%\{*}"
+          _insets_param="${_insets_word#${_insets_type}\{}"
+          _insets_params+=(
+            "${_insets_param}"
+          )
+        elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
+          _window_grouping_token="${_word%\}}"
+        else
+          _msg=(
+            "Unknown property '${_word}'"
+            "for 'WindowToken' object."
+            "Line:"
+          )
+          _msg_error \
+            "${_msg[*]}" \
+            0
+          echo \
+            "${_line_string}" \
+            1>&2
+          exit \
+            1
+        fi
+      done
     elif [[ "${_line_string}" == "      paramsForRotation="* ]]; then
         _msg=(
           "Parsing parameters for rotation attributes first line."
@@ -2537,6 +2580,18 @@ _auto_detect_mode() {
   fi
 }
 
+_output_fields_auto_detect() {
+  local \
+    _output_fields=() \
+    _output_fields_amount
+  _output_fields_amount="${#output_fields[@]}"
+  if (( "${_output_fields_amount}" < 1 )); then
+    output_fields=(
+      "all"
+    )
+  fi
+}
+
 _set_overrides() {
   if [[ -v override_color ]]; then
     color="${override_color}"
@@ -2568,6 +2623,7 @@ _set_overrides() {
     "silent" \
     "mode" \
     "n"
+  _output_fields_auto_detect
 }
 
 # Shows configuration options.
@@ -2578,6 +2634,7 @@ _show_config() {
   _msg_info "            Output format:   ${output_format}"
   _msg_info "              Strict mode:   ${strict_mode}"
   _msg_info "              Silent mode:   ${silent_mode}"
+  _msg_info "            Output fields:   ${output_fields[*]}"
 }
 
 # Show help usage, with an exit status.
@@ -2605,6 +2662,8 @@ Usage:
                     It can be 'root' for obtaining them
                     using 'dumpsys window windows'.
                     Default: ${get_mode}
+     -f <field>     To request a specific output field.
+                    Default: ${output_field[*]}
      -o <format>    Output format.
                     It can be 'json' or 'plain'.
                     Default: ${output_format}
@@ -2620,6 +2679,10 @@ Usage:
      -h             This message.
      -c             Enable color output.
      -v             Enable verbose output
+
+  fields:
+
+     mCurrentFocus
 
 ENDUSAGETEXT
   _printf \
@@ -2641,6 +2704,10 @@ while \
     "${arg}" in
     m)
       override_get_mode="${OPTARG}" ;;
+    f)
+      output_fields+=(
+        "${OPTARG}"
+      )
     o)
       override_output_format="${OPTARG}" ;;
     s)
@@ -2677,6 +2744,7 @@ app_opts=(
   "${output_format}"
   "${silent_mode}"
   "${strict_mode}"
+  "${output_fields[@]}"
 )
 _show_config
 _windows_info \

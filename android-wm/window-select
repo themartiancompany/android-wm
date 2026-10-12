@@ -43,6 +43,9 @@ source \
 
 _root_requirements() {
   _check_cmd \
+    "windows-list" \
+    "android-wm"
+  _check_cmd \
     "awk" \
     "gawk"
   _check_cmd \
@@ -63,43 +66,21 @@ _root_get() {
   local \
     _activities \
     _activity \
+    _focus_list \
     _cmd \
+    _mapfile_opts=() \
     _msg=() \
-    _sdk
-  _sdk="$(
-    sdk-version)"
-  _msg=(
-    "Detected SDK version '${_sdk}'."
+    _windows_list_opts=()
+  _windows_list_opts+=(
+    -q
+    -o
+      "plain"
   )
-  _msg_info \
-    "${_msg[*]}"
-  if (( 32 < "${_sdk}" )); then
-    _cmd=(
-      "/system/bin/dumpsys"
-        "window"
-        "windows"
-    )
-    # _cmd=(
-    #   "/system/bin/dumpsys"
-    #     "activity"
-    #     "activities"
-    # )
-  elif (( "${_sdk}" < 28 )); then
-    _cmd=(
-      "/system/bin/dumpsys"
-        "window"
-        "windows"
-    )
-  else
-    _cmd=(
-      "/system/bin/dumpsys"
-        "window"
-        "windows"
-    )
-  fi
-  _msg=(
-    "Running '${_cmd[*]}'."
-  )
+  mapfile \
+    "${_mapfile_opts[@]}" \
+  _focus_list="(
+    windows-list \
+      "${_windows_list_opts[@]}")"
   _msg_info \
     "${_msg[*]}"
   _activities="$(

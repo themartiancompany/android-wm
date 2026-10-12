@@ -2734,7 +2734,7 @@ while \
     f)
       output_fields+=(
         "${OPTARG}"
-      )
+      ) ;;
     o)
       override_output_format="${OPTARG}" ;;
     s)

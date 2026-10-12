@@ -2127,14 +2127,17 @@ _dumpsys_json_encode() {
                 "for 'WindowToken' object."
                 "Line:"
               )
-              _msg_error \
-                "${_msg[*]}" \
-                0
-              echo \
-                "${_line_string}" \
-                1>&2
-              exit \
-                1
+              if [[ "${_silent_mode}" == "n" ]]; then
+                _msg_warning \
+                  "${_msg[*]}"
+                echo \
+                  "${_line_string}" \
+                  1>&2
+              fi
+              if [[ "${_strict_mode}" == "y" ]]; then
+                exit \
+                  1
+              fi
             fi
           done
           if [[ "${_insets_opened}" == "false" ]]; then

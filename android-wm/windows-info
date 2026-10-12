@@ -1554,11 +1554,11 @@ _insets_parse() {
       _bottom="${_bottom%\}}"
     else
       _msg=(
-        "Unknown parameter '${_param}'."
+        "Unknown inset parameter '${_param}'."
       )
       _msg_error \
         "${_msg[*]}" \
-        1
+        0
     fi
   done
   if [[ "${_left}" != "" ]]; then

@@ -1334,49 +1334,38 @@ _window_json_get() {
 
 _global_json_get() {
   local \
-    _flags=() \
-    _flags_jq_arg \
-    _flags_encode_opts=() \
+    _windows_jq_arg="${1}" \
+    _global_encode_opts=() \
     _msg=()
-  _flags+=(
-    "$@"
-  )
   _msg=(
     "Getting global JSON."
   )
   _msg_info \
     "${_msg[*]}"
-  _global_encode_opts+=(
-    --arg
-      "mGlobalConfiguration"
-        "${_global_configuration}"
-  )
-  _flags_jq_arg="[$(
-    IFS=","; \
-    echo \
-      "${_flags[*]}")]"
-  _flags_encode_opts+=(
-    --argjson
-      "flags"
-        "${_flags_jq_arg}"
-  )
+  if [[ "${_global_configuration}" != "" ]]; then
+    _global_encode_opts+=(
+      --arg
+        "mGlobalConfiguration"
+          "${_global_configuration}"
+    )
+  fi
+  if [[ "${_windows_jq_arg}" != "" ]]; then
+    _global_encode_opts+=(
+      --argjson
+        "windows"
+          "${_windows_jq_arg}"
+    )
   _msg=(
     "Running jq with options"
-    "'${_jq_opts[*]}"
-    "${_flags_encode_opts[*]}'."
+    "'${_jq_opts}"
+    "${_global_encode_opts[@]}"
   )
   _msg_info \
     "${_msg[*]}"
-  _flags_json="$(
-    jq \
-      "${_jq_opts[@]}" \
-      "${_flags_encode_opts[@]}" \
-      '$ARGS.named.flags')"
-  _msg=(
-    "Flags JSON: ${_flags_json}"
-  )
-  _msg_info \
-    "${_msg[*]}"
+  fi
+  jq \
+    "${_global_opts[@]}" \
+    '$ARGS.named'
 }
 
 
@@ -1663,6 +1652,7 @@ _dumpsys_json_encode() {
     _given_insets_pending_word \
     _given_visible_insets \
     _given_visible_insets_word \
+    _global_configuration \
     _gr_index \
     _gr_word_index \
     _gr=() \
@@ -2473,6 +2463,8 @@ _dumpsys_json_encode() {
         fi
       done
     # ' providedInsets=InsetsFrameProvider: {type=ITYPE_NAVIGATION_BAR, source=SOURCE_FRAME, insetsSize=Insets{left=0, top=0, right=0, bottom=0}}
+    elif [[ "${_line_string}" == "  mGlobalConfiguration="* ]]; then
+      _global_configuration="${_line_string#  mGlobalConfiguration=}"
     else
       _msg=(
         "Window '${_index}',"
@@ -2495,19 +2487,8 @@ _dumpsys_json_encode() {
     IFS=","; \
     echo \
       "${_windows[*]}")]"
-  _windows_encode_opts+=(
-    --argjson
-      "windows"
-        "${_windows_jq_arg}"
-  )
-  _msg=(
-    "Running jq with options"
-    "'${_jq_opts}"
-    "${_windows_encode_opts[@]}"
-  )
-  _msg_info \
-    "${_msg[*]}"
-  _global_json_get
+  _global_json_get \
+    "${_windows_jq_arg}"
   # _jq_opts+=(
   #   --argjson
   #     "mGlobalConfiguration"

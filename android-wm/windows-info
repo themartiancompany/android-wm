@@ -2097,6 +2097,7 @@ _dumpsys_json_encode() {
           )
           _insets_params=()
           _insets_opened="false"
+          _insets_size_overrides_opened="false"
           for _word in "${_line[@]}"; do
             if [[ "${_insets_opened}" == "true" ]]; then
               _insets_param="${_word}"
@@ -2121,6 +2122,13 @@ _dumpsys_json_encode() {
               )
             elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
               _window_grouping_token="${_word%\}}"
+            elif [[ "${_word}" == "insetsSizeOverrides="* ]]; then
+              _msg=(
+                "Insets size overrides have been opened."
+              )
+              _msg_info \
+                "${_msg[*]}"
+              _insets_size_overrides_opened="true"
             else
               _msg=(
                 "Unknown property '${_word}'"
@@ -2140,7 +2148,8 @@ _dumpsys_json_encode() {
               fi
             fi
           done
-          if [[ "${_insets_opened}" == "false" ]]; then
+          if [[ "${_insets_size_overrides_opened}" == "false" && \
+                "${_insets_opened}" == "false" ]]; then
             _msg=(
               "Parsing window provided insets."
             )

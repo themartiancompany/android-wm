@@ -2112,7 +2112,8 @@ _dumpsys_json_encode() {
               _insets_frame_provider_type="${_word#type=}"
             elif [[ "${_word}" == "source="* ]]; then
               _insets_frame_provider_source="${_word%source=}"
-            elif [[ "${_word}" == "insetsSize="* ]]; then
+            elif [[ "${_word}" == "insetsSize="* && \
+                    "${_insets_size_overrides_opened}" == "false" ]]; then
               _insets_opened="true"
               _insets_word="${_word#insetsSize=}"
               _insets_type="${_insets_word%\{*}"

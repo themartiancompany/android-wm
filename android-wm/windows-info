@@ -2120,6 +2120,13 @@ _dumpsys_json_encode() {
               _insets_params+=(
                 "${_insets_param}"
               )
+            elif [[ "${_word}" == "insetsFrameProvider:" ]]; then
+              _msg=(
+                "Quite an articulate structure in"
+                "insetsFrameProvider uh?"
+              )
+              _msg_info \
+                "${_msg[*]}"
             elif [[ "${_word}" == "android.view.ViewRootImpl\$W@"* ]]; then
               _window_grouping_token="${_word%\}}"
             elif [[ "${_word}" == "insetsSizeOverrides="* ]]; then
